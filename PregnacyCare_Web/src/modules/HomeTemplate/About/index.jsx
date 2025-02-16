@@ -1,5 +1,5 @@
 import pic1 from '../../../assets/images/about/01.jpg'
-
+import arrowup from '../../../assets/images/banner/icons/arrow--up-right.svg'
 export default function Aboutus() {
   return (
     <div>
@@ -50,7 +50,7 @@ export default function Aboutus() {
                   <a href="about.html" className="rts-btn btn-primary">
                     About Us{" "}
                     <img
-                      src="assets/images/banner/icons/arrow--up-right.svg"
+                      src={arrowup}
                       alt
                     />
                   </a>
