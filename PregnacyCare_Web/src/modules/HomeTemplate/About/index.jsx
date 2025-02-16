@@ -1,4 +1,5 @@
-import pic1 from '../../assets/images/about/01.png'
+import pic1 from '../../../assets/images/about/01.jpg'
+
 export default function Aboutus() {
   return (
     <div>

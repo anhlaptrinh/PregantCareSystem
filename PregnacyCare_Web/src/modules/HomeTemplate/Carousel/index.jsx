@@ -1,4 +1,4 @@
-import person from '../../assets/images/banner/01.png'
+import person from '../../../assets/images/banner/01.png'
 export default function Carousel() {
   return (
     <div className="banner-area-start">

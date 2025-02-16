@@ -1,5 +1,5 @@
 import logo from '../../assets/images/logo/logo.svg'
-import logoduoi from '../../assets/images/banner/icons/arrow--up-right.svg'
+// import logoduoi from '../../assets/images/banner/icons/arrow--up-right.svg'
 
 export default function Headers() {
   return (
@@ -61,7 +61,7 @@ export default function Headers() {
                 {/* <div class="cart-button">
                       <i class="fa-light fa-cart-shopping"></i>
                   </div> */}
-                <a href="appoinment.html" className="rts-btn btn-primary">Login/Signin <img src={logoduoi} alt /></a>
+                <a href="appoinment.html" className="rts-btn btn-primary">Login/Signin </a>
                 <div className="menu-btn" id="menu-btn">
                   <svg width={20} height={16} viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect y={14} width={20} height={2} fill="#1F1F25" />
