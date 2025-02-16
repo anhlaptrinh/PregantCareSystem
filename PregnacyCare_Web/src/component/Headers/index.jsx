@@ -1,9 +1,27 @@
 import logo from '../../assets/images/logo/logo.svg'
 // import logoduoi from '../../assets/images/banner/icons/arrow--up-right.svg'
-
+import { useState, useEffect } from 'react';
 export default function Headers() {
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   return (
-    <header className="header-one  header--sticky">
+    <header className={`header--sticky ${isSticky ? 'sticky' : ''}`}>
       <div className="container-full-header">
         <div className="row">
           <div className="col-lg-12">
@@ -19,11 +37,7 @@ export default function Headers() {
                     </li>
                     <li className="main-nav has-dropdown">
                       <a href="#">Page</a>
-                      <ul className="submenu parent-nav">
-                        <li><a href="blog.html">Blog Grid</a></li>
-                        <li><a href="blog-list.html">Blog List</a></li>
-                        <li><a href="blog-details.html">Blog Details</a></li>
-                      </ul>
+                      
                     </li>
                     <li className="main-nav has-dropdown">
                       <a href="#">Service</a>
@@ -34,7 +48,7 @@ export default function Headers() {
                       </ul>
                     </li>
                     <li className="main-nav has-dropdown">
-                      <a href="doctors-one.html">Our Doctors</a>
+                      <a href="doctors-one.html">Our Expert</a>
                       <ul className="submenu parent-nav">
                         <li><a href="doctors-one.html">Our Doctors</a></li>
                         <li><a href="doctors-two.html">Our Doctors v2</a></li>

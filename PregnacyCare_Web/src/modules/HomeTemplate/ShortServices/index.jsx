@@ -1,4 +1,8 @@
 import serviceImg02 from "../../../assets/images/service/02.svg";
+import serviceImg01 from "../../../assets/images/service/01.svg";
+import serviceImg03 from "../../../assets/images/service/03.svg";
+import serviceImg04 from "../../../assets/images/service/04.svg";
+
 export default function ShortServices() {
   return (
     <div className="short-service-area rts-section-gap2">
@@ -11,10 +15,10 @@ export default function ShortServices() {
           >
             <a href="appoinment.html" className="single-short-service">
               <div className="icon">
-                <img src="assets/images/service/01.svg" alt="service" />
+                <img src={serviceImg01} alt="service" />
               </div>
               <h5 className="title">
-                du doan <br /> ngay sinh
+                Estimated due date
               </h5>
             </a>
           </div>
@@ -28,8 +32,7 @@ export default function ShortServices() {
                 <img src={serviceImg02} alt="service" />
               </div>
               <h5 className="title">
-                chuyen gia <br />
-                ho tro
+              Create an appointment
               </h5>
             </a>
           </div>
@@ -40,11 +43,10 @@ export default function ShortServices() {
           >
             <a href="tel:+4733378901" className="single-short-service">
               <div className="icon">
-                <img src="assets/images/service/03.svg" alt="service" />
+                <img src={serviceImg03} alt="service" />
               </div>
               <h5 className="title">
-                cham soc <br />
-                tai nha
+                Fetus Growth Tracker
               </h5>
             </a>
           </div>
@@ -55,10 +57,10 @@ export default function ShortServices() {
           >
             <a href="contactus.html" className="single-short-service">
               <div className="icon">
-                <img src="assets/images/service/04.svg" alt="service" />
+                <img src={serviceImg04} alt="service" />
               </div>
               <h5 className="title">
-                24/7 <br />
+                24/7  <br />
                 Support
               </h5>
             </a>

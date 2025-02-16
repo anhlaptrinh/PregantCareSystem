@@ -109,7 +109,8 @@ html {
   font-size: 10px;
   overflow: hidden;
   overflow-y: auto;
-  scroll-behavior: auto !important;
+  scroll-behavior: smooth !important;
+  
 }
 
 body {
@@ -12271,16 +12272,13 @@ header.header-one.style-two.header--sticky {
 }
 
 .has-dropdown::after {
-  position: absolute;
-  content: "\f078";
+  content: "arrow_drop_down"; /* Sử dụng tên biểu tượng */
+  font-family: "Material Icons";
   right: -22px;
   top: 53%;
   transform: translateY(-50%);
   font-weight: 400;
   color: #111032;
-  font-family: "Font Awesome 6 Pro";
-  font-weight: 300;
-  font-size: 14px;
 }
 .has-dropdown:hover::after {
   color: var(--color-primary);
@@ -12933,7 +12931,7 @@ header.header-three .sub-dropdown .submenu.third-lvl.base {
 }
 
 .banner-area-one {
-  background-image: url(../images/banner/01.webp);
+  background-image: url(../src/assets/images/banner/01.webp);
   position: relative;
   height: 798px;
   display: flex;
@@ -14284,8 +14282,9 @@ header .rts-btn {
 
 .progress-wrap::after {
   position: absolute;
-  font-family: var(--font-3);
-  content: "\f077";
+  font-family: 'Material Icons'; /* Use Material Icons */
+    content: '\e316';/* Up arrow icon from Font Awesome */
+  font-weight: 900;
   text-align: center;
   line-height: 46px;
   font-size: 24px;
@@ -15791,7 +15790,7 @@ header .rts-btn {
 }
 
 .request-appoinemnt-area-main-wrapper {
-  background-image: url(../images/appoinment/03.jpg);
+  background-image: url(../src/assets//images/appoinment/03.jpg);
   padding: 76px 0 !important;
 }
 
