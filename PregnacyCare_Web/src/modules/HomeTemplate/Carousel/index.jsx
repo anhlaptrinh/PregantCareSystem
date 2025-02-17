@@ -7,7 +7,7 @@ export default function Carousel() {
       <div className="col-lg-12">
         <div className="banner-area-one rts-section-gap bg_image">
           <div className="banner-content-area">
-            <h1 className="title wow fadeInUp" data-wow-delay=".2s" data-wow-duration=".8s">Your Health <br />
+            <h1 className="title wow fadeInUp" data-wow-delay=".2s" data-wow-duration=".8s">Your Fetus <br />
               Our Priority</h1>
             <div className="select-area-down wow fadeInUp" data-wow-delay=".6s" data-wow-duration=".8s">
               <form className="select-2" action="#" method="get" acceptCharset="utf-8">
