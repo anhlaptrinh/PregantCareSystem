@@ -11,7 +11,7 @@ export default function Appointment() {
                 Request Your <br />
                 <span>Appointment</span>
               </h2>
-              <a href="#" className="rts-btn btn-primary">
+              <a href="/appointment" className="rts-btn btn-primary">
                 Get Appointment
               </a>
             </div>

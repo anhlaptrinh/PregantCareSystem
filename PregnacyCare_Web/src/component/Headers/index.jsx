@@ -33,7 +33,7 @@ export default function Headers() {
                 <div className="nav-area">
                   <ul className>
                     <li className="main-nav">
-                      <a href="index.html">Home</a>
+                      <a href="/">Home</a>
                     </li>
                     <li className="main-nav has-dropdown">
                       <a href="#">Page</a>

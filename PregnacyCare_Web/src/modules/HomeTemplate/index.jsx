@@ -6,18 +6,20 @@ import ShortServices from "./ShortServices";
 import Srvice from "./Srvice";
 import Testimonials from "./Testimonials";
 import WhyChoose from "./Whychoose";
-
+import WowProvider from "../../component/Wow";
 export default function HomeTemplate() {
   return (
     <>
-        <Carousel/>
-        <ShortServices/>
-        <Aboutus/>
-        <Srvice/>
-        <WhyChoose/>
-        <Pricing/>
-        <Testimonials/>
-        <Appointment/>
+      <WowProvider>
+        <Carousel />
+        <ShortServices />
+        <Aboutus />
+        <Srvice />
+        <WhyChoose />
+        <Pricing />
+        <Testimonials />
+        <Appointment />
+      </WowProvider>
     </>
-  )
+  );
 }

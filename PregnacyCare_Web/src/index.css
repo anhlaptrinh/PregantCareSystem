@@ -15733,7 +15733,7 @@ header .rts-btn {
 }
 
 .appoinment-area-main {
-  background-image: url(../images/appoinment/01.jpg);
+  background-image: url(../src/assets/images/appoinment/01.jpg);
   padding: 70px;
 }
 @media only screen and (max-width: 575px) {
@@ -18738,7 +18738,7 @@ li.has-dropdown:hover .submenu {
 }
 
 .rts-breadcrumb-area {
-  background-image: url(../images/breadcrumb/01.jpg);
+  background-image: url(../src/assets/images/breadcrumb/01.jpg);
 }
 
 .breadcrumb-area-wrapper {
