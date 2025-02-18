@@ -8,6 +8,7 @@ import DueDateCalculatorTemplate from "../modules/DueDateTemplate";
 import DueDateCalculatorResultPages from "../pages/HomePages/DueDateCalculatorResultPages";
 import DueDateCalculatorResultTemplate from "../modules/DueDateResultTemplate";
 import ProfilePages from "../pages/HomePages/ProfilePages";
+import FetusGrowthChart from "../pages/HomePages/FetusGrowthChart";
 
 const routes = [
   {
@@ -25,6 +26,10 @@ const routes = [
       {
         path: "/profile",
         element: <ProfilePages />,
+      },
+      {
+        path: "/fetus-growth-chart",
+        element: <FetusGrowthChart />,
       },
     ],
   },

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Typography,
   List,
@@ -9,7 +8,7 @@ import {
   IconButton,
   Button,
   Divider,
-  Box,
+  
 } from "@mui/material";
 import { Add, Edit, CalendarToday } from "@mui/icons-material";
 import PregnantAvatar from "../../../../assets/PregnantAvatar.jpg";
@@ -33,7 +32,7 @@ export default function FamilyInfo() {
 
       {/* I'm pregnant */}
       <Typography variant="h5" fontWeight="bold">
-        I'm pregnant
+        I&apos;m pregnant
       </Typography>
       <Divider />
 

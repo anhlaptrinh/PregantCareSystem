@@ -174,7 +174,45 @@ export default function Testimonials() {
                   </div>
                 </div>
               </SwiperSlide>
-              <SwiperSlide></SwiperSlide>
+              <SwiperSlide>
+                <div className="single-testimonials-style">
+                  <div className="quots">
+                    <img
+                      src={qoutes}
+                      alt="testimonails"
+                    />
+                  </div>
+                  <p className="disc">
+                    Dr. Robert Thompson is an exceptional cardiologist. His
+                    ability to explain with complex medical issues in a way
+                    that&apos;s easy to understand is truly impressive.
+                  </p>
+                  <div className="author-area">
+                    <a href="#" className="img">
+                      <img
+                        src={tem04}
+                        alt="testiminials"
+                      />
+                    </a>
+                    <div className="info">
+                      <h6 className="name">David Patel</h6>
+                      <div className="stars-area">
+                        <i className="fa-sharp fa-solid fa-star" />
+                        <i className="fa-sharp fa-solid fa-star" />
+                        <i className="fa-sharp fa-solid fa-star" />
+                        <i className="fa-sharp fa-solid fa-star" />
+                        <i className="fa-sharp fa-solid fa-star" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="shape">
+                    <img
+                      src={tem02}
+                      alt="service"
+                    />
+                  </div>
+                </div>
+              </SwiperSlide>
              
               ...
             </Swiper>
