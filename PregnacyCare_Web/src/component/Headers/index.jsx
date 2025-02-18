@@ -1,6 +1,8 @@
 import logo from '../../assets/images/logo/logo.svg'
 // import logoduoi from '../../assets/images/banner/icons/arrow--up-right.svg'
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 export default function Headers() {
   const [isSticky, setIsSticky] = useState(false);
 
@@ -70,11 +72,9 @@ export default function Headers() {
               <div className="header-right">
                 <div className="input-area">
                   <input id="myInput" type="text" placeholder="Search..." />
-                  <i className="fa-light fa-magnifying-glass" />
+                  <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
                 </div>
-                {/* <div class="cart-button">
-                      <i class="fa-light fa-cart-shopping"></i>
-                  </div> */}
+               
                 <a href="appoinment.html" className="rts-btn btn-primary">Login/Signin </a>
                 <div className="menu-btn" id="menu-btn">
                   <svg width={20} height={16} viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">

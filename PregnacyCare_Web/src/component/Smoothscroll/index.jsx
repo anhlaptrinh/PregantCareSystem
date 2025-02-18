@@ -6,8 +6,11 @@ const SmoothScrollWrapper = ({ children }) => {
   useEffect(() => {
     const handleWheel = (event) => {
       event.preventDefault();
+      const isTrackpad = Math.abs(event.deltaY) < 15; // Giá trị nhỏ hơn -> trackpad
+      const speedFactor = isTrackpad ? 2000 : 8; // Tăng tốc độ cho trackpad
+
       window.scrollBy({
-        top: event.deltaY * 10, // Điều chỉnh tốc độ cuộn
+        top: event.deltaY * speedFactor,
         behavior: "smooth",
       });
     };
@@ -23,4 +26,3 @@ const SmoothScrollWrapper = ({ children }) => {
 };
 
 export default SmoothScrollWrapper;
-

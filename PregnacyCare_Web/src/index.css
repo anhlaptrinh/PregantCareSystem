@@ -19425,3 +19425,23 @@ li.has-dropdown:hover .submenu {
   }
 }
 /*# sourceMappingURL=../maps/style.css.map */
+.input-area{
+  position: relative;
+  display: inline-block;
+}
+.input-area input {
+  width: 200px; /* Điều chỉnh kích thước theo ý muốn */
+  padding: 10px 35px 10px 10px; /* Chừa khoảng trống bên phải cho icon */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.input-area .search-icon {
+  position: absolute;
+  right: 20px; /* Điều chỉnh vị trí icon */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  cursor: pointer;
+}
