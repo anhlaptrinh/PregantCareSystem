@@ -7,6 +7,7 @@ import DueDateCalculatorPages from "../pages/DueDateCalculatorPages";
 import DueDateCalculatorTemplate from "../modules/DueDateTemplate";
 import DueDateCalculatorResultPages from "../pages/HomePages/DueDateCalculatorResultPages";
 import DueDateCalculatorResultTemplate from "../modules/DueDateResultTemplate";
+import ProfilePages from "../pages/HomePages/ProfilePages";
 
 const routes = [
   {
@@ -20,6 +21,10 @@ const routes = [
       {
         path: "/appointment",
         element: <AppointmentPages />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePages />,
       },
     ],
   },
