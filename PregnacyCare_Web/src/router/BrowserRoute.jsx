@@ -9,6 +9,10 @@ import DueDateCalculatorResultPages from "../pages/HomePages/DueDateCalculatorRe
 import DueDateCalculatorResultTemplate from "../modules/DueDateResultTemplate";
 import ProfilePages from "../pages/HomePages/ProfilePages";
 import FetusGrowthChart from "../pages/HomePages/FetusGrowthChart";
+import CommunityPages from "../pages/HomePages/CommunityPages";
+import ViewPostPages from "../pages/HomePages/CommunityPages/VIewPostPages";
+import ViewGroupPages from "../pages/HomePages/CommunityPages/VIewGroupPages";
+import CreatePostPages from "../pages/HomePages/CommunityPages/CreatePostPages";
 
 const routes = [
   {
@@ -30,6 +34,22 @@ const routes = [
       {
         path: "/fetus-growth-chart",
         element: <FetusGrowthChart />,
+      },
+      {
+        path: "/community",
+        element: <CommunityPages />,
+      },
+      {
+        path: "/view-post",
+        element: <ViewPostPages />,
+      },
+      {
+        path: "/view-group",
+        element: <ViewGroupPages />,
+      },
+      {
+        path: "/create-post",
+        element: <CreatePostPages />,
       },
     ],
   },
