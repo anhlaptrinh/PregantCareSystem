@@ -3,7 +3,6 @@ import {
   Typography,
   Card,
   CardContent,
-  Checkbox,
   Button,
   Link,
   Box,
@@ -13,7 +12,6 @@ import {
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export default function Bookmarks() {
   const [bookmarks, setBookmarks] = useState([
