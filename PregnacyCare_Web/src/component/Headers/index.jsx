@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import Login from "../../modules/HomeTemplate/Login";
+
 export default function Headers() {
   const [isSticky, setIsSticky] = useState(false);
   const [open, setOpen] = useState(false);
