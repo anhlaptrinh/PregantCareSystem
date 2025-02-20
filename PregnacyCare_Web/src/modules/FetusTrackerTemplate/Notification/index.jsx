@@ -63,7 +63,7 @@ const FetusInput = () => {
                   <InputNumber style={{ width: "60%" }} min={0} />
                 </Form.Item>
                 <Form.Item name="weight_lb_unit" noStyle initialValue="lb">
-                  <Select style={{ width: "40%" }}>
+                  <Select style={{ width: "40%", height: 45 }}>
                     <Select.Option value="lb">lb</Select.Option>
                     <Select.Option value="kg">kg</Select.Option>
                   </Select>
@@ -76,7 +76,7 @@ const FetusInput = () => {
                   <InputNumber style={{ width: "60%" }} min={0} />
                 </Form.Item>
                 <Form.Item name="weight_oz_unit" noStyle initialValue="oz">
-                  <Select style={{ width: "40%" }}>
+                  <Select style={{ width: "40%", height: 45 }}>
                     <Select.Option value="oz">oz</Select.Option>
                   </Select>
                 </Form.Item>
@@ -91,7 +91,7 @@ const FetusInput = () => {
               <InputNumber style={{ width: "70%" }} min={0} />
             </Form.Item>
             <Form.Item name="height_unit" noStyle initialValue="in">
-              <Select style={{ width: "30%" }}>
+              <Select style={{ width: "30%", height: 45 }}>
                 <Select.Option value="in">in</Select.Option>
                 <Select.Option value="cm">cm</Select.Option>
               </Select>
@@ -105,7 +105,7 @@ const FetusInput = () => {
               <InputNumber style={{ width: "70%" }} min={0} />
             </Form.Item>
             <Form.Item name="head_unit" noStyle initialValue="cm">
-              <Select style={{ width: "30%" }}>
+              <Select style={{ width: "30%", height: 45 }}>
                 <Select.Option value="cm">cm</Select.Option>
                 <Select.Option value="in">in</Select.Option>
               </Select>
