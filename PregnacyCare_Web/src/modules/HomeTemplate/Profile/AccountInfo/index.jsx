@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Box, Link } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
 export default function AccountInfo() {
   return (

@@ -3,8 +3,18 @@ import logo from "../../assets/images/logo/logo.svg";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import Login from "../../modules/HomeTemplate/Login";
 export default function Headers() {
   const [isSticky, setIsSticky] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Handle open and close Login modal
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,9 +110,15 @@ export default function Headers() {
                   />
                 </div>
 
-                <a href="appoinment.html" className="rts-btn btn-primary">
+                <button
+                  onClick={() => handleOpen()}
+                  className="rts-btn btn-primary"
+                >
                   Login/Signin{" "}
-                </a>
+                </button>
+                {/* Gọi component Login và truyền props open, onClose */}
+                <Login open={open} onClose={handleClose} />
+
                 <div className="menu-btn" id="menu-btn">
                   <svg
                     width={20}
