@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import Login from "../../modules/HomeTemplate/Login";
+import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
 
 export default function Headers() {
   const [isSticky, setIsSticky] = useState(false);
@@ -118,7 +119,7 @@ export default function Headers() {
                   Login/Signin{" "}
                 </button>
                 {/* Gọi component Login và truyền props open, onClose */}
-                <Login open={open} onClose={handleClose} />
+                <LoginSignin open={open} onClose={handleClose} />
 
                 <div className="menu-btn" id="menu-btn">
                   <svg

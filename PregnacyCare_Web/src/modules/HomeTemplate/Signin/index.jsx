@@ -1,88 +1,59 @@
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  Link,
-} from "@mui/material";
-import { Form, Input } from "antd";
+import { Form, Input, Typography } from "antd";
+import SigninBackground from "../../../assets/Signin.jpg";
 
-export default function Signin({ open, onClose }) {
+const { Title, Text } = Typography;
+
+export default function Signin() {
+  // State
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
+  // Handle
   const handleSubmit = () => {
-    alert(user.password);
+    alert(user.email + " " + user.password);
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="xs"
-      fullWidth
-      PaperProps={{
-        sx: {
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        },
-      }}
-    >
-      {/* Title */}
-      <DialogTitle
-        sx={{ textAlign: "center", fontWeight: "bold", fontSize: 40 }}
-      >
-        Welcome back
-      </DialogTitle>
-
-      {/* Main conntent */}
-      <DialogContent>
-        <Typography variant="h6" align="center" sx={{ mb: 2 }}>
-          Enter your email to log in to your PregnancyCare account
-        </Typography>
-        <Form name="login_form">
+    <div style={{ display: "flex", height: "100%" }}>
+      {/* Login form */}
+      <div style={{ flex: 1, padding: "20px" }}>
+        <div class="row justify-content-md-center">
+          <div class="col-md-auto mb-3">
+            <Title>Sign in</Title>
+          </div>
+        </div>
+        <Text style={{ display: "block", marginBottom: "20px" }}>
+          Enter your email to become a new PregnancyCare member
+        </Text>
+        <Form layout="vertical" onFinish={() => handleSubmit}>
           <Form.Item
             name="email"
             rules={[
-              {
-                type: "email",
-                message: "Email is incorrect!",
-              },
-              {
-                required: true,
-                message: "Please enter email!",
-              },
+              { type: "email", message: "Email is incorrect!" },
+              { required: true, message: "Please enter email!" },
             ]}
             style={{ marginBottom: 35 }}
           >
             <Input
               placeholder="Email"
               onChange={(e) => setUser({ ...user, email: e.target.value })}
-              style={{ fontSize: 15, height: 40 }}
+              style={{ height: 50, fontSize: 16 }}
             />
           </Form.Item>
-
           <Form.Item
             name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please enter password!",
-              },
-            ]}
-            style={{ marginBottom: 45 }}
+            rules={[{ required: true, message: "Please enter password!" }]}
+            style={{ marginBottom: 50 }}
           >
             <Input.Password
               placeholder="Password"
               onChange={(e) => setUser({ ...user, password: e.target.value })}
-              style={{ fontSize: 15, height: 40 }}
+              style={{ height: 50, fontSize: 16 }}
             />
           </Form.Item>
-
           <Form.Item>
             <div class="row justify-content-md-center">
               <div class="col-md-auto">
@@ -90,26 +61,28 @@ export default function Signin({ open, onClose }) {
                   className="rts-btn btn-primary"
                   onClick={() => handleSubmit()}
                 >
-                  Log in
+                  Sign in
                 </button>
               </div>
             </div>
           </Form.Item>
         </Form>
-
-        <Link href="#" variant="h6" sx={{ float: "right", mt: 1 }}>
-          Forgot password?
-        </Link>
-      </DialogContent>
-
-      {/* Link */}
-      <DialogActions
-        sx={{ flexDirection: "column", alignItems: "stretch", px: 3, pb: 3 }}
-      >
-        <Typography variant="h5" align="center">
-          New to Pregnancy Care? <Link href="#">Sign up</Link>
-        </Typography>
-      </DialogActions>
-    </Dialog>
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Text>New to Pregnancy Care?</Text>
+        </div>
+      </div>
+      {/* Image */}
+      <div style={{ flex: 1, overflow: "hidden" }}>
+        <img
+          src={SigninBackground}
+          alt="Login background"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      </div>
+    </div>
   );
 }
