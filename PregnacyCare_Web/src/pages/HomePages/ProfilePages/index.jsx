@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { AppBar, Tabs, Tab, Box, Typography, Container } from "@mui/material";
 import AccountInfo from "../../../modules/HomeTemplate/Profile/AccountInfo";
 import FamilyInfo from "../../../modules/HomeTemplate/Profile/FamilyInfo";
@@ -35,7 +35,7 @@ export default function ProfilePages() {
             variant="fullWidth"
           >
             {tabLabels.map((label, index) => (
-              <Tab key={index} label={label} />
+              <Tab sx={{ fontSize: 13 }} key={index} label={label} />
             ))}
           </Tabs>
         </AppBar>

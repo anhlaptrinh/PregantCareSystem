@@ -1,21 +1,22 @@
 import React, { useState } from "react";
-import { Modal, Form, Input, Button, Typography } from "antd";
-import LoginBackground from "../../../assets/Login.jpg";
+import { Form, Input, Typography } from "antd";
+import LoginBackground from "../../../assets/LoginBackground.png";
 
 const { Title, Text } = Typography;
 
-export default function Login({ open, onClose }) {
+export default function Login() {
+  // State
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
+  // Handle
   const handleSubmit = () => {
     alert(user.email + " " + user.password);
   };
-
   return (
-    <Modal visible={open} onCancel={onClose} footer={null} width={800}>
+    <div>
       <div style={{ display: "flex", height: "100%" }}>
         {/* Image */}
         <div style={{ flex: 1, overflow: "hidden" }}>
@@ -30,12 +31,16 @@ export default function Login({ open, onClose }) {
           />
         </div>
         {/* Login form */}
-        <div style={{ flex: 1, padding: "40px" }}>
-          <Title level={1}>Login</Title>
+        <div style={{ flex: 1, padding: "20px" }}>
+          <div class="row justify-content-md-center">
+            <div class="col-md-auto mb-3">
+              <Title>Login</Title>
+            </div>
+          </div>
           <Text style={{ display: "block", marginBottom: "20px" }}>
             Enter your email to log in to your PregnancyCare account
           </Text>
-          <Form layout="vertical" onFinish={handleSubmit}>
+          <Form layout="vertical" onFinish={() => handleSubmit}>
             <Form.Item
               name="email"
               rules={[
@@ -79,6 +84,6 @@ export default function Login({ open, onClose }) {
           </div>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 }
