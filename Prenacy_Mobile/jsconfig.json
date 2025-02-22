@@ -1,0 +1,6 @@
+{
+    "compilerOptions": {
+      "jsx": "react-native",
+      // các tùy chọn khác
+    }
+  }
