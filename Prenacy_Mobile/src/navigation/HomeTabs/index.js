@@ -17,7 +17,7 @@ export default function HomeTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false, // Ẩn header của từng screen
+        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
@@ -33,6 +33,9 @@ export default function HomeTabs() {
               break;
             case "Expert":
               iconName = focused ? "medkit" : "medkit-outline";
+              break;
+            case "Tool":
+              iconName = focused ? "construct" : "construct-outline";
               break;
             case "More":
               iconName = focused
