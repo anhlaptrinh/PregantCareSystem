@@ -6,10 +6,10 @@ import { Ionicons } from "@expo/vector-icons";
 // Import các screen của bạn
 import HomeScreen from "../../screens/HomeScreen";
 import CommunityScreen from "../../screens/CommunityScreen";
-import CalendarScreen from "../../screens/CalendarScreen";
 import ExpertScreen from "../../screens/ExpertScreen";
 import MoreScreen from "../../screens/MoreScreen";
 import ToolScreen from "../../screens/ToolScreen";
+import CalendarTabs from "./CalendarTabs";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,7 +28,7 @@ export default function HomeTabs() {
             case "Community":
               iconName = focused ? "people" : "people-outline";
               break;
-            case "Calendar":
+            case "CalendarTabs":
               iconName = focused ? "calendar" : "calendar-outline";
               break;
             case "Expert":
@@ -56,7 +56,7 @@ export default function HomeTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Community" component={CommunityScreen} />
-      <Tab.Screen name="Calendar" component={CalendarScreen} />
+      <Tab.Screen name="CalendarTabs" component={CalendarTabs} />
       <Tab.Screen name="Expert" component={ExpertScreen} />
       <Tab.Screen name="Tool" component={ToolScreen} />
       <Tab.Screen name="More" component={MoreScreen} />
