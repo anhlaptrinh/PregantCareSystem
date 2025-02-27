@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Header from "../../components/Home/Header";
 
-export default function ProfileScreen() {
-  const [babyName, setBabyName] = useState("Hai");
-  const [dueDate, setDueDate] = useState("Jan 11, 2025");
-  const [gender, setGender] = useState("Boy");
+export default function MoreScreen() {
+  const [babyName, setBabyName] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [gender, setGender] = useState("");
   const [showGenderPicker, setShowGenderPicker] = useState(false);
 
   return (
     <ScrollView style={styles.container}>
+      <Header />
+      <Text style={styles.screenTitle}>More</Text>
+      
       {/* Pregnancy Section */}
       <View style={styles.childrenContainer}>
         <Text style={styles.sectionTitle}>My Pregnancy</Text>
@@ -50,95 +54,36 @@ export default function ProfileScreen() {
                   <Text style={styles.modalItem}>Girl</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { setGender("Other"); setShowGenderPicker(false); }}>
-                  <Text style={styles.modalItem}>Other</Text>
+                  <Text style={styles.modalItem}>I don't know yet</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </Modal>
         </View>
       </View>
+
+      {/* Save Button */}
+      <TouchableOpacity style={styles.saveButton}>
+        <Text style={styles.saveButtonText}>Save</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F8F8",
-  },
-  childrenContainer: {
-    padding: 20,
-    alignItems: "center", // Center content horizontally
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center", // Center the title text
-  },
-  childCard: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    width: "90%", // Ensure it stays centered properly
-  },
-  childImage: {
-    width: 60,
-    height: 60,
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-  caption: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginBottom: 5,
-    textAlign: "left", // Align caption text to the left
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#EAEAEA",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 10,
-    backgroundColor: "#F8F8F8",
-  },
-  leftAlign: {
-    textAlign: "left", // Align input text to the left
-  },
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between", // Ensure elements are aligned properly
-    borderWidth: 1,
-    borderColor: "#EAEAEA",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "#F8F8F8",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
-  },
-  
-  modalItem: {
-    fontSize: 18,
-    padding: 10,
-    textAlign: "center",
-    width: "100%",
-  }
+  container: { flex: 1, backgroundColor: "#fff", paddingHorizontal: 20 },
+  screenTitle: { fontSize: 22, fontWeight: "600", textAlign: "center", marginVertical: 15 },
+  sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 10 },
+  childrenContainer: { padding: 20, alignItems: "center" },
+  childCard: { backgroundColor: "white", padding: 15, borderRadius: 10, marginTop: 10, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 5, width: "90%" },
+  childImage: { width: 60, height: 60, alignSelf: "center", marginBottom: 10 },
+  caption: { fontSize: 14, fontWeight: "bold", marginBottom: 5, textAlign: "left" },
+  input: { borderWidth: 1, borderColor: "#EAEAEA", borderRadius: 5, padding: 10, fontSize: 16, marginBottom: 10, backgroundColor: "#F8F8F8" },
+  leftAlign: { textAlign: "left" },
+  inputRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 1, borderColor: "#EAEAEA", borderRadius: 5, padding: 10, marginBottom: 10, backgroundColor: "#F8F8F8" },
+  modalContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.5)" },
+  modalContent: { backgroundColor: "white", padding: 20, borderRadius: 10, width: "80%", alignItems: "center" },
+  modalItem: { fontSize: 18, padding: 10, textAlign: "center", width: "100%" },
+  saveButton: { backgroundColor: "#615EFC", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 20 },
+  saveButtonText: { color: "white", fontSize: 16, fontWeight: "bold" }
 });

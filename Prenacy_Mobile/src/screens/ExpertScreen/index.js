@@ -65,5 +65,4 @@ const styles = StyleSheet.create({
   articleCard: { width: 150, marginRight: 10 },
   articleImage: { width: "100%", height: 100, borderRadius: 10 },
   articleTitle: { fontSize: 14, fontWeight: "500", marginTop: 5, textAlign: "center" },
-  gridContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
 });
