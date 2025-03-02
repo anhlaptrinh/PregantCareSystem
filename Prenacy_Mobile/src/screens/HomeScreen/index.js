@@ -1,32 +1,42 @@
+// src/screens/PeriodTrackingScreen.js
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import Header from "../../components/Home/Header";
+import PeriodInfo from "../../components/Home/PeriodInfo";
+import CalendarSection from "../../components/Home/CalendarSection";
+import BlogList from "../../components/Home/BlogList";
+import ExpertList from "../../components/Home/ExpertList";
+import PackageList from "../../components/Home/PackageList";
+import ArticleList from "../../components/Home/ArticleList";
 
-export default function HomeScreen({ navigation }) {
+// Import các component con
+
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.tile}>Welcome back</Text>
-
-      {/* Nút điều hướng */}
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Text style={styles.buttonText}>View Menu</Text>
-      </Pressable>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollContainer}>
+        <Header />
+        <PeriodInfo />
+        <CalendarSection />
+        <BlogList />
+        <ExpertList />
+        <ArticleList />
+        <PackageList />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 70,
   },
-  tile: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 30,
+  scrollContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  bottomCardContainer: {
+    marginTop: 20,
+    marginBottom: 40,
   },
 });
