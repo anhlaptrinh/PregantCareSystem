@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Modal, Form, Input, Button, Typography } from "antd";
-import LoginBackground from "../../../assets/Login.jpg";
+/* eslint-disable no-unused-vars */
+import  { useState } from "react";
+import { Modal } from "antd";
 import { AppBar, Box, Tab, Tabs } from "@mui/material";
 import Login from "../Login";
 import Signin from "../Signin";
 
-const { Title, Text } = Typography;
 // Danh sách các tab trong phần Account Settings
 const tabLabels = ["Log in", "Sign in"];
 
+// eslint-disable-next-line react/prop-types
 export default function LoginSignin({ open, onClose }) {
   const [user, setUser] = useState({
     email: "",

@@ -1,5 +1,4 @@
 import { Container, Divider } from "@mui/material";
-import React from "react";
 import Advertisement from "../../../../component/Advertisement";
 import ViewGroup from "../../../../modules/HomeTemplate/Community/ViewGroup";
 import PostList from "../../../../modules/HomeTemplate/Community/PostList";
