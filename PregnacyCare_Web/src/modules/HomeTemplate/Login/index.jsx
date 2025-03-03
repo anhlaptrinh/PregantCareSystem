@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Typography } from "antd";
-import LoginBackground from "../../../assets/LoginBackground.png";
+import LoginBackground from "../../../assets/Login.png";
 
 const { Title, Text } = Typography;
 
