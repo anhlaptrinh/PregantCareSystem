@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePages from "../pages/HomePages";
-import AdminPages from "../pages/AdminPages";
 import HomeTemplate from "../modules/HomeTemplate";
 import AppointmentPages from "../pages/HomePages/AppointmentPages";
 import DueDateCalculatorPages from "../pages/DueDateCalculatorPages";
@@ -105,7 +104,11 @@ const routes = [
   },
   {
     path: "/admin",
-    element: <AdminPages />,
+    element: (
+      <MainLayout>
+          <Dashboard />
+      </MainLayout>
+  ),
   },
   {
     path: "/admin/dashboard",
