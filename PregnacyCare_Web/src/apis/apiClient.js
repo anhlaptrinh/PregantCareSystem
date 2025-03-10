@@ -11,7 +11,7 @@ const StorageEnum = {
 };
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_APP_BASE_API || 'http://localhost:5137',
+    baseURL: import.meta.env.VITE_APP_BASE_API || 'http://localhost:8080',
     timeout: 50000,
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
 });
