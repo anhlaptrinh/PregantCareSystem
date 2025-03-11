@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Form, Input, Typography } from "antd";
+import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
+import { loginUser } from "../../../apis/CallAPIUser";
 
 const { Title, Text } = Typography;
 
@@ -13,7 +14,13 @@ export default function Login() {
 
   // Handle
   const handleSubmit = () => {
-    alert(user.email + " " + user.password);
+    loginUser(user.email, user.password)
+      .then((response) => {
+        Message.success("Login successful");
+      })
+      .catch((error) => {
+        Message.error("Login failed, please check your email or password");
+      });
   };
   return (
     <div>

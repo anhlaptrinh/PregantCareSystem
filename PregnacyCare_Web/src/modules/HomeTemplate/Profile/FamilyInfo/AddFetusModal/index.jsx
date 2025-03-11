@@ -38,7 +38,7 @@ export default function AddFetusModal({ visible, onClose }) {
     setImageUrl(localImageUrl);
 
     // Upload file to Firebase Storage
-    const storageRef = ref(storage, `pregnancyCareImages/${file.name}`);
+    const storageRef = ref(storage, `pregnancyCareImages/fetus/3/${file.name}`);
     try {
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
