@@ -46,8 +46,8 @@ export default function LoginSignin({ open, onClose }) {
         </AppBar>
 
         {/* Nội dung cho từng tab*/}
-        {activeTab === 0 && <Login />}
-        {activeTab === 1 && <Signin />}
+        {activeTab === 0 && <Login onClose={onClose} />}
+        {activeTab === 1 && <Signin setActiveTab={setActiveTab} />}
       </Box>
     </Modal>
   );
