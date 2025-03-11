@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Form,
@@ -8,23 +8,36 @@ import {
   Button,
   Upload,
   Typography,
+  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { storage } from "../../../../../firebase/firebaseConfig";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import {
+  useDeleteFetus,
+  useUpdateFetus,
+} from "../../../../../apis/CallAPIFetus";
 
-export default function EditFetusModal({ visible, onClose, fetus }) {
-  const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+export default function EditFetusModal({
+  visible,
+  onClose,
+  fetus,
+  refreshFetusList,
+}) {
   const [editedFetus, setEditedFetus] = useState({
-    id: fetus?.id || "",
-    name: fetus?.name || "",
-    // Nếu fetus.conceptionDate là chuỗi, chuyển sang moment object
-    conceptionDate: fetus?.conceptionDate ? moment(fetus.conceptionDate) : null,
-    gender: fetus?.gender || "",
-    status: fetus?.status || false,
+    id: 0,
+    name: "",
+    dueDate: null,
+    gender: "",
+    image: null,
   });
+  const [form] = Form.useForm();
 
   // Disable dates before today or more than 280 days from today.
   const disabledDate = (current) => {
@@ -33,36 +46,81 @@ export default function EditFetusModal({ visible, onClose, fetus }) {
     return current && (current < today || current > maxDate);
   };
 
-  // Handle file selection and upload to Firebase Storage
-  const handleUpload = async ({ file }) => {
-    setFile(file);
-    const localImageUrl = URL.createObjectURL(file);
-    setImageUrl(localImageUrl);
-
-    // Upload file to Firebase Storage
-    const storageRef = ref(storage, `pregnancyCareImages/${file.name}`);
+  // Handle file selection and upload (ghi đè ảnh đã có trên Firebase)
+  const handleUpload = async () => {
+    if (!editedFetus.image) {
+      return;
+    }
+    // Lấy file từ editedFetus.image
+    const file = editedFetus.image.originFileObj
+      ? editedFetus.image.originFileObj
+      : editedFetus.image;
+    const storageRef = ref(
+      storage,
+      `pregnancyCareImages/fetus/${editedFetus.id}`
+    );
     try {
       await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      console.log("File available at", downloadURL);
-      // Optionally, lưu downloadURL vào state hoặc gửi cùng form values
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
-  // Handle form submission
-  const handleSubmit = () => {
-    alert(`Name: ${editedFetus.name}`);
-    alert(
-      `Conception Date: ${
-        editedFetus.conceptionDate
-          ? editedFetus.conceptionDate.format("YYYY-MM-DD")
-          : ""
-      }`
-    );
-    alert(`Gender: ${editedFetus.gender}`);
+  // Handle form submission: gọi PUT API cập nhật fetus và nếu có ảnh mới thì upload
+  const handleSubmit = async (values) => {
+    const updatedFetus = { ...editedFetus, ...values };
+    // Nếu dueDate là moment object, chuyển thành ISO string
+    if (updatedFetus.dueDate && moment.isMoment(updatedFetus.dueDate)) {
+      updatedFetus.dueDate = updatedFetus.dueDate.toISOString();
+    }
+    try {
+      const res = await useUpdateFetus(updatedFetus.id, updatedFetus);
+      if (updatedFetus.image) {
+        await handleUpload();
+      }
+      if (res.code === 200) message.success("Fetus updated successfully");
+      await refreshFetusList();
+      onClose();
+    } catch (error) {
+      console.error("Error updating fetus:", error);
+      message.error("Error updating fetus: " + error.message);
+    }
   };
+
+  // Handle deletion (bao gồm xóa ảnh trên Firebase Storage)
+  const handleDelete = async () => {
+    try {
+      const imageRef = ref(
+        storage,
+        `pregnancyCareImages/fetus/${editedFetus.id}`
+      );
+      await deleteObject(imageRef);
+      const res = await useDeleteFetus(editedFetus.id);
+      if (res.code === 200) {
+        message.success("Deleted fetus successfully");
+        await refreshFetusList();
+        onClose();
+      }
+    } catch (err) {
+      console.error("Error deleting fetus or image:", err);
+      message.error("Error deleting fetus or image: " + err.message);
+    }
+  };
+
+  // Khi mở modal, khởi tạo dữ liệu từ fetus truyền vào
+  useEffect(() => {
+    if (fetus) {
+      const newFetus = {
+        id: fetus.idFetus,
+        name: fetus.nameFetus || "",
+        dueDate: fetus.dateFetus ? moment(fetus.dateFetus) : null,
+        gender: fetus.genderFetus || "",
+        image: null, // khởi tạo null, chỉ cập nhật nếu người dùng chọn ảnh mới
+      };
+      setEditedFetus(newFetus);
+      form.setFieldsValue(newFetus);
+    }
+  }, [fetus, form]);
 
   return (
     <Modal
@@ -73,60 +131,90 @@ export default function EditFetusModal({ visible, onClose, fetus }) {
     >
       <div>
         <Typography style={{ color: "#615EFC", fontSize: 35, fontWeight: 500 }}>
-          My pregnancy
+          Edit Pregnancy Info
         </Typography>
-        <Form layout="vertical">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          onFinishFailed={(errorInfo) =>
+            console.log("Validation Failed:", errorInfo)
+          }
+        >
           <div className="row">
             <div className="col">
               <span>A photo helps you personalize yourself</span>
             </div>
             <div className="col-3">
-              <Upload
-                showUploadList={false}
-                beforeUpload={() => false} // Prevent auto upload by Ant Design
-                onChange={(value) => handleUpload(value)}
+              <Form.Item
+                name="image"
+                valuePropName="file"
+                getValueFromEvent={(e) => e && e.file}
+                rules={[
+                  { required: false },
+                  {
+                    validator: (_, value) => {
+                      if (!value) return Promise.resolve();
+                      if (
+                        value &&
+                        value.type &&
+                        value.type.startsWith("image/")
+                      ) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error("File must be an image"));
+                    },
+                  },
+                ]}
               >
-                <Button icon={<UploadOutlined />}>Update</Button>
-              </Upload>
+                <Upload
+                  showUploadList={false}
+                  beforeUpload={() => false} // Ngăn upload tự động
+                  onChange={(info) => {
+                    const file = info.file;
+                    form.setFieldsValue({ image: file });
+                    // Cập nhật state editedFetus với file ảnh mới
+                    setEditedFetus((prev) => ({ ...prev, image: file }));
+                  }}
+                >
+                  <Button icon={<UploadOutlined />}>Update</Button>
+                </Upload>
+              </Form.Item>
             </div>
           </div>
 
-          {/* Conception Date */}
-          <Form.Item label="Due date" name="dueDate">
+          {/* Due date */}
+          <Form.Item
+            label="Due date"
+            name="dueDate"
+            rules={[{ required: true, message: "Due date is required" }]}
+          >
             <DatePicker
               size="large"
               style={{ width: "100%" }}
               disabledDate={disabledDate}
-              value={editedFetus.conceptionDate}
-              onChange={(value) =>
-                setEditedFetus({ ...editedFetus, conceptionDate: value })
-              }
             />
           </Form.Item>
 
-          {/* Name */}
+          {/* Baby's name */}
           <Form.Item
             label="Baby's name"
-            name="babyName"
-            rules={[{ required: true, message: "Baby's name is required" }]}
+            name="name"
+            rules={[
+              { required: true, message: "Baby's name is required" },
+              { min: 2, message: "Name must be at least 2 characters" },
+            ]}
           >
-            <Input
-              style={{ height: "38px" }}
-              value={editedFetus.name}
-              onChange={(e) =>
-                setEditedFetus({ ...editedFetus, name: e.target.value })
-              }
-            />
+            <Input style={{ height: "38px" }} />
           </Form.Item>
 
-          {/* Gender */}
-          <Form.Item label="Baby's sex" name="babySex">
-            <Radio.Group
-              value={editedFetus.gender}
-              onChange={(e) =>
-                setEditedFetus({ ...editedFetus, gender: e.target.value })
-              }
-            >
+          {/* Baby's sex */}
+          <Form.Item
+            label="Baby's sex"
+            name="gender"
+            rules={[{ required: true, message: "Gender is required" }]}
+          >
+            <Radio.Group>
               <Radio value="girl">Girl</Radio>
               <Radio value="boy">Boy</Radio>
               <Radio value="dontKnow">Don't know</Radio>
@@ -134,15 +222,22 @@ export default function EditFetusModal({ visible, onClose, fetus }) {
           </Form.Item>
 
           <div style={{ marginTop: "16px" }}>
-            <div className="row justify-content-md-center">
+            <div className="row justify-content-md-center mb-4">
               <div className="col-md-auto">
-                <button
-                  type="submit"
+                <Button
+                  type="primary"
+                  htmlType="submit"
                   className="rts-btn btn-primary"
-                  onClick={handleSubmit}
                 >
                   Save
-                </button>
+                </Button>
+              </div>
+            </div>
+            <div className="row justify-content-md-center">
+              <div className="col-md-auto">
+                <a onClick={handleDelete} className="text-decoration-underline">
+                  Remove from profile
+                </a>
               </div>
             </div>
           </div>

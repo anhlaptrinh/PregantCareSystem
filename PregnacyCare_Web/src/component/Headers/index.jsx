@@ -34,6 +34,7 @@ export default function Headers() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
     <header className={`header--sticky ${isSticky ? "sticky" : ""}`}>
       <div className="container-full-header">
