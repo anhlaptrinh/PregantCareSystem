@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
-import { loginUser } from "../../../apis/CallAPIUser";
+import { useLogin } from "../../../apis/CallAPIUser";
+import { error } from "jquery";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 export default function Login() {
+  const navigate = useNavigate();
   // State
   const [user, setUser] = useState({
     email: "",
@@ -14,12 +17,19 @@ export default function Login() {
 
   // Handle
   const handleSubmit = () => {
-    loginUser(user.email, user.password)
+    useLogin(user.email, user.password)
       .then((response) => {
         Message.success("Login successful");
+        console.log(response);
+        const storedData = localStorage.getItem("USER_TOKEN");
+        if (storedData) {
+          const user = JSON.parse(storedData);
+          navigate("/");
+        }
       })
-      .catch((error) => {
-        Message.error("Login failed, please check your email or password");
+      .catch(() => {
+        Message.error("Login failed, please check your email or password ");
+        console.log(error);
       });
   };
   return (

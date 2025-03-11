@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Form,
@@ -8,54 +8,84 @@ import {
   Button,
   Upload,
   Typography,
+  message,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { storage } from "../../../../../firebase/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useCreateFetus } from "../../../../../apis/CallAPIFetus";
 
-export default function AddFetusModal({ visible, onClose }) {
-  const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
   const [fetus, setFetus] = useState({
+    id: 0,
     name: "",
-    conceptionDate: null,
+    dueDate: null,
     gender: "",
-    status: false,
+    email: "",
+    image: null,
   });
+  const [form] = Form.useForm();
 
   // Disable dates before today or more than 280 days from today.
   const disabledDate = (current) => {
     const today = moment().startOf("day");
-    const maxDate = moment().add(280, "days"); // Limit: 280 days from today (adjust as needed)
+    const maxDate = moment().add(280, "days");
     return current && (current < today || current > maxDate);
   };
 
   // Handle file selection and upload to Firebase Storage
-  const handleUpload = async ({ file }) => {
-    setFile(file);
-    const localImageUrl = URL.createObjectURL(file);
-    setImageUrl(localImageUrl);
+  const handleUpload = async (id) => {
+    if (!fetus.image) {
+      console.error("No image file selected");
+      return;
+    }
+    // Lấy file gốc từ đối tượng file được chọn
+    const file = fetus.image.originFileObj
+      ? fetus.image.originFileObj
+      : fetus.image;
 
-    // Upload file to Firebase Storage
-    const storageRef = ref(storage, `pregnancyCareImages/fetus/3/${file.name}`);
+    // Upload file lên Firebase Storage
+    const storageRef = ref(storage, `pregnancyCareImages/fetus/${id}`);
     try {
       await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      console.log("File available at", downloadURL);
-      // Optionally, you might want to store the downloadURL in form values
-      // form.setFieldsValue({ imageUrl: downloadURL });
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
-  // Handle form submission
-  const handleSubmit = () => {
-    alert(fetus.conceptionDate);
-    alert(fetus.name);
-    alert(fetus.gender);
+  // Handle form submission sau khi các trường đã được validate thành công
+  const handleSubmit = async () => {
+    try {
+      const res = await useCreateFetus(fetus);
+      if (res.code === 201) {
+        if (fetus.image) {
+          await handleUpload(res.data.idFetus);
+        }
+        setFetus((prev) => ({
+          ...prev,
+          name: "",
+          dueDate: null,
+          gender: "",
+          image: null,
+        }));
+        message.success("Fetus created successfully");
+        await refreshFetusList();
+        onClose();
+      }
+    } catch (error) {
+      message.error("Error creating fetus: " + error.message);
+    }
   };
+
+  // Lấy email từ localStorage và gán vào state fetus.
+  useEffect(() => {
+    const storedData = localStorage.getItem("USER_TOKEN");
+    if (storedData) {
+      const user = JSON.parse(storedData);
+      setFetus((prev) => ({ ...prev, email: user.email }));
+    }
+  }, []);
 
   return (
     <Modal
@@ -68,35 +98,77 @@ export default function AddFetusModal({ visible, onClose }) {
         <Typography style={{ color: "#615EFC", fontSize: 35, fontWeight: 500 }}>
           My pregnancy
         </Typography>
-        <Form layout="vertical">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          onFinishFailed={(errorInfo) => {
+            console.log("Validation Failed:", errorInfo);
+          }}
+        >
           <div className="row">
             <div className="col">
               <span>A photo helps you personalize yourself</span>
             </div>
             <div className="col-3">
-              <Upload
-                showUploadList={false}
-                beforeUpload={() => false} // Prevent auto upload by Ant Design
-                onChange={(value) => handleUpload(value)}
+              <Form.Item
+                name="image"
+                valuePropName="file"
+                getValueFromEvent={(e) => {
+                  return e && e.file;
+                }}
+                rules={[
+                  { required: true, message: "Image is required" },
+                  {
+                    validator: (_, value) => {
+                      if (
+                        value &&
+                        value.type &&
+                        value.type.startsWith("image/")
+                      ) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error("File must be an image"));
+                    },
+                  },
+                ]}
               >
-                <Button icon={<UploadOutlined />}>Update</Button>
-              </Upload>
+                <Upload
+                  showUploadList={false}
+                  beforeUpload={() => false} // Ngăn upload tự động
+                  onChange={(info) => {
+                    const file = info.file;
+                    // Đồng bộ giá trị file vào Form
+                    form.setFieldsValue({ image: file });
+                    setFetus({ ...fetus, image: file });
+                  }}
+                >
+                  <Button icon={<UploadOutlined />}>Update</Button>
+                </Upload>
+              </Form.Item>
             </div>
           </div>
 
-          <Form.Item label="Due date" name="dueDate">
+          <Form.Item
+            label="Due date"
+            name="dueDate"
+            rules={[{ required: true, message: "Due date is required" }]}
+          >
             <DatePicker
               size="large"
               style={{ width: "100%" }}
               disabledDate={disabledDate}
-              onChange={(e) => setFetus({ ...fetus, conceptionDate: e })}
+              onChange={(date) => setFetus({ ...fetus, dueDate: date })}
             />
           </Form.Item>
 
           <Form.Item
             label="Baby's name"
             name="babyName"
-            rules={[{ required: true, message: "Baby's name is required" }]}
+            rules={[
+              { required: true, message: "Baby's name is required" },
+              { min: 2, message: "Name must be at least 2 characters" },
+            ]}
           >
             <Input
               style={{ height: "38px" }}
@@ -104,7 +176,11 @@ export default function AddFetusModal({ visible, onClose }) {
             />
           </Form.Item>
 
-          <Form.Item label="Baby's sex" name="babySex">
+          <Form.Item
+            label="Baby's sex"
+            name="babySex"
+            rules={[{ required: true, message: "Gender is required" }]}
+          >
             <Radio.Group
               onChange={(e) => setFetus({ ...fetus, gender: e.target.value })}
             >
@@ -124,13 +200,13 @@ export default function AddFetusModal({ visible, onClose }) {
           <div style={{ marginTop: "16px" }}>
             <div className="row justify-content-md-center">
               <div className="col-md-auto">
-                <button
-                  type="submit"
+                <Button
+                  type="primary"
+                  htmlType="submit"
                   className="rts-btn btn-primary"
-                  onClick={() => handleSubmit()}
                 >
                   Add to my family
-                </button>
+                </Button>
               </div>
             </div>
           </div>

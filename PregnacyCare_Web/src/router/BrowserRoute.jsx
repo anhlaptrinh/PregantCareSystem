@@ -63,23 +63,23 @@ const routes = [
       {
         path: "/our-expert",
         element: <OurExpert />,
-    },
-    {
+      },
+      {
         path: "/article",
         element: <ArticlePage />,
-    },
-    {
+      },
+      {
         path: "/forum",
         element: <QAForum />,
-    },
-    {
+      },
+      {
         path: "/forum/:id",
         element: <ForumPostDetail />,
-    },
-    {
+      },
+      {
         path: "/ovulation",
         element: <Ovulation />,
-    },
+      },
     ],
   },
   {
@@ -106,42 +106,42 @@ const routes = [
     path: "/admin",
     element: (
       <MainLayout>
-          <Dashboard />
+        <Dashboard />
       </MainLayout>
-  ),
+    ),
   },
   {
     path: "/admin/dashboard",
     element: (
-        <MainLayout>
-            <Dashboard />
-        </MainLayout>
+      <MainLayout>
+        <Dashboard />
+      </MainLayout>
     ),
-},
-{
+  },
+  {
     path: "/admin/blog",
     element: (
-        <MainLayout>
-            <BlogManagement />
-        </MainLayout>
+      <MainLayout>
+        <BlogManagement />
+      </MainLayout>
     ),
-},
-{
+  },
+  {
     path: "/admin/forum",
     element: (
-        <MainLayout>
-            <ForumAdmin />
-        </MainLayout>
+      <MainLayout>
+        <ForumAdmin />
+      </MainLayout>
     ),
-},
-{
+  },
+  {
     path: "/admin/user",
     element: (
-        <MainLayout>
-            <UserManagement />
-        </MainLayout>
+      <MainLayout>
+        <UserManagement />
+      </MainLayout>
     ),
-},
+  },
 ];
 
 export const router = createBrowserRouter(routes);

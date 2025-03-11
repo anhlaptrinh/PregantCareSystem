@@ -7,7 +7,7 @@ import * as jwtDecode from "jwt-decode";
  * @param {string} password - Mật khẩu của người dùng.
  * @returns {Promise} - Promise trả về kết quả từ API.
  */
-export const loginUser = (email, password) => {
+export const useLogin = (email, password) => {
   return APIClient.post({
     url: "/api/authentication/login",
     // Vì API sử dụng @RequestParam nên truyền dữ liệu qua params
@@ -21,7 +21,7 @@ export const loginUser = (email, password) => {
       try {
         decoded = jwtDecode(token);
       } catch (error) {
-        console.error("Lỗi giải mã token:", error);
+        console.error("Error token: ", error);
       }
       // Lưu token, email và role (nếu có) vào localStorage
       const userData = {

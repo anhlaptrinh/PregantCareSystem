@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   List,
@@ -9,41 +10,68 @@ import {
   Button,
   Divider,
 } from "@mui/material";
+import { message as Message } from "antd";
 import { Add, Edit, CalendarToday } from "@mui/icons-material";
 import PregnantAvatar from "../../../../assets/PregnantAvatar.jpg";
-import { useState } from "react";
+import moment from "moment";
 import AddFetusModal from "./AddFetusModal";
 import EditFetusModal from "./EditFetusModal";
+import { useGetFetusList } from "../../../../apis/CallAPIFetus";
+import { ref, getDownloadURL } from "firebase/storage";
+import { storage } from "../../../../firebase/firebaseConfig";
 
 export default function FamilyInfo() {
-  // Lưu danh sách pregnancies trong state để có thể cập nhật khi cần
-  const [pregnancies, setPregnancies] = useState([
-    {
-      id: 1,
-      name: "My pregnancy",
-      conceptionDate: "October 17, 2025",
-      gender: "girl",
-      status: false,
-    },
-    {
-      id: 2,
-      name: "My pregnancy 2",
-      conceptionDate: "October 17, 2025",
-      gender: "boy",
-      status: false,
-    },
-  ]);
+  // Lưu danh sách fetus trong state để có thể cập nhật khi cần
+  const [fetusList, setFetusList] = useState([]);
 
   // State để quản lý modal Add và Edit
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedFetus, setSelectedFetus] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
   // Khi bấm nút edit, lưu fetus được chọn vào state và mở modal edit
   const handleEditClick = (fetus) => {
-    setSelectedFetus(fetus);
-    setVisibleEdit(true);
+    if (fetus) {
+      setSelectedFetus(fetus);
+      setVisibleEdit(true);
+    }
   };
+
+  const fetchFetusList = async () => {
+    try {
+      const res = await useGetFetusList();
+      if (res.code === 200 && res.data) {
+        const fetusWithImages = await Promise.all(
+          res.data.map(async (fetus) => {
+            try {
+              const imageRef = ref(
+                storage,
+                `pregnancyCareImages/fetus/${fetus.idFetus}`
+              );
+              const url = await getDownloadURL(imageRef);
+              return { ...fetus, imageUrl: url };
+            } catch (error) {
+              console.error(
+                "Error retrieving image for fetus id",
+                fetus.idFetus,
+                error
+              );
+              // Nếu không lấy được ảnh, trả về ảnh mặc định
+              return { ...fetus, imageUrl: PregnantAvatar };
+            }
+          })
+        );
+        setFetusList(fetusWithImages);
+      }
+    } catch (err) {
+      console.error("Error fetching fetus list:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchFetusList();
+  }, []);
 
   return (
     <div>
@@ -63,19 +91,19 @@ export default function FamilyInfo() {
       <Divider />
 
       <List>
-        {pregnancies.map((fetus) => (
-          <ListItem key={fetus.id} sx={{ width: 500 }}>
+        {fetusList.map((fetus) => (
+          <ListItem key={fetus.idFetus} sx={{ width: 500 }}>
             {/* Avatar */}
             <ListItemAvatar>
               <Avatar sx={{ width: 60, height: 60, marginRight: 2 }}>
-                <img src={PregnantAvatar} alt="Avatar of Pregnant" />
+                <img src={fetus.imageUrl} alt="Avatar of Pregnant" />
               </Avatar>
             </ListItemAvatar>
             {/* Text */}
             <ListItemText
               primary={
                 <Typography variant="h5" gutterBottom>
-                  {fetus.name}
+                  {fetus.nameFetus}
                 </Typography>
               }
               secondary={
@@ -85,7 +113,7 @@ export default function FamilyInfo() {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   <CalendarToday sx={{ fontSize: 18, mr: 1 }} />
-                  {fetus.conceptionDate}
+                  {moment(fetus.dateFetus).format("MMMM D, YYYY")}
                 </Typography>
               }
             />
@@ -109,6 +137,7 @@ export default function FamilyInfo() {
             setSelectedFetus(null);
           }}
           fetus={selectedFetus}
+          refreshFetusList={fetchFetusList}
         />
       )}
 
@@ -123,6 +152,7 @@ export default function FamilyInfo() {
       <AddFetusModal
         visible={visibleAdd}
         onClose={() => setVisibleAdd(false)}
+        refreshFetusList={fetchFetusList}
       />
     </div>
   );
