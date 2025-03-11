@@ -1,5 +1,5 @@
 import APIClient from "../apiClient";
-import * as jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 /**
  * Hàm loginUser gọi API đăng nhập từ Spring Boot.
@@ -27,7 +27,7 @@ export const useLogin = (email, password) => {
       const userData = {
         accessToken: token,
         email: email,
-        role: decoded.role || null,
+        role: decoded.scope || null,
       };
       localStorage.setItem("USER_TOKEN", JSON.stringify(userData));
     }
