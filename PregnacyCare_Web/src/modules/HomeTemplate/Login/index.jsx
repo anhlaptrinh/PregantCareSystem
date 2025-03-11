@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-export default function Login() {
+export default function Login({ onClose }) {
   const navigate = useNavigate();
   // State
   const [user, setUser] = useState({
@@ -18,12 +18,12 @@ export default function Login() {
   // Handle
   const handleSubmit = () => {
     useLogin(user.email, user.password)
-      .then((response) => {
+      .then(() => {
         Message.success("Login successful");
-        console.log(response);
         const storedData = localStorage.getItem("USER_TOKEN");
         if (storedData) {
           const user = JSON.parse(storedData);
+          onClose();
           navigate("/");
         }
       })
@@ -57,7 +57,7 @@ export default function Login() {
           <Text style={{ display: "block", marginBottom: "20px" }}>
             Enter your email to log in to your PregnancyCare account
           </Text>
-          <Form layout="vertical" onFinish={() => handleSubmit}>
+          <Form layout="vertical" onFinish={handleSubmit}>
             <Form.Item
               name="email"
               rules={[
@@ -86,10 +86,7 @@ export default function Login() {
             <Form.Item>
               <div class="row justify-content-md-center">
                 <div class="col-md-auto">
-                  <button
-                    className="rts-btn btn-primary"
-                    onClick={() => handleSubmit()}
-                  >
+                  <button className="rts-btn btn-primary" type="submit">
                     Log in
                   </button>
                 </div>

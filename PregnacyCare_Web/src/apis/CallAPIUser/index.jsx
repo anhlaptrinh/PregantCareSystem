@@ -34,3 +34,21 @@ export const useLogin = (email, password) => {
     return response;
   });
 };
+
+/**
+ * Đăng ký người dùng mới
+ * @param {string} email
+ * @param {string} password
+ * @param {string} fullName -
+ * @returns {Promise} - Promise chứa thông tin đăng ký thành công
+ */
+export const useRegister = (email, password, fullName) => {
+  return APIClient.post({
+    url: "/api/users/register",
+    data: { email, password, fullName },
+  }).then((res) => {
+    if (res.code === 200) {
+      return res;
+    } else throw new Error(res.message || "Failed sign in");
+  });
+};

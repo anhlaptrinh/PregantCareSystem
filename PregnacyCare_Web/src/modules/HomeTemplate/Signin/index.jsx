@@ -1,34 +1,46 @@
 import React, { useState } from "react";
-import { Form, Input, Typography } from "antd";
+import { Form, Input, Typography, message as Message } from "antd";
 import SigninBackground from "../../../assets/Signin.jpg";
+import { useRegister } from "../../../apis/CallAPIUser";
 
 const { Title, Text } = Typography;
 
-export default function Signin() {
-  // State
+export default function Signin({ setActiveTab }) {
   const [user, setUser] = useState({
     email: "",
     password: "",
+    fullname: "",
   });
 
-  // Handle
+  // Handle existing users
+
+  // Xử lý đăng ký
   const handleSubmit = () => {
-    alert(user.email + " " + user.password);
+    useRegister(user.email, user.password, user.fullname)
+      .then((res) => {
+        Message.success("Sign in successfully");
+        console.log(res.data);
+        setTimeout(() => {
+          setActiveTab(0);
+        }, 1000);
+      })
+      .catch((error) => {
+        Message.error("Failed sign in" + error.message);
+      });
   };
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
-      {/* Login form */}
       <div style={{ flex: 1, padding: "20px" }}>
-        <div class="row justify-content-md-center">
-          <div class="col-md-auto mb-3">
+        <div className="row justify-content-md-center">
+          <div className="col-md-auto mb-3">
             <Title>Sign in</Title>
           </div>
         </div>
         <Text style={{ display: "block", marginBottom: "20px" }}>
           Enter your email to become a new PregnancyCare member
         </Text>
-        <Form layout="vertical" onFinish={() => handleSubmit}>
+        <Form layout="vertical" onFinish={handleSubmit}>
           <Form.Item
             name="email"
             rules={[
@@ -55,12 +67,9 @@ export default function Signin() {
             />
           </Form.Item>
           <Form.Item>
-            <div class="row justify-content-md-center">
-              <div class="col-md-auto">
-                <button
-                  className="rts-btn btn-primary"
-                  onClick={() => handleSubmit()}
-                >
+            <div className="row justify-content-md-center">
+              <div className="col-md-auto">
+                <button className="rts-btn btn-primary" type="submit">
                   Sign in
                 </button>
               </div>
@@ -68,19 +77,14 @@ export default function Signin() {
           </Form.Item>
         </Form>
         <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Text>New to Pregnancy Care?</Text>
+          <Text>Already have an account? Log in now!</Text>
         </div>
       </div>
-      {/* Image */}
       <div style={{ flex: 1, overflow: "hidden" }}>
         <img
           src={SigninBackground}
-          alt="Login background"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
+          alt="Signin background"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </div>
     </div>
