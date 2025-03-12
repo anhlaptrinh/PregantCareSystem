@@ -1,38 +1,45 @@
 import logo from "../../assets/images/logo/logo.svg";
-// import logoduoi from '../../assets/images/banner/icons/arrow--up-right.svg'
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import Login from "../../modules/HomeTemplate/Login";
 import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
+import { Drawer, Avatar, Button, Divider, Typography } from "antd";
+import StyledButton from "../StyleButton";
+import avatar from "../../assets/PregnantAvatar.jpg";
+
+const { Title, Text } = Typography;
 
 export default function Headers() {
   const [isSticky, setIsSticky] = useState(false);
   const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
-  // Handle open and close Login modal
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("USER_TOKEN");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleOpenDrawer = () => setDrawerOpen(true);
+  const handleCloseDrawer = () => setDrawerOpen(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("USER_TOKEN");
+    setUser(null);
+    setDrawerOpen(false);
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 150) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
+      setIsSticky(window.scrollY > 150);
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    // Clean up the event listener on unmount
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -46,57 +53,18 @@ export default function Headers() {
                   <img src={logo} alt="logo_area" />
                 </a>
                 <div className="nav-area">
-                  <ul className>
+                  <ul>
                     <li className="main-nav">
                       <a href="/">Home</a>
                     </li>
-                    <li className="main-nav has-dropdown">
+                    <li className="main-nav">
                       <a href="#">Page</a>
                     </li>
-                    <li className="main-nav has-dropdown">
+                    <li className="main-nav">
                       <a href="#">Service</a>
-                      <ul className="submenu parent-nav">
-                        <li>
-                          <a href="blog.html">Blog Grid</a>
-                        </li>
-                        <li>
-                          <a href="blog-list.html">Blog List</a>
-                        </li>
-                        <li>
-                          <a href="blog-details.html">Blog Details</a>
-                        </li>
-                      </ul>
                     </li>
-                    <li className="main-nav has-dropdown">
-                      <a href="doctors-one.html">Our Expert</a>
-                      <ul className="submenu parent-nav">
-                        <li>
-                          <a href="doctors-one.html">Our Doctors</a>
-                        </li>
-                        <li>
-                          <a href="doctors-two.html">Our Doctors v2</a>
-                        </li>
-                        <li>
-                          <a href="doctor-details.html">Doctors Details</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li className="main-nav has-dropdown">
+                    <li className="main-nav">
                       <a href="#">Community</a>
-                      <ul className="submenu parent-nav">
-                        <li>
-                          <a href="">Home</a>
-                        </li>
-                        <li>
-                          <a href="">Bookmarks</a>
-                        </li>
-                        <li>
-                          <a href="">My Groups</a>
-                        </li>
-                        <li>
-                          <a href="">Activity</a>
-                        </li>
-                      </ul>
                     </li>
                     <li className="main-nav">
                       <a href="contactus.html">Contact</a>
@@ -104,6 +72,7 @@ export default function Headers() {
                   </ul>
                 </div>
               </div>
+
               <div className="header-right">
                 <div className="input-area">
                   <input id="myInput" type="text" placeholder="Search..." />
@@ -113,28 +82,63 @@ export default function Headers() {
                   />
                 </div>
 
-                <button
-                  onClick={() => handleOpen()}
-                  className="rts-btn btn-primary"
-                >
-                  Login/Signin{" "}
-                </button>
-                {/* Gọi component Login và truyền props open, onClose */}
-                <LoginSignin open={open} onClose={handleClose} />
+                {user ? (
+                  <Avatar
+                    src={avatar}
+                    size={40}
+                    style={{ cursor: "pointer" }}
+                    onClick={handleOpenDrawer}
+                  />
+                ) : (
+                  <button onClick={handleOpen} className="rts-btn btn-primary">
+                    Login/Signin
+                  </button>
+                )}
 
-                <div className="menu-btn" id="menu-btn">
-                  <svg
-                    width={20}
-                    height={16}
-                    viewBox="0 0 20 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                <LoginSignin
+                  open={open}
+                  onClose={() => {
+                    handleClose();
+                    const storedUser = localStorage.getItem("USER_TOKEN");
+                    if (storedUser) setUser(JSON.parse(storedUser));
+                  }}
+                />
+
+                {/* Drawer Menu với Avatar lớn */}
+                <Drawer
+                  placement="right"
+                  closable={true}
+                  onClose={handleCloseDrawer}
+                  open={drawerOpen}
+                >
+                  <div style={{ textAlign: "center", padding: "20px 0" }}>
+                    <Avatar
+                      src={avatar}
+                      size={80}
+                      style={{ marginBottom: 10 }}
+                    />
+                    <Typography style={{ fontSize: 20, color: "#615EFC" }}>
+                      {user?.email || "User"}
+                    </Typography>
+                  </div>
+                  <Divider />
+                  <StyledButton className="mb-4 p-5 fs-3">
+                    My Family Info
+                  </StyledButton>
+                  <StyledButton className="mb-4 p-5 fs-3">
+                    Personal Info
+                  </StyledButton>
+                  <StyledButton className="mb-4 p-5 fs-3">
+                    Community Info
+                  </StyledButton>
+                  <StyledButton
+                    className="mb-4 p-5 fs-3"
+                    type="danger"
+                    onClick={handleLogout}
                   >
-                    <rect y={14} width={20} height={2} fill="#1F1F25" />
-                    <rect y={7} width={20} height={2} fill="#1F1F25" />
-                    <rect width={20} height={2} fill="#1F1F25" />
-                  </svg>
-                </div>
+                    Log out
+                  </StyledButton>
+                </Drawer>
               </div>
             </div>
           </div>

@@ -13,7 +13,7 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { storage } from "../../../../../firebase/firebaseConfig";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 import { useCreateFetus } from "../../../../../apis/CallAPIFetus";
 
 export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
