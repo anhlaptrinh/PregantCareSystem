@@ -122,16 +122,22 @@ export default function Headers() {
                     </Typography>
                   </div>
                   <Divider />
-                  <StyledButton className="mb-4 p-5 fs-3">
+                  <StyledButton
+                    to="/profile"
+                    className="mb-4 p-5 fs-3"
+                    onCloseDrawer={handleCloseDrawer}
+                  >
                     My Family Info
                   </StyledButton>
-                  <StyledButton className="mb-4 p-5 fs-3">
+                  <StyledButton
+                    to="/profile"
+                    className="mb-4 p-5 fs-3"
+                    onCloseDrawer={handleCloseDrawer}
+                  >
                     Personal Info
                   </StyledButton>
-                  <StyledButton className="mb-4 p-5 fs-3">
-                    Community Info
-                  </StyledButton>
                   <StyledButton
+                    to="/"
                     className="mb-4 p-5 fs-3"
                     type="danger"
                     onClick={handleLogout}

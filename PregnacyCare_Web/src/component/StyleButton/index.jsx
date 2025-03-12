@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "antd";
 import { BorderColor, Opacity } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 // Định nghĩa màu sắc cho các loại button
 const buttonStyles = {
@@ -29,11 +30,31 @@ const buttonStyles = {
  * @param {string} className - Class của Bootstrap (btn-primary, btn-outline, ...)
  * @param {string} children - Nội dung nút
  */
-const StyledButton = ({ className, type = "default", onClick, children }) => {
+const StyledButton = ({
+  className,
+  type = "default",
+  onClick,
+  children,
+  to,
+  onCloseDrawer,
+}) => {
+  const navigate = useNavigate();
   const baseStyle =
     type === "danger" ? buttonStyles.danger : buttonStyles.default;
   const hoverStyle =
     type === "danger" ? buttonStyles.dangerHover : buttonStyles.hover;
+
+  const handleClick = () => {
+    if (to) {
+      navigate(to); // Chuyển hướng nếu có đường dẫn
+    }
+    if (onClick) {
+      onClick(); // Gọi hàm onClick nếu có
+    }
+    if (onCloseDrawer) {
+      onCloseDrawer(); // Tắt Drawer sau khi nhấn
+    }
+  };
 
   return (
     <Button
@@ -46,7 +67,7 @@ const StyledButton = ({ className, type = "default", onClick, children }) => {
       onMouseLeave={(e) =>
         (e.target.style.backgroundColor = baseStyle.backgroundColor)
       }
-      onClick={onClick}
+      onClick={handleClick}
     >
       {children}
     </Button>

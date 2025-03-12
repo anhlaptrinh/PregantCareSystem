@@ -36,16 +36,7 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
 
   // Handle file selection and upload to Firebase Storage
   const handleUpload = async (id) => {
-    if (!fetus.image) {
-      console.error("No image file selected");
-      return;
-    }
-    // Lấy file gốc từ đối tượng file được chọn
-    const file = fetus.image.originFileObj
-      ? fetus.image.originFileObj
-      : fetus.image;
-
-    // Upload file lên Firebase Storage
+    const file = fetus.image;
     const storageRef = ref(storage, `pregnancyCareImages/fetus/${id}`);
     try {
       await uploadBytes(storageRef, file);
@@ -136,9 +127,8 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
                 <Upload
                   showUploadList={false}
                   beforeUpload={() => false} // Ngăn upload tự động
-                  onChange={(info) => {
-                    const file = info.file;
-                    // Đồng bộ giá trị file vào Form
+                  onChange={(value) => {
+                    const file = value.file;
                     form.setFieldsValue({ image: file });
                     setFetus({ ...fetus, image: file });
                   }}

@@ -19,6 +19,7 @@ import EditFetusModal from "./EditFetusModal";
 import { useGetFetusList } from "../../../../apis/CallAPIFetus";
 import { ref, getDownloadURL } from "firebase/storage";
 import { storage } from "../../../../firebase/firebaseConfig";
+import BackdropLoader from "../../../../component/BackdropLoader";
 
 export default function FamilyInfo() {
   // Lưu danh sách fetus trong state để có thể cập nhật khi cần
@@ -28,7 +29,7 @@ export default function FamilyInfo() {
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedFetus, setSelectedFetus] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(null);
 
   // Khi bấm nút edit, lưu fetus được chọn vào state và mở modal edit
   const handleEditClick = (fetus) => {
@@ -39,6 +40,7 @@ export default function FamilyInfo() {
   };
 
   const fetchFetusList = async () => {
+    setLoading(true);
     try {
       const res = await useGetFetusList();
       if (res.code === 200 && res.data) {
@@ -63,6 +65,7 @@ export default function FamilyInfo() {
           })
         );
         setFetusList(fetusWithImages);
+        setLoading(false);
       }
     } catch (err) {
       console.error("Error fetching fetus list:", err);
@@ -75,6 +78,7 @@ export default function FamilyInfo() {
 
   return (
     <div>
+      <BackdropLoader open={loading} />
       {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         My Family

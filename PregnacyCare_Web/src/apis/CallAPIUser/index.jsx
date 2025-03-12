@@ -52,3 +52,20 @@ export const useRegister = (email, password, fullName) => {
     } else throw new Error(res.message || "Failed sign in");
   });
 };
+
+export const useUserInfo = () => {
+  return APIClient.get({
+    url: "/api/users/my-info",
+  });
+};
+
+export const useUpdateUser = (id, user) => {
+  return APIClient.put({
+    url: `/api/users/${id}`,
+    params: {
+      name: user.fullName,
+      email: user.email,
+      password: user.password || null,
+    },
+  });
+};
