@@ -2,35 +2,36 @@ import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import SigninBackground from "../../../assets/Signin.jpg";
 import { useRegister } from "../../../apis/CallAPIUser";
+import BackdropLoader from "../../../component/BackdropLoader";
 
 const { Title, Text } = Typography;
 
 export default function Signin({ setActiveTab }) {
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
     fullname: "",
   });
 
-  // Handle existing users
-
   // Xử lý đăng ký
   const handleSubmit = () => {
+    setLoading(true);
     useRegister(user.email, user.password, user.fullname)
       .then((res) => {
         Message.success("Sign in successfully");
-        console.log(res.data);
-        setTimeout(() => {
-          setActiveTab(0);
-        }, 1000);
+        setActiveTab(0);
+        setLoading(false);
       })
       .catch((error) => {
         Message.error("Failed sign in" + error.message);
+        setLoading(false);
       });
   };
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
+      <BackdropLoader open={loading} />
       <div style={{ flex: 1, padding: "20px" }}>
         <div className="row justify-content-md-center">
           <div className="col-md-auto mb-3">
@@ -41,6 +42,17 @@ export default function Signin({ setActiveTab }) {
           Enter your email to become a new PregnancyCare member
         </Text>
         <Form layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            name="fullname"
+            rules={[{ required: true, message: "Please enter full name!" }]}
+            style={{ marginBottom: 35 }}
+          >
+            <Input
+              placeholder="Full name"
+              onChange={(e) => setUser({ ...user, fullname: e.target.value })}
+              style={{ height: 50, fontSize: 16 }}
+            />
+          </Form.Item>
           <Form.Item
             name="email"
             rules={[

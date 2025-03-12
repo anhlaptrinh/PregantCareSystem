@@ -4,12 +4,14 @@ import LoginBackground from "../../../assets/Login.png";
 import { useLogin } from "../../../apis/CallAPIUser";
 import { error } from "jquery";
 import { useNavigate } from "react-router-dom";
+import BackdropLoader from "../../../component/BackdropLoader";
 
 const { Title, Text } = Typography;
 
 export default function Login({ onClose }) {
-  const navigate = useNavigate();
   // State
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -17,6 +19,7 @@ export default function Login({ onClose }) {
 
   // Handle
   const handleSubmit = () => {
+    setLoading(true);
     useLogin(user.email, user.password)
       .then(() => {
         Message.success("Login successful");
@@ -25,15 +28,18 @@ export default function Login({ onClose }) {
           const user = JSON.parse(storedData);
           onClose();
           navigate("/");
+          setLoading(false);
         }
       })
       .catch(() => {
         Message.error("Login failed, please check your email or password ");
         console.log(error);
+        setLoading(false);
       });
   };
   return (
     <div>
+      <BackdropLoader open={loading} />
       <div style={{ display: "flex", height: "100%" }}>
         {/* Image */}
         <div style={{ flex: 1, overflow: "hidden" }}>
