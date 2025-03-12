@@ -1,4 +1,8 @@
 import { Container, Divider } from "@mui/material";
+<<<<<<< HEAD
+=======
+import React from "react";
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
 import Advertisement from "../../../../component/Advertisement";
 import ViewGroup from "../../../../modules/HomeTemplate/Community/ViewGroup";
 import PostList from "../../../../modules/HomeTemplate/Community/PostList";
