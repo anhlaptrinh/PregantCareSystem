@@ -13,7 +13,7 @@ const menuAppointment = () => [
   {
     icon: <CalendarTodayOutlinedIcon />,
     label: "Calendar",
-    key: "/calendar",
+    key: "/appointment-calendar",
   },
   {
     icon: <EditCalendarOutlinedIcon />,

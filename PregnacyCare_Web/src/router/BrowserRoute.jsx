@@ -1,5 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePages from "../pages/HomePages";
+
+import AdminPages from "../pages/AdminPages";
+
 import HomeTemplate from "../modules/HomeTemplate";
 import DueDateCalculatorPages from "../pages/DueDateCalculatorPages";
 import DueDateCalculatorTemplate from "../modules/DueDateTemplate";
@@ -21,9 +24,10 @@ import MainLayout from "../component/AdminLayout";
 import Ovulation from "../pages/Ovulation";
 import ForumAdmin from "../pages/AdminPages/ForumAdmin";
 import UserManagement from "../pages/AdminPages/User";
-import AppointmentManagement from "../pages/AppointmentManagement";
-import AppointmentCalendar from "../pages/AppointmentManagement/AppointmentCalendar";
 import AppointmentSchedule from "../pages/AppointmentManagement/AppointmentSchedule";
+import AppointmentCalendar from "../pages/AppointmentManagement/AppointmentCalendar";
+import PaymentPage from "../pages/PaymentPage";
+import AppointmentManagement from "../pages/AppointmentManagement";
 
 const routes = [
   {
@@ -150,6 +154,30 @@ const routes = [
       <MainLayout>
         <UserManagement />
       </MainLayout>
+    ),
+  },
+  {
+    path: "/appointment-schedule",
+    element: (
+      <AppointmentManagement>
+        <AppointmentSchedule />
+      </AppointmentManagement>
+    ),
+  },
+  {
+    path: "/appointment-calendar",
+    element: (
+      <AppointmentManagement>
+        <AppointmentCalendar />
+      </AppointmentManagement>
+    ),
+  },
+  {
+    path: "/payment",
+    element: (
+      <div>
+        <PaymentPage />
+      </div>
     ),
   },
 ];

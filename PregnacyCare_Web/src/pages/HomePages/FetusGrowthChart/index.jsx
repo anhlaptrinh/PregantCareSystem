@@ -1,4 +1,6 @@
-import AdviceForm from "../../../modules/FetusTrackerTemplate/AdviceForm";
+
+import FetusRecord from "../../../modules/FetusTrackerTemplate/FetusRecord";
+
 import GrowthChart from "../../../modules/FetusTrackerTemplate/GrowthChart";
 import NotificationFetus from "../../../modules/FetusTrackerTemplate/Notification";
 

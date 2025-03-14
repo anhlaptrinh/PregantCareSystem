@@ -24,8 +24,6 @@ export default function Headers() {
     }
   }, []);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const handleOpenDrawer = () => setDrawerOpen(true);
   const handleCloseDrawer = () => setDrawerOpen(false);
 
@@ -33,6 +31,14 @@ export default function Headers() {
     localStorage.removeItem("USER_TOKEN");
     setUser(null);
     setDrawerOpen(false);
+  }
+
+  // Handle open and close Login modal
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -55,23 +61,57 @@ export default function Headers() {
                   <img src={logo} alt="logo_area" />
                 </a>
                 <div className="nav-area">
-                  <ul>
+                  <ul className>
                     <li className="main-nav">
-                      <a onClick={() => navigate("/")}>Home</a>
+                      <a href="/">Home</a>
                     </li>
-                    <li className="main-nav">
+                    <li className="main-nav has-dropdown">
                       <a href="#">Page</a>
                     </li>
-                    <li className="main-nav">
+                    <li className="main-nav has-dropdown">
                       <a href="#">Service</a>
+                      <ul className="submenu parent-nav">
+                        <li>
+                          <a href="blog.html">Blog Grid</a>
+                        </li>
+                        <li>
+                          <a href="blog-list.html">Blog List</a>
+                        </li>
+                        <li>
+                          <a href="blog-details.html">Blog Details</a>
+                        </li>
+                      </ul>
                     </li>
-                    <li className="main-nav">
+                    <li className="main-nav has-dropdown">
+                      <a href="doctors-one.html">Our Expert</a>
+                      <ul className="submenu parent-nav">
+                        <li>
+                          <a href="doctors-one.html">Our Doctors</a>
+                        </li>
+                        <li>
+                          <a href="doctors-two.html">Our Doctors v2</a>
+                        </li>
+                        <li>
+                          <a href="doctor-details.html">Doctors Details</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li className="main-nav has-dropdown">
                       <a href="#">Community</a>
-                    </li>
-                    <li className="main-nav">
-                      <a onClick={() => navigate("/appointment")}>
-                        Appointment
-                      </a>
+                      <ul className="submenu parent-nav">
+                        <li>
+                          <a href="">Home</a>
+                        </li>
+                        <li>
+                          <a href="">Bookmarks</a>
+                        </li>
+                        <li>
+                          <a href="">My Groups</a>
+                        </li>
+                        <li>
+                          <a href="">Activity</a>
+                        </li>
+                      </ul>
                     </li>
                     <li className="main-nav">
                       <a href="contactus.html">Contact</a>

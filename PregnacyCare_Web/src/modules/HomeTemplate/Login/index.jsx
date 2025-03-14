@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
@@ -92,7 +93,10 @@ export default function Login({ onClose }) {
             <Form.Item>
               <div class="row justify-content-md-center">
                 <div class="col-md-auto">
-                  <button className="rts-btn btn-primary" type="submit">
+                  <button
+                    className="rts-btn btn-primary"
+                    onClick={() => handleSubmit()}
+                  >
                     Log in
                   </button>
                 </div>
