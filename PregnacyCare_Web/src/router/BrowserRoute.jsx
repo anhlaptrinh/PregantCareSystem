@@ -33,6 +33,20 @@ import UserManagement from "../pages/AdminPages/User";
 import ErrorPage from "../pages/ErrorPages";
 
 const routes = [
+  // Các route không yêu cầu quyền truy cập
+  {
+    element: <HomePages />,
+    children: [
+      { path: "/", element: <HomeTemplate /> },
+      { path: "/ovulation", element: <Ovulation /> },
+      { path: "/due-date", element: <DueDateCalculatorTemplate /> },
+      {
+        path: "/due-date/result",
+        element: <DueDateCalculatorResultTemplate />,
+      },
+    ],
+  },
+
   // Các route chung cho MEMBER và EXPERT (ví dụ: trang chủ và các trang thông tin chung)
   {
     element: <ProtectedRoute allowedRoles={["MEMBER", "EXPERT"]} />,
@@ -41,7 +55,6 @@ const routes = [
         path: "/",
         element: <HomePages />,
         children: [
-          { path: "/", element: <HomeTemplate /> },
           { path: "/our-expert", element: <OurExpert /> },
           { path: "/article", element: <ArticlePage /> },
           { path: "/forum", element: <QAForum /> },
@@ -71,16 +84,6 @@ const routes = [
           { path: "/view-post", element: <ViewPostPages /> },
           { path: "/view-group", element: <ViewGroupPages /> },
           { path: "/create-post", element: <CreatePostPages /> },
-          { path: "/ovulation", element: <Ovulation /> },
-          {
-            path: "/due-date",
-            element: <DueDateCalculatorTemplate />,
-          },
-          {
-            path: "/due-date/result",
-            element: <DueDateCalculatorResultTemplate />,
-          },
-
           { path: "/payment", element: <PaymentPage /> },
         ],
       },
