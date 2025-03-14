@@ -31,7 +31,7 @@ export default function Headers() {
     localStorage.removeItem("USER_TOKEN");
     setUser(null);
     setDrawerOpen(false);
-  }
+  };
 
   // Handle open and close Login modal
   const handleOpen = () => {
@@ -57,13 +57,13 @@ export default function Headers() {
           <div className="col-lg-12">
             <div className="header-wrapper-1">
               <div className="logo-area-start">
-                <a href="/" className="logo">
+                <a onClick={() => navigate("/")} className="logo">
                   <img src={logo} alt="logo_area" />
                 </a>
                 <div className="nav-area">
                   <ul className>
                     <li className="main-nav">
-                      <a href="/">Home</a>
+                      <a onClick={() => navigate("/")}>Home</a>
                     </li>
                     <li className="main-nav has-dropdown">
                       <a href="#">Page</a>
@@ -83,33 +83,34 @@ export default function Headers() {
                       </ul>
                     </li>
                     <li className="main-nav has-dropdown">
-                      <a href="doctors-one.html">Our Expert</a>
-                      <ul className="submenu parent-nav">
-                        <li>
-                          <a href="doctors-one.html">Our Doctors</a>
-                        </li>
-                        <li>
-                          <a href="doctors-two.html">Our Doctors v2</a>
-                        </li>
-                        <li>
-                          <a href="doctor-details.html">Doctors Details</a>
-                        </li>
-                      </ul>
+                      <a onClick={() => navigate("/our-expert")}>Our Expert</a>
                     </li>
                     <li className="main-nav has-dropdown">
-                      <a href="#">Community</a>
+                      <a onClick={() => navigate("/community")}>Community</a>
+                    </li>
+                    <li className="main-nav has-dropdown">
+                      <a onClick={() => navigate("/appointment")}>
+                        Appointment
+                      </a>
                       <ul className="submenu parent-nav">
                         <li>
-                          <a href="">Home</a>
+                          <a onClick={() => navigate("/appointment/calendar")}>
+                            Calendar
+                          </a>
                         </li>
                         <li>
-                          <a href="">Bookmarks</a>
+                          <a onClick={() => navigate("/appointment/schedule")}>
+                            Schedule
+                          </a>
                         </li>
                         <li>
-                          <a href="">My Groups</a>
-                        </li>
-                        <li>
-                          <a href="">Activity</a>
+                          <a
+                            onClick={() =>
+                              navigate("/appointment/fetus-growth-chart")
+                            }
+                          >
+                            Growth Chart
+                          </a>
                         </li>
                       </ul>
                     </li>
