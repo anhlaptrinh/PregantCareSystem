@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
+=======
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
 import {
   Typography,
   List,
@@ -9,6 +12,7 @@ import {
   IconButton,
   Button,
   Divider,
+<<<<<<< HEAD
 } from "@mui/material";
 import { message as Message } from "antd";
 import { Add, Edit, CalendarToday } from "@mui/icons-material";
@@ -79,6 +83,21 @@ export default function FamilyInfo() {
   return (
     <div>
       <BackdropLoader open={loading} />
+=======
+  
+} from "@mui/material";
+import { Add, Edit, CalendarToday } from "@mui/icons-material";
+import PregnantAvatar from "../../../../assets/PregnantAvatar.jpg";
+
+const pregnancies = [
+  { id: 1, title: "My pregnancy", date: "October 17, 2025" },
+  { id: 2, title: "My pregnancy", date: "October 17, 2025" },
+];
+
+export default function FamilyInfo() {
+  return (
+    <div>
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
       {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         My Family
@@ -95,19 +114,32 @@ export default function FamilyInfo() {
       <Divider />
 
       <List>
+<<<<<<< HEAD
         {fetusList.map((fetus) => (
           <ListItem key={fetus.idFetus} sx={{ width: 500 }}>
             {/* Avatar */}
             <ListItemAvatar>
               <Avatar sx={{ width: 60, height: 60, marginRight: 2 }}>
                 <img src={fetus.imageUrl} alt="Avatar of Pregnant" />
+=======
+        {pregnancies.map((pregnancy) => (
+          <ListItem key={pregnancy.id} sx={{ width: 500 }}>
+            {/* Avatar */}
+            <ListItemAvatar>
+              <Avatar sx={{ width: 60, height: 60, marginRight: 2 }}>
+                <img src={PregnantAvatar} alt="Avatar of Pregnant" />
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
               </Avatar>
             </ListItemAvatar>
             {/* Text */}
             <ListItemText
               primary={
                 <Typography variant="h5" gutterBottom>
+<<<<<<< HEAD
                   {fetus.nameFetus}
+=======
+                  {pregnancy.title}
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
                 </Typography>
               }
               secondary={
@@ -117,6 +149,7 @@ export default function FamilyInfo() {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   <CalendarToday sx={{ fontSize: 18, mr: 1 }} />
+<<<<<<< HEAD
                   {moment(fetus.dateFetus).format("MMMM D, YYYY")}
                 </Typography>
               }
@@ -126,12 +159,21 @@ export default function FamilyInfo() {
               sx={{ color: "#615EFC", width: "9%" }}
               onClick={() => handleEditClick(fetus)}
             >
+=======
+                  {pregnancy.date}
+                </Typography>
+              }
+            />{" "}
+            {/* Edit Icon */}
+            <IconButton sx={{ color: "#615EFC", width: "9%" }}>
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
               <Edit />
             </IconButton>
           </ListItem>
         ))}
       </List>
 
+<<<<<<< HEAD
       {/* Modal Edit: render duy nhất 1 modal chỉnh sửa nếu có fetus được chọn */}
       {selectedFetus && (
         <EditFetusModal
@@ -145,10 +187,13 @@ export default function FamilyInfo() {
         />
       )}
 
+=======
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
       {/* Add Pregnancy Button */}
       <Button
         startIcon={<Add />}
         sx={{ color: "#615EFC", textTransform: "none", mb: 5, fontSize: 15 }}
+<<<<<<< HEAD
         onClick={() => setVisibleAdd(true)}
       >
         Add a pregnancy
@@ -158,6 +203,11 @@ export default function FamilyInfo() {
         onClose={() => setVisibleAdd(false)}
         refreshFetusList={fetchFetusList}
       />
+=======
+      >
+        Add a pregnancy
+      </Button>
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
     </div>
   );
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Upload, message, Avatar } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
@@ -95,11 +96,22 @@ export default function AccountInfo() {
   return (
     <Box
       sx={{
+=======
+import React from "react";
+import { Typography, Box } from "@mui/material";
+
+export default function AccountInfo() {
+  return (
+    <Box
+      sx={{
+        margin: "auto",
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
         display: "flex",
         flexDirection: "column",
         gap: 2,
       }}
     >
+<<<<<<< HEAD
       <BackdropLoader open={loading} />
       {/* Hiển thị Avatar */}
       <div className="row justify-content-md-center mt-5">
@@ -174,6 +186,25 @@ export default function AccountInfo() {
           </div>
         </Form.Item>
       </Form>
+=======
+      <Typography variant="h2" fontWeight="bold" gutterBottom>
+        Account Info
+      </Typography>
+
+      <input placeholder="Full name" />
+      <input placeholder="Email" />
+      <input placeholder="Password" disabled />
+
+      <a href="#" className="text-decoration-underline">
+        Change password
+      </a>
+
+      <div class="row justify-content-md-center mb-5">
+        <div class="col-md-auto">
+          <button className="rts-btn btn-primary">Save</button>
+        </div>
+      </div>
+>>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
     </Box>
   );
 }
