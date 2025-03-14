@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePages from "../pages/HomePages";
 
-import AdminPages from "../pages/AdminPages";
 
 import HomeTemplate from "../modules/HomeTemplate";
 import DueDateCalculatorPages from "../pages/DueDateCalculatorPages";
