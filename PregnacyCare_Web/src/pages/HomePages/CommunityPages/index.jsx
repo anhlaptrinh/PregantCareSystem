@@ -39,7 +39,7 @@ export default function CommunityPages() {
                 variant="fullWidth"
               >
                 {tabLabels.map((label, index) => (
-                  <Tab key={index} label={label} />
+                  <Tab key={index} label={label} sx={{ fontSize: 15 }} />
                 ))}
               </Tabs>
             </AppBar>

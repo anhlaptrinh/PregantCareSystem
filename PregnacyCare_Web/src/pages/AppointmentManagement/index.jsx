@@ -13,16 +13,16 @@ const menuAppointment = () => [
   {
     icon: <CalendarTodayOutlinedIcon />,
     label: "Calendar",
-    key: "/appointment-calendar",
+    key: "/appointment/calendar",
   },
   {
     icon: <EditCalendarOutlinedIcon />,
     label: "Appointment Schedule",
-    key: "/appointment-schedule",
+    key: "/appointment/schedule",
   },
   {
-    label: "Workflows",
-    key: "/workflow",
+    label: "Growth Chart",
+    key: "/appointment/fetus-growth-chart",
   },
 ];
 
