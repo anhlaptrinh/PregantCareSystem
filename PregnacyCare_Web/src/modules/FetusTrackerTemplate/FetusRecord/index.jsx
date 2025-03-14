@@ -20,7 +20,7 @@ const rows = [
 
 export default function FetusRecord() {
   return (
-    <TableContainer className="container" component={Paper}>
+    <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead
           sx={{
@@ -46,14 +46,13 @@ export default function FetusRecord() {
               sx={{
                 "&:last-child td, &:last-child th": {
                   border: true,
-                  
                 },
                 "& td": {
-                  fontSize: "12px !important",  // Áp dụng font size cho tất cả các TableCell trong TableRow
+                  fontSize: "12px !important", // Áp dụng font size cho tất cả các TableCell trong TableRow
                 },
                 "& th": {
-                  fontSize: "12px !important",  // Áp dụng font size cho các TableCell th (thường dùng trong TableHead)
-                }
+                  fontSize: "12px !important", // Áp dụng font size cho các TableCell th (thường dùng trong TableHead)
+                },
               }}
             >
               <TableCell component="th" scope="row">

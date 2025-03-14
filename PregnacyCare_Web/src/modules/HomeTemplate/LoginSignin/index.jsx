@@ -1,4 +1,6 @@
+
 /* eslint-disable no-unused-vars */
+
 
 import React, { useState } from "react";
 import { Modal } from "antd";
@@ -9,7 +11,9 @@ import Signin from "../Signin";
 // Danh sách các tab trong phần Account Settings
 const tabLabels = ["Log in", "Sign in"];
 
+
 // eslint-disable-next-line react/prop-types
+
 export default function LoginSignin({ open, onClose }) {
   // Quản lý state cho tab đang được chọn
   const [activeTab, setActiveTab] = useState(0);
@@ -27,24 +31,18 @@ export default function LoginSignin({ open, onClose }) {
       style={{ marginTop: -90 }}
     >
       <Box margin={3}>
-        {/* Tabs AppBar) */}
         <AppBar
           position="static"
           color="default"
           sx={{ boxShadow: "none", mb: "30px" }}
         >
-          <Tabs
-            value={activeTab}
-            onChange={handleChangeTab}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-          >
+          <Tabs value={activeTab} onChange={handleChangeTab}>
             {tabLabels.map((label, index) => (
               <Tab sx={{ fontSize: 15 }} key={index} label={label} />
             ))}
           </Tabs>
         </AppBar>
+
 
         {/* Nội dung cho từng tab*/}
         {activeTab === 0 && <Login onClose={onClose} />}

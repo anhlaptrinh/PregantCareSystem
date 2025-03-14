@@ -6,6 +6,7 @@ import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
 import { Drawer, Avatar, Button, Divider, Typography } from "antd";
 import StyledButton from "../StyleButton";
 import avatar from "../../assets/PregnantAvatar.jpg";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -14,6 +15,7 @@ export default function Headers() {
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER_TOKEN");

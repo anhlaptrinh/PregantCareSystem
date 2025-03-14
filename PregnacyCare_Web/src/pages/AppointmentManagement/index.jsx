@@ -1,13 +1,13 @@
-import { Button, Col, Menu, Row } from "antd"
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
-import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined'
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined'
-import { useLocation, useNavigate } from "react-router-dom"
-import AddIcon from '@mui/icons-material/Add'
-import SearchIcon from '@mui/icons-material/Search'
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
-import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined'
-import "./index.css"
+import { Button, Col, Menu, Row } from "antd";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import { useLocation, useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
+import "./index.css";
 
 const menuAppointment = () => [
   {
@@ -24,27 +24,30 @@ const menuAppointment = () => [
     label: "Workflows",
     key: "/workflow",
   },
-]
+];
 
 // eslint-disable-next-line react/prop-types
 const AppointmentManagement = ({ children }) => {
-
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
   console.log("location?.pathname", location?.pathname);
-
-
 
   return (
     <Row style={{ padding: "20px 16px" }}>
       <Col span={4} className="menu-container">
-        <div style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "12px",
+          }}
+        >
           <span>
             <CalendarMonthOutlinedIcon
               style={{
                 fontSize: "30px",
                 color: "var(--color-primary)",
-                marginRight: "6px"
+                marginRight: "6px",
               }}
             />
           </span>
@@ -53,22 +56,35 @@ const AppointmentManagement = ({ children }) => {
         <div>
           <Menu
             mode="inline"
-            onClick={e => navigate(e.key)}
+            onClick={(e) => navigate(e.key)}
             items={menuAppointment()}
             selectedKeys={location?.pathname}
           />
         </div>
       </Col>
       <Col span={20} style={{ padding: "0px 12px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "30px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: "30px",
+          }}
+        >
           <div style={{ color: "black", fontSize: "25px", fontWeight: 700 }}>
-            {menuAppointment()?.find(i => i?.key === location?.pathname)?.label}
+            {
+              menuAppointment()?.find((i) => i?.key === location?.pathname)
+                ?.label
+            }
           </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <Button
-              icon={<AddIcon />}
-              className="rts-btn btn-primary"
-            >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button icon={<AddIcon />} className="rts-btn btn-primary">
               Create
             </Button>
             <div style={{ marginLeft: "12px" }}>
@@ -80,7 +96,11 @@ const AppointmentManagement = ({ children }) => {
             <div style={{ marginLeft: "12px" }}>
               <MessageOutlinedIcon style={{ fontSize: "23px" }} />
             </div>
-            <div style={{ marginLeft: "8px" }} className="menu-btn" id="menu-btn">
+            <div
+              style={{ marginLeft: "8px" }}
+              className="menu-btn"
+              id="menu-btn"
+            >
               <svg
                 width={20}
                 height={16}
@@ -95,12 +115,10 @@ const AppointmentManagement = ({ children }) => {
             </div>
           </div>
         </div>
-        <div className="content-container">
-          {children}
-        </div>
+        <div className="content-container">{children}</div>
       </Col>
-    </Row >
-  )
-}
+    </Row>
+  );
+};
 
-export default AppointmentManagement
+export default AppointmentManagement;

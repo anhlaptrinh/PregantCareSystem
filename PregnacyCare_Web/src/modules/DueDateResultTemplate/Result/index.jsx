@@ -11,6 +11,7 @@ import {
   Box,
   Avatar,
 } from "@mui/material";
+import PregnancyTimeline from "../PregnancyTimeline";
 
 export default function Result() {
   return (
@@ -81,6 +82,8 @@ export default function Result() {
           Recalculate your due date
         </Button>
       </Box>
+
+      <PregnancyTimeline />
     </Box>
   );
 }
