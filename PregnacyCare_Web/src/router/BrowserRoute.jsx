@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePages from "../pages/HomePages";
 import HomeTemplate from "../modules/HomeTemplate";
-import AppointmentPages from "../pages/HomePages/AppointmentPages";
 import DueDateCalculatorPages from "../pages/DueDateCalculatorPages";
 import DueDateCalculatorTemplate from "../modules/DueDateTemplate";
 import DueDateCalculatorResultPages from "../pages/HomePages/DueDateCalculatorResultPages";
@@ -38,7 +37,15 @@ const routes = [
       },
       {
         path: "/appointment",
-        element: <AppointmentPages />,
+        element: <AppointmentManagement />,
+      },
+      {
+        path: "/calendar",
+        element: <AppointmentCalendar />,
+      },
+      {
+        path: "/appointment-schedule",
+        element: <AppointmentSchedule />,
       },
       {
         path: "/profile",

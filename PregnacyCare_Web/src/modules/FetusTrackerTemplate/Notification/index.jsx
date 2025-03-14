@@ -10,12 +10,15 @@ import {
   Image,
   Button,
 } from "antd";
+import FetusRecord from "../FetusRecord";
 
 const FetusInput = () => {
   const [form] = Form.useForm();
 
   return (
     <div style={{ maxWidth: 800, margin: "10px auto", position: "relative" }}>
+      <FetusRecord />
+
       {/* Ảnh minh họa - đường dẫn tượng trưng */}
       <Image
         src="path/to/top-image.png"
@@ -30,7 +33,9 @@ const FetusInput = () => {
       />
 
       <Form form={form} layout="vertical">
-        <h2 style={{ marginBottom: 24 }}>Fetus Information</h2>
+        <h2 style={{ marginBottom: 24, fontSize: "20px" }}>
+          Fetus Information
+        </h2>
 
         {/* Giới tính */}
         <Form.Item label="Sex" name="sex">

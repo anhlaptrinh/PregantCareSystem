@@ -5,7 +5,8 @@ import CommentList from "../../../../modules/HomeTemplate/Community/CommentList"
 
 export default function ViewPostPages() {
   // Information of a post
-  
+
+
 
   return (
     <Container>
