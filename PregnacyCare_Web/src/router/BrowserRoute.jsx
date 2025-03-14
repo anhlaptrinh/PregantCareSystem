@@ -1,11 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import HomePages from "../pages/HomePages";
-<<<<<<< HEAD
-=======
-import AdminPages from "../pages/AdminPages";
->>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
 import HomeTemplate from "../modules/HomeTemplate";
-import AppointmentPages from "../pages/HomePages/AppointmentPages";
 import DueDateCalculatorPages from "../pages/DueDateCalculatorPages";
 import DueDateCalculatorTemplate from "../modules/DueDateTemplate";
 import DueDateCalculatorResultPages from "../pages/HomePages/DueDateCalculatorResultPages";
@@ -26,9 +21,11 @@ import MainLayout from "../component/AdminLayout";
 import Ovulation from "../pages/Ovulation";
 import ForumAdmin from "../pages/AdminPages/ForumAdmin";
 import UserManagement from "../pages/AdminPages/User";
+import AppointmentManagement from "../pages/AppointmentManagement";
+import AppointmentCalendar from "../pages/AppointmentManagement/AppointmentCalendar";
+import AppointmentSchedule from "../pages/AppointmentManagement/AppointmentSchedule";
 
 const routes = [
-<<<<<<< HEAD
   {
     path: "/",
     element: <HomePages />,
@@ -39,7 +36,15 @@ const routes = [
       },
       {
         path: "/appointment",
-        element: <AppointmentPages />,
+        element: <AppointmentManagement />,
+      },
+      {
+        path: "/calendar",
+        element: <AppointmentCalendar />,
+      },
+      {
+        path: "/appointment-schedule",
+        element: <AppointmentSchedule />,
       },
       {
         path: "/profile",
@@ -147,127 +152,6 @@ const routes = [
       </MainLayout>
     ),
   },
-=======
-    {
-        path: "/",
-        element: <HomePages />,
-        children: [
-            {
-                path: "/",
-                element: <HomeTemplate />,
-            },
-            {
-                path: "/appointment",
-                element: <AppointmentPages />,
-            },
-            {
-                path: "/profile",
-                element: <ProfilePages />,
-            },
-            {
-                path: "/fetus-growth-chart",
-                element: <FetusGrowthChart />,
-            },
-            {
-                path: "/community",
-                element: <CommunityPages />,
-            },
-            {
-                path: "/view-post",
-                element: <ViewPostPages />,
-            },
-            {
-                path: "/view-group",
-                element: <ViewGroupPages />,
-            },
-            {
-                path: "/create-post",
-                element: <CreatePostPages />,
-            },
-            {
-                path: "/create-post",
-                element: <CreatePostPages />,
-            },
-            {
-                path: "/our-expert",
-                element: <OurExpert />,
-            },
-            {
-                path: "/article",
-                element: <ArticlePage />,
-            },
-            {
-                path: "/forum",
-                element: <QAForum />,
-            },
-            {
-                path: "/forum/:id",
-                element: <ForumPostDetail />,
-            },
-            {
-                path: "/ovulation",
-                element: <Ovulation />,
-            },
-        ],
-    },
-    {
-        path: "/dueDate",
-        element: <DueDateCalculatorPages />,
-        children: [
-            {
-                path: "/dueDate",
-                element: <DueDateCalculatorTemplate />,
-            },
-        ],
-    },
-    {
-        path: "/dueDateResult",
-        element: <DueDateCalculatorResultPages />,
-        children: [
-            {
-                path: "/dueDateResult",
-                element: <DueDateCalculatorResultTemplate />,
-            },
-        ],
-    },
-    {
-        path: "/admin",
-        element: <AdminPages />,
-    },
-
-    {
-        path: "/admin/dashboard",
-        element: (
-            <MainLayout>
-                <Dashboard />
-            </MainLayout>
-        ),
-    },
-    {
-        path: "/admin/blog",
-        element: (
-            <MainLayout>
-                <BlogManagement />
-            </MainLayout>
-        ),
-    },
-    {
-        path: "/admin/forum",
-        element: (
-            <MainLayout>
-                <ForumAdmin />
-            </MainLayout>
-        ),
-    },
-    {
-        path: "/admin/user",
-        element: (
-            <MainLayout>
-                <UserManagement />
-            </MainLayout>
-        ),
-    },
->>>>>>> 39d6bdf31cd999789c904c5a45ae450802985703
 ];
 
 export const router = createBrowserRouter(routes);
