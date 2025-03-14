@@ -1,2 +1,0 @@
-# PregantCareSystem
-front end project 
