@@ -3,23 +3,35 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
-import { Drawer, Avatar, Button, Divider, Typography } from "antd";
+import { Avatar } from "antd";
 import StyledButton from "../StyleButton";
 import avatar from "../../assets/PregnantAvatar.jpg";
 import { useNavigate } from "react-router-dom";
+import { useGetImageUrl } from "../../apis/CallAPIFirebase";
+import DrawerMenu from "../DrawerMenu";
 
-const { Title, Text } = Typography;
-
-export default function Headers() {
+const Headers = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [url, setUrl] = useState(null);
   const navigate = useNavigate();
+
+  // Get image
+  const handleGetImage = async () => {
+    try {
+      const result = await useGetImageUrl("pregnancyCareImages/users", 1);
+      setUrl(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER_TOKEN");
     if (storedUser) {
+      handleGetImage();
       setUser(JSON.parse(storedUser));
     }
   }, []);
@@ -34,12 +46,8 @@ export default function Headers() {
   };
 
   // Handle open and close Login modal
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,26 +69,9 @@ export default function Headers() {
                   <img src={logo} alt="logo_area" />
                 </a>
                 <div className="nav-area">
-                  <ul className>
+                  <ul>
                     <li className="main-nav">
                       <a onClick={() => navigate("/")}>Home</a>
-                    </li>
-                    <li className="main-nav has-dropdown">
-                      <a href="#">Page</a>
-                    </li>
-                    <li className="main-nav has-dropdown">
-                      <a href="#">Service</a>
-                      <ul className="submenu parent-nav">
-                        <li>
-                          <a href="blog.html">Blog Grid</a>
-                        </li>
-                        <li>
-                          <a href="blog-list.html">Blog List</a>
-                        </li>
-                        <li>
-                          <a href="blog-details.html">Blog Details</a>
-                        </li>
-                      </ul>
                     </li>
                     <li className="main-nav has-dropdown">
                       <a onClick={() => navigate("/our-expert")}>Our Expert</a>
@@ -89,9 +80,7 @@ export default function Headers() {
                       <a onClick={() => navigate("/community")}>Community</a>
                     </li>
                     <li className="main-nav has-dropdown">
-                      <a onClick={() => navigate("/appointment")}>
-                        Appointment
-                      </a>
+                      <a>Appointment</a>
                       <ul className="submenu parent-nav">
                         <li>
                           <a onClick={() => navigate("/appointment/calendar")}>
@@ -114,9 +103,6 @@ export default function Headers() {
                         </li>
                       </ul>
                     </li>
-                    <li className="main-nav">
-                      <a href="contactus.html">Contact</a>
-                    </li>
                   </ul>
                 </div>
               </div>
@@ -131,7 +117,7 @@ export default function Headers() {
 
                 {user ? (
                   <Avatar
-                    src={avatar}
+                    src={url || avatar}
                     size={40}
                     style={{ cursor: "pointer" }}
                     onClick={handleOpenDrawer}
@@ -151,47 +137,14 @@ export default function Headers() {
                   }}
                 />
 
-                {/* Drawer Menu với Avatar lớn */}
-                <Drawer
-                  placement="right"
-                  closable={true}
-                  onClose={handleCloseDrawer}
-                  open={drawerOpen}
-                >
-                  <div style={{ textAlign: "center", padding: "20px 0" }}>
-                    <Avatar
-                      src={avatar}
-                      size={80}
-                      style={{ marginBottom: 10 }}
-                    />
-                    <Typography style={{ fontSize: 20, color: "#615EFC" }}>
-                      {user?.email || "User"}
-                    </Typography>
-                  </div>
-                  <Divider />
-                  <StyledButton
-                    to="/profile"
-                    className="mb-4 p-5 fs-3"
-                    onCloseDrawer={handleCloseDrawer}
-                  >
-                    My Family Info
-                  </StyledButton>
-                  <StyledButton
-                    to="/profile"
-                    className="mb-4 p-5 fs-3"
-                    onCloseDrawer={handleCloseDrawer}
-                  >
-                    Personal Info
-                  </StyledButton>
-                  <StyledButton
-                    to="/"
-                    className="mb-4 p-5 fs-3"
-                    type="danger"
-                    onClick={handleLogout}
-                  >
-                    Log out
-                  </StyledButton>
-                </Drawer>
+                {/* Gọi DrawerMenu */}
+                <DrawerMenu
+                  drawerOpen={drawerOpen}
+                  handleCloseDrawer={handleCloseDrawer}
+                  user={user}
+                  url={url}
+                  handleLogout={handleLogout}
+                />
               </div>
             </div>
           </div>
@@ -199,4 +152,6 @@ export default function Headers() {
       </div>
     </header>
   );
-}
+};
+
+export default Headers;

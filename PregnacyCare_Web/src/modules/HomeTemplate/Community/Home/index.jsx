@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Typography,
@@ -10,44 +10,99 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Pagination,
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-
-const posts = [
-  {
-    id: 1,
-    title: "Postpartum hemorrhoids",
-    author: "Getzy",
-    group: "December 2024 Birth Club",
-    content:
-      "TMI, but I’m desperate and need some help if possible, I’m experiencing such painful hemorrhoids that flare up after every bowel movement...",
-    time: "14 minutes ago",
-    comments: 1,
-    likes: 0,
-  },
-  {
-    id: 2,
-    title: "Never goes as planned",
-    author: "oopsyIdiditagain",
-    group: "Baby Names",
-    content:
-      "So I have decided to stick with the name Emrys Mae. Until my cousin asked me if I would change the middle because her daughter’s middle name...",
-    time: "15 minutes ago",
-    comments: 10,
-    likes: 0,
-  },
-];
+import { useGetPosts } from "../../../../apis/CallAPIBlog";
+import moment from "moment/moment";
+import BackdropLoader from "../../../../component/BackdropLoader";
+import { useNavigate } from "react-router-dom";
+import SearchBar from "../../../../component/SearchBar";
 
 export default function Home() {
   const [sortBy, setSortBy] = useState("newest");
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  // Phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 5;
+
+  const navigate = useNavigate();
+
+  // Gọi API để lấy danh sách bài viết
+  const handleGetPosts = async () => {
+    setLoading(true);
+    try {
+      const res = await useGetPosts();
+      if (res.code === 200) {
+        setPosts(res.data);
+        setFilteredPosts(res.data); // Ban đầu filteredPosts bằng với posts
+      }
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetPosts();
+  }, []);
+
+  // Hàm xử lý tìm kiếm
+  const handleSearch = (searchTerm) => {
+    if (!searchTerm) {
+      setFilteredPosts(posts);
+    } else {
+      const lowerCasedSearchTerm = searchTerm.toLowerCase();
+      const filtered = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(lowerCasedSearchTerm) ||
+          post.description.toLowerCase().includes(lowerCasedSearchTerm)
+      );
+      setFilteredPosts(filtered);
+    }
+    setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
+  };
+
+  // Sắp xếp bài viết theo thứ tự "newest" hoặc "oldest"
+  const sortedPosts = filteredPosts.slice().sort((a, b) => {
+    if (sortBy === "newest") {
+      return new Date(b.datePublish) - new Date(a.datePublish);
+    } else {
+      return new Date(a.datePublish) - new Date(b.datePublish);
+    }
+  });
+
+  // Logic phân trang
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Hàm xử lý chuyển trang khi nhấn vào Card
+  const handleCardClick = (postId) => {
+    navigate(`/community/post-detail/${postId}`);
+  };
 
   return (
     <Box>
+      <BackdropLoader open={loading} />
       <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
         Posts in my groups
       </Typography>
+
+      {/* Sử dụng component SearchBar */}
+      <SearchBar onSearch={handleSearch} placeholder="Search posts..." />
+
+      {/* Chọn sắp xếp */}
       <FormControl>
         <InputLabel id="sort-by" sx={{ fontSize: 12 }}>
           Sort by
@@ -55,7 +110,10 @@ export default function Home() {
         <Select
           value={sortBy}
           displayEmpty
-          onChange={(e) => setSortBy(e.target.value)}
+          onChange={(e) => {
+            setSortBy(e.target.value);
+            setCurrentPage(1);
+          }}
           labelId="sort-by"
           label="Sort by"
           sx={{ mb: 2, width: 150 }}
@@ -65,22 +123,40 @@ export default function Home() {
         </Select>
       </FormControl>
 
-      {posts.map((post) => (
-        <Card key={post.id} sx={{ mb: 2, p: 2 }}>
+      {currentPosts.map((post) => (
+        <Card
+          key={post.id}
+          sx={{
+            mb: 2,
+            p: 2,
+            cursor: "pointer",
+            transition: "border 0.3s ease",
+            border: "1px solid transparent",
+            overflow: "hidden",
+            "&:hover": {
+              border: "1px solid #615EFC",
+            },
+            "&:active": {
+              opacity: "0.5",
+            },
+          }}
+          onClick={() => handleCardClick(post.id)}
+        >
           <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
             {post.title}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-            <Avatar sx={{ width: 24, height: 24 }} />
-            <Typography variant="body1">
-              By <strong>{post.author}</strong> in <strong>{post.group}</strong>
+            <Avatar sx={{ width: 30, height: 30 }} />
+            <Typography variant="h6">
+              By <strong>{post.user.fullName}</strong> in{" "}
+              <strong>{post.group.name}</strong>
             </Typography>
           </Box>
           <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
-            {post.content}
+            {post.description}
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            {post.time}
+            {moment(post.datePublish).format("MMMM D, YYYY")}
           </Typography>
           <Divider sx={{ my: 1 }} />
           <Box
@@ -91,24 +167,29 @@ export default function Home() {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {/* Comment Icon */}
               <IconButton size="small" disabled>
-                <ChatBubbleOutlineIcon fontSize="small" />
+                <ChatBubbleOutlineIcon fontSize="large" />
               </IconButton>
-              <Typography variant="body1">{post.comments}</Typography>
-              {/* Like Ion */}
-              <IconButton size="small" disabled>
-                <FavoriteBorderIcon fontSize="small" />
-              </IconButton>
-              <Typography variant="body1">{post.likes}</Typography>
+              <Typography variant="h6">{post.blogComments.length}</Typography>
             </Box>
-            {/* Edit Button */}
             <IconButton size="large" sx={{ width: 40 }}>
               <MoreHorizIcon fontSize="large" />
             </IconButton>
           </Box>
         </Card>
       ))}
+
+      {totalPages > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+          />
+        </Box>
+      )}
     </Box>
   );
 }

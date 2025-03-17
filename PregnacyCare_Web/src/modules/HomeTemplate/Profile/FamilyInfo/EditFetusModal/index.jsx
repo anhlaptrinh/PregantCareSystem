@@ -111,10 +111,10 @@ export default function EditFetusModal({
   useEffect(() => {
     if (fetus) {
       const newFetus = {
-        id: fetus.idFetus,
-        name: fetus.nameFetus || "",
-        dueDate: fetus.dateFetus ? moment(fetus.dateFetus) : null,
-        gender: fetus.genderFetus || "",
+        id: fetus.id,
+        name: fetus.name || "",
+        dueDate: fetus.dueDate ? moment(fetus.dateFetus) : null,
+        gender: fetus.gender || "",
         image: null, // khởi tạo null, chỉ cập nhật nếu người dùng chọn ảnh mới
       };
       setEditedFetus(newFetus);
@@ -124,7 +124,7 @@ export default function EditFetusModal({
 
   return (
     <Modal
-      visible={visible}
+      open={visible}
       onCancel={onClose}
       footer={null}
       closeIcon={<span style={{ cursor: "pointer" }}>&times;</span>}

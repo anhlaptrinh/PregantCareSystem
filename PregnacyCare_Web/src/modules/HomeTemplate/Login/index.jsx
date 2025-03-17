@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
@@ -23,10 +22,10 @@ export default function Login({ onClose }) {
     setLoading(true);
     useLogin(user.email, user.password)
       .then(() => {
-        Message.success("Login successful");
         const storedData = localStorage.getItem("USER_TOKEN");
         if (storedData) {
           const user = JSON.parse(storedData);
+          Message.success("Login successful");
           onClose();
           navigate("/");
           setLoading(false);
@@ -34,10 +33,10 @@ export default function Login({ onClose }) {
       })
       .catch(() => {
         Message.error("Login failed, please check your email or password ");
-        console.log(error);
         setLoading(false);
       });
   };
+
   return (
     <div>
       <BackdropLoader open={loading} />

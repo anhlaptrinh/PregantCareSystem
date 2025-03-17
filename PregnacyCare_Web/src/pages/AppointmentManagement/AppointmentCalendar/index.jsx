@@ -7,30 +7,40 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 const localizer = momentLocalizer(moment);
 
 const messages = {
-  allDay: "Cả ngày",
-  previous: "Trước",
-  next: "Tiếp",
-  today: "Hôm nay",
-  month: "Tháng",
-  week: "Tuần",
-  day: "Ngày",
-  agenda: "Lịch dạy",
-  date: "Ngày",
-  time: "Thời gian",
-  event: "Sự kiện",
-  "There are no events in this range.": "Không có",
+  allDay: "All Day",
+  previous: "Previous",
+  next: "Next",
+  today: "Today",
+  month: "Month",
+  date: "Date",
+  time: "Time",
+  event: "Event",
+  "There are no events in this range.": "No events",
 };
+
 const formats = {
   monthHeaderFormat: (date, culture, localizer) =>
-    "Tháng " + localizer.format(date, "MM/YYYY", culture), // Định dạng tiêu đề tháng
-  dayFormat: "ddd, DD/MM", // Định dạng hiển thị ngày trong ngày
-  dayHeaderFormat: "dddd, DD/MM/YYYY", // Tiêu đề nagyf
-  dayRangeHeaderFormat: ({ start, end }) =>
-    `${moment(start).format("DD/MM/YYYY")} - ${moment(end).format(
-      "DD/MM/YYYY"
-    )}`, // Định dạng tiêu đề ngày khi chọn khoảng thời gian
-  agendaDateFormat: (date, culture, localizer) =>
-    localizer.format(date, "dddd, DD/MM/YYYY", culture), //Cột trong lịch làm việc
+    "Month " + localizer.format(date, "MM/YYYY", culture),
+};
+
+// Custom event component để phóng to ô chứa title
+const CustomEvent = ({ event }) => {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        fontSize: "18px",
+        padding: "10px",
+        border: "1px solid #ddd",
+        borderRadius: "4px",
+        backgroundColor: "#fff",
+        color: "black",
+      }}
+    >
+      {event.title}
+    </div>
+  );
 };
 
 const AppointmentCalendar = () => {
@@ -64,35 +74,22 @@ const AppointmentCalendar = () => {
         <Calendar
           localizer={localizer}
           events={timetables}
-          startAccessor={(event) => {
-            return new Date(event.start);
-          }}
-          endAccessor={(event) => {
-            return new Date(event.end);
-          }}
+          startAccessor={(event) => new Date(event.start)}
+          endAccessor={(event) => new Date(event.end)}
           style={{ width: "100%", height: 700 }}
-          defaultView={Views.WEEK}
+          defaultView={Views.MONTH}
+          views={["month"]}
           onSelectEvent={(event) => setOpenModalDetailSchedule(event)}
           messages={messages}
           formats={formats}
-          onShowMore={(timetables) =>
-            this.setState({ showModal: true, timetables })
-          }
           min={new Date(new Date().setHours(7, 0, 0, 0))}
           max={new Date(new Date().setHours(23, 0, 0, 0))}
+          components={{
+            event: CustomEvent, // Sử dụng custom event component
+          }}
         />
       </Col>
-
-      {/* {
-        !!openModalDetailSchedule &&
-        <ModalDetailSchedule
-          open={openModalDetailSchedule}
-          onCancel={() => setOpenModalDetailSchedule(false)}
-          setOpenModalDetailSchedule={setOpenModalDetailSchedule}
-          buttonShow={buttonShow}
-          getTimeTable={getTimeTable}
-        />
-      } */}
+      {/* Modal for event details can be shown when needed */}
     </Row>
   );
 };

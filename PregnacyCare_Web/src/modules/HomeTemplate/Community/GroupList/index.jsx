@@ -1,12 +1,13 @@
 import { Box, Card, Typography, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import avatar from "../../../../assets/PregnantAvatar.jpg";
-import { useGetMyGroupList } from "../../../../apis/CallAPIGroup";
-import moment from "moment/moment";
+import Avatar from "../../../../assets/PregnantAvatar.jpg";
+import { useGetGroupList } from "../../../../apis/CallAPIGroup";
+import moment from "moment";
+import BackdropLoader from "../../../../component/BackdropLoader";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../../component/SearchBar";
 
-export default function MyGroups() {
+export default function GroupList() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [filteredGroups, setFilteredGroups] = useState([]);
@@ -14,23 +15,29 @@ export default function MyGroups() {
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
-  const groupsPerPage = 5; // Số group mỗi trang
+  const groupsPerPage = 5; // Số group hiển thị trên mỗi trang
 
-  const handleGetMyGroups = async () => {
+  // Lấy danh sách tất cả các group từ API
+  const handleGetAllGroups = async () => {
     setLoading(true);
-    const res = await useGetMyGroupList();
+    const res = await useGetGroupList();
     if (res.code === 200) {
       setGroups(res.data);
-      setFilteredGroups(res.data); // Ban đầu filteredGroups bằng với danh sách groups
+      setFilteredGroups(res.data); // Ban đầu, filteredGroups = groups
     }
     setLoading(false);
   };
 
+  useEffect(() => {
+    handleGetAllGroups();
+  }, []);
+
+  // Xử lý chuyển trang khi nhấn vào card
   const handleCardClick = (groupId) => {
     navigate(`/community/group/${groupId}`);
   };
 
-  // Hàm xử lý tìm kiếm khi nhấn Enter trong SearchBar
+  // Hàm xử lý tìm kiếm từ khóa
   const handleSearch = (searchTerm) => {
     if (!searchTerm) {
       setFilteredGroups(groups);
@@ -41,12 +48,8 @@ export default function MyGroups() {
       );
       setFilteredGroups(filtered);
     }
-    setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
+    setCurrentPage(1); // Reset trang về 1 khi tìm kiếm
   };
-
-  useEffect(() => {
-    handleGetMyGroups();
-  }, []);
 
   // Logic phân trang
   const indexOfLastGroup = currentPage * groupsPerPage;
@@ -64,14 +67,16 @@ export default function MyGroups() {
 
   return (
     <Box>
+      <BackdropLoader open={loading} />
+      {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
-        My Groups
+        Group List
       </Typography>
 
       {/* Component SearchBar */}
       <SearchBar onSearch={handleSearch} placeholder="Search groups..." />
 
-      {/* Danh sách group với phân trang */}
+      {/* Danh sách Group */}
       {currentGroups.map((group) => (
         <Card
           key={group.id}
@@ -82,7 +87,7 @@ export default function MyGroups() {
             transition: "border 0.3s ease",
             border: "1px solid transparent",
             "&:hover": {
-              border: "1px solid #615EFC",
+              border: "1px solid #615EFC", // Màu border khi hover
             },
             "&:active": {
               opacity: "0.5",
@@ -92,7 +97,11 @@ export default function MyGroups() {
         >
           <div className="row justify-content-md-center">
             <div className="col-md-auto col-2" style={{ width: 70 }}>
-              <img src={avatar} alt="Avatar of group" />
+              <img
+                src={Avatar}
+                alt="Avatar of group"
+                style={{ width: "100%" }}
+              />
             </div>
             <div className="col">
               <Typography variant="h5" gutterBottom>

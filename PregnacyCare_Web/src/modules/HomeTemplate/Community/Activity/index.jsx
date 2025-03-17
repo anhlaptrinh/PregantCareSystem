@@ -1,43 +1,67 @@
-import { Box, Typography, Link, Divider, Card } from "@mui/material";
-import React from "react";
-import { useState } from "react";
+import { Box, Typography, Link, Divider } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useGetMyPosts } from "../../../../apis/CallAPIBlog";
+import BackdropLoader from "../../../../component/BackdropLoader";
+import moment from "moment";
+import { useGetMyComments } from "../../../../apis/CallAPIComment";
+import { useNavigate } from "react-router-dom";
 
 export default function Activity() {
+  const [loading, setLoading] = useState(false);
   // Post List
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      postName: "John Post",
-      groupName: "Baby Group",
-      time: "14 minutes ago",
-    },
-    {
-      id: 2,
-      postName: "Bob Post",
-      groupName: "Big Kid Group",
-      time: "14 minutes ago",
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
   // Comment List
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      postName: "Boy Comment",
-      groupName: "Baby Group",
-      time: "14 minutes ago",
+  const [comments, setComments] = useState([]);
+
+  const navigate = useNavigate();
+
+  const handleGetMyPosts = async () => {
+    setLoading(true);
+    const res = await useGetMyPosts();
+    if (res.code === 200) {
+      setPosts(res.data);
+    }
+    setLoading(false);
+  };
+
+  const handleGetMyComments = async () => {
+    setLoading(true);
+    const res = await useGetMyComments();
+    if (res.code === 200) {
+      setComments(res.data);
+    }
+    setLoading(false);
+  };
+
+  const handlePostClick = async (postId) => {
+    navigate(`/community/post-detail/${postId}`);
+  };
+
+  const handleGroupClick = async (groupId) => {
+    navigate(`/community/group/${groupId}`);
+  };
+
+  useEffect(() => {
+    handleGetMyPosts();
+    handleGetMyComments();
+  }, []);
+
+  const linkSx = {
+    cursor: "pointer",
+    color: "primary.main",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+      color: "primary.dark",
     },
-    {
-      id: 2,
-      postName: "Girl Comment",
-      groupName: "Big Kid Group",
-      time: "14 minutes ago",
-    },
-  ]);
+  };
+
   return (
     <Box>
+      <BackdropLoader open={loading} />
       {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
-        Browse your activiy
+        Browse your activity
       </Typography>
       {/* My post button and My comment button */}
       <div className="row">
@@ -49,7 +73,7 @@ export default function Activity() {
               e.preventDefault();
               const target = document.getElementById("my-posts");
               if (target) {
-                const offset = 170; // Khoảng cách mong muốn
+                const offset = 170;
                 const targetPosition =
                   target.getBoundingClientRect().top + window.scrollY - offset;
                 window.scrollTo({ top: targetPosition, behavior: "smooth" });
@@ -67,7 +91,7 @@ export default function Activity() {
               e.preventDefault();
               const target = document.getElementById("my-comments");
               if (target) {
-                const offset = 180; // Khoảng cách mong muốn
+                const offset = 180;
                 const targetPosition =
                   target.getBoundingClientRect().top + window.scrollY - offset;
                 window.scrollTo({ top: targetPosition, behavior: "smooth" });
@@ -91,11 +115,18 @@ export default function Activity() {
         {posts.map((post) => (
           <div className="row" key={post.id}>
             <Typography variant="h5">
-              created post "{post.postName}" in group "{post.groupName}"
+              created post{" "}
+              <Link sx={linkSx} onClick={() => handlePostClick(post.id)}>
+                "{post.title}"
+              </Link>{" "}
+              in group{" "}
+              <Link sx={linkSx} onClick={() => handleGroupClick(post.group.id)}>
+                "{post.group.name}"
+              </Link>
             </Typography>
             {/* Time */}
             <Typography variant="h6" color="text.secondary">
-              {post.time}
+              {moment(post.datePublish).format("MMMM D, YYYY")}
             </Typography>
             <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
           </div>
@@ -113,16 +144,28 @@ export default function Activity() {
         >
           My comments
         </Typography>
-        {/* Post List */}
+        {/* Comment List */}
         {comments.map((comment) => (
           <div className="row" key={comment.id}>
             <Typography variant="h5">
-              commented on post "{comment.postName}" in group "
-              {comment.groupName}"
+              commented on post{" "}
+              <Link
+                sx={linkSx}
+                onClick={() => handlePostClick(comment.blog.id)}
+              >
+                "{comment.blog.title}"
+              </Link>{" "}
+              in group{" "}
+              <Link
+                sx={linkSx}
+                onClick={() => handleGroupClick(comment.blog.group.id)}
+              >
+                "{comment.blog.group.name}"
+              </Link>
             </Typography>
             {/* Time */}
             <Typography variant="h6" color="text.secondary">
-              {comment.time}
+              {moment(comment.datePublish).format("MMMM D, YYYY")}
             </Typography>
             <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
           </div>

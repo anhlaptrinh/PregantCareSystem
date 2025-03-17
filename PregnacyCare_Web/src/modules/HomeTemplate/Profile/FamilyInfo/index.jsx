@@ -10,7 +10,6 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { message as Message } from "antd";
 import { Add, Edit, CalendarToday } from "@mui/icons-material";
 import PregnantAvatar from "../../../../assets/PregnantAvatar.jpg";
 import moment from "moment";
@@ -96,7 +95,7 @@ export default function FamilyInfo() {
 
       <List>
         {fetusList.map((fetus) => (
-          <ListItem key={fetus.idFetus} sx={{ width: 500 }}>
+          <ListItem key={fetus.id} sx={{ width: 500 }}>
             {/* Avatar */}
             <ListItemAvatar>
               <Avatar sx={{ width: 60, height: 60, marginRight: 2 }}>
@@ -107,7 +106,7 @@ export default function FamilyInfo() {
             <ListItemText
               primary={
                 <Typography variant="h5" gutterBottom>
-                  {fetus.nameFetus}
+                  {fetus.name}
                 </Typography>
               }
               secondary={
@@ -117,7 +116,7 @@ export default function FamilyInfo() {
                   sx={{ display: "flex", alignItems: "center" }}
                 >
                   <CalendarToday sx={{ fontSize: 18, mr: 1 }} />
-                  {moment(fetus.dateFetus).format("MMMM D, YYYY")}
+                  {moment(fetus.dueDate).format("MMMM D, YYYY")}
                 </Typography>
               }
             />
