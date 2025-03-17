@@ -72,18 +72,17 @@ const routes = [
         path: "/",
         element: <HomePages />,
         children: [
-          { path: "/appointment", element: <AppointmentManagement /> },
-          { path: "/appointment/calendar", element: <AppointmentCalendar /> },
-          { path: "/appointment/schedule", element: <AppointmentSchedule /> },
-          {
-            path: "/appointment/fetus-growth-chart",
-            element: <FetusGrowthChart />,
-          },
           { path: "/profile", element: <ProfilePages /> },
           { path: "/community", element: <CommunityPages /> },
-          { path: "/view-post", element: <ViewPostPages /> },
-          { path: "/view-group", element: <ViewGroupPages /> },
-          { path: "/create-post", element: <CreatePostPages /> },
+          {
+            path: "/community/post-detail/:postId",
+            element: <ViewPostPages />,
+          },
+          { path: "/community/group/:groupId", element: <ViewGroupPages /> },
+          {
+            path: "/community/group/create-post/:groupId",
+            element: <CreatePostPages />,
+          },
           { path: "/payment", element: <PaymentPage /> },
         ],
       },
@@ -135,6 +134,30 @@ const routes = [
         ),
       },
     ],
+  },
+  {
+    path: "/appointment/schedule",
+    element: (
+      <AppointmentManagement>
+        <AppointmentSchedule />
+      </AppointmentManagement>
+    ),
+  },
+  {
+    path: "/appointment/calendar",
+    element: (
+      <AppointmentManagement>
+        <AppointmentCalendar />
+      </AppointmentManagement>
+    ),
+  },
+  {
+    path: "/appointment/fetus-growth-chart",
+    element: (
+      <AppointmentManagement>
+        <FetusGrowthChart />
+      </AppointmentManagement>
+    ),
   },
   // Route bắt lỗi cho các URL không khớp
   {

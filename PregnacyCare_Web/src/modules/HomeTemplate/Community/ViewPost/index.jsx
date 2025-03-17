@@ -6,26 +6,26 @@ import {
   Stack,
   Divider,
 } from "@mui/material";
-import React, { useState } from "react";
-import Avatar from "../../../../assets/PregnantAvatar.jpg";
+import React, { useEffect, useState } from "react";
+import avatar from "../../../../assets/PregnantAvatar.jpg";
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import moment from "moment/moment";
+import { useCreateComment } from "../../../../apis/CallAPIComment";
+import { message as Message } from "antd";
 
-export default function ViewPost() {
+export default function ViewPost({ data }) {
   // Information of a post
-  const [post, setPost] = useState({
-    title: "Tile of Post",
-    author: "Member",
-    date: "17/2/2025",
-    avatar: Avatar,
-    content:
-      "I’m 38 weeks and a few days along with my 2nd kid. I’ve been having super bad pain down below where it almost drops me to my knees and I cry. I didn’t experience this with my first. I had an anterior placenta with my 1st and my kids will be 18 months apart.. any advice ?? I’m trying to wait it out/ hang on.. ",
-  });
+  const [post, setPost] = useState(data);
   // Comment
   const [comment, setComment] = useState();
 
-  const onHandle = () => {
-    alert(comment);
+  const handleSubmit = async () => {
+    const res = await useCreateComment(data.id, comment);
+    if (res.code === 200) {
+      setComment("");
+      Message.success("comment successfully");
+    }
   };
 
   return (
@@ -37,23 +37,23 @@ export default function ViewPost() {
       <div className="row mb-4">
         <div className="col-1">
           <img
-            src={post.avatar}
+            src={avatar}
             alt="Avatar of member"
             style={{ width: 50, borderRadius: 50 }}
           />
         </div>
         <div className="col-8">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {post.author}
+            {post.user.fullName}
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            {post.date}
+            {moment(post.datePublish).format("MMMM D, YYYY")}
           </Typography>
         </div>
       </div>
       {/* Content of post */}
       <Typography variant="h5" gutterBottom>
-        {post.content}
+        {post.description}
       </Typography>
 
       <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
@@ -85,9 +85,10 @@ export default function ViewPost() {
         rows={6}
         fullWidth
         sx={{ mb: 3 }}
+        value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
-      <button className="rts-btn btn-primary" onClick={() => onHandle()}>
+      <button className="rts-btn btn-primary" onClick={() => handleSubmit()}>
         Comment
       </button>
     </Box>

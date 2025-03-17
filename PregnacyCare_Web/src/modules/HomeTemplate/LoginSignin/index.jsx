@@ -1,6 +1,4 @@
-
 /* eslint-disable no-unused-vars */
-
 
 import React, { useState } from "react";
 import { Modal } from "antd";
@@ -10,7 +8,6 @@ import Signin from "../Signin";
 
 // Danh sách các tab trong phần Account Settings
 const tabLabels = ["Log in", "Sign in"];
-
 
 // eslint-disable-next-line react/prop-types
 
@@ -24,7 +21,7 @@ export default function LoginSignin({ open, onClose }) {
 
   return (
     <Modal
-      visible={open}
+      open={open}
       onCancel={onClose}
       footer={null}
       width={900}
@@ -42,7 +39,6 @@ export default function LoginSignin({ open, onClose }) {
             ))}
           </Tabs>
         </AppBar>
-
 
         {/* Nội dung cho từng tab*/}
         {activeTab === 0 && <Login onClose={onClose} />}

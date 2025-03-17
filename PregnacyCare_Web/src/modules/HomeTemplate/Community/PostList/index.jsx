@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Typography,
@@ -12,70 +12,59 @@ import {
   InputLabel,
   TextField,
   InputAdornment,
+  Pagination,
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SearchIcon from "@mui/icons-material/Search";
+import moment from "moment";
 
-const posts = [
-  {
-    id: 1,
-    title: "Postpartum hemorrhoids",
-    author: "Getzy",
-    group: "December 2024 Birth Club",
-    content:
-      "TMI, but I’m desperate and need some help if possible, I’m experiencing such painful hemorrhoids that flare up after every bowel movement...",
-    time: "14 minutes ago",
-    comments: 1,
-    likes: 0,
-  },
-  {
-    id: 2,
-    title: "Never goes as planned",
-    author: "oopsyIdiditagain",
-    group: "Baby Names",
-    content:
-      "So I have decided to stick with the name Emrys Mae. Until my cousin asked me if I would change the middle because her daughter’s middle name...",
-    time: "15 minutes ago",
-    comments: 10,
-    likes: 0,
-  },
-];
-
-export default function PostList() {
+export default function PostList({ group }) {
   const [sortBy, setSortBy] = useState("newest");
-  // searchInput chứa giá trị nhập trực tiếp từ người dùng
   const [searchInput, setSearchInput] = useState("");
-  // searchTerm chỉ cập nhật khi nhấn Enter
   const [searchTerm, setSearchTerm] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const postsPerPage = 5; // Số bài viết mỗi trang
 
-  // Hàm xử lý khi nhấn Enter trên TextField
+  useEffect(() => {
+    setPosts(group?.blogs || []);
+  }, [group]);
+
+  // Khi nhấn Enter trong thanh tìm kiếm
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       setSearchTerm(searchInput);
+      setPage(1); // Reset trang về 1 khi tìm kiếm
     }
   };
 
-  // Lọc bài đăng dựa trên từ khóa tìm kiếm đã được cập nhật khi nhấn Enter
+  // Lọc bài viết dựa trên từ khóa nhập vào (title và description)
   const filteredPosts = posts.filter((post) => {
-    const lowerSearch = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase();
     return (
-      post.title.toLowerCase().includes(lowerSearch) ||
-      post.content.toLowerCase().includes(lowerSearch) ||
-      post.author.toLowerCase().includes(lowerSearch) ||
-      post.group.toLowerCase().includes(lowerSearch)
+      post?.title.toLowerCase().includes(term) ||
+      post?.description.toLowerCase().includes(term)
     );
   });
 
-  // Sắp xếp bài đăng theo thời gian (dựa trên giả định id)
-  const sortedPosts = [...filteredPosts].sort((a, b) => {
-    if (sortBy === "newest") {
-      return b.id - a.id;
-    } else {
-      return a.id - b.id;
-    }
+  // Sắp xếp bài viết theo ngày (sử dụng trường datePublish)
+  const sortedPosts = filteredPosts.sort((a, b) => {
+    const dateA = new Date(a.datePublish);
+    const dateB = new Date(b.datePublish);
+    return sortBy === "newest" ? dateB - dateA : dateA - dateB;
   });
+
+  // Tính toán chỉ số bài viết hiển thị của trang hiện tại
+  const indexOfLastPost = page * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Xử lý thay đổi trang và cuộn lên đầu trang
+  const handleChangePage = (event, value) => {
+    setPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <Box>
@@ -102,6 +91,7 @@ export default function PostList() {
         />
       </Box>
 
+      {/* Dropdown sắp xếp */}
       <FormControl sx={{ mb: 2, width: 150 }}>
         <InputLabel id="sort-by" sx={{ fontSize: 12 }}>
           Sort by
@@ -117,22 +107,21 @@ export default function PostList() {
         </Select>
       </FormControl>
 
-      {sortedPosts.map((post) => (
-        <Card key={post.id} sx={{ mb: 2, p: 2 }}>
+      {/* Danh sách bài viết */}
+      {currentPosts.map((post) => (
+        <Card key={post?.id} sx={{ mb: 2, p: 2 }}>
           <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-            {post.title}
+            {post?.title}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-            <Avatar sx={{ width: 24, height: 24 }} />
-            <Typography variant="body1">
-              By <strong>{post.author}</strong> in <strong>{post.group}</strong>
-            </Typography>
+            <Avatar sx={{ width: 30, height: 30 }} />
+            <Typography variant="h6">By {post?.user.fullName}</Typography>
           </Box>
           <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
-            {post.content}
+            {post?.description}
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            {post.time}
+            {moment(post?.datePublish).format("MMMM DD, YYYY")}
           </Typography>
           <Divider sx={{ my: 1 }} />
           <Box
@@ -143,21 +132,27 @@ export default function PostList() {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <IconButton size="small" disabled>
-                <ChatBubbleOutlineIcon fontSize="small" />
+              <IconButton size="large" disabled>
+                <ChatBubbleOutlineIcon fontSize="large" />
               </IconButton>
-              <Typography variant="body1">{post.comments}</Typography>
-              <IconButton size="small" disabled>
-                <FavoriteBorderIcon fontSize="small" />
-              </IconButton>
-              <Typography variant="body1">{post.likes}</Typography>
+              <Typography variant="h5">{post?.blogComments.length}</Typography>
             </Box>
-            <IconButton size="large" sx={{ width: 40 }}>
-              <MoreHorizIcon fontSize="large" />
+            <IconButton size="large" sx={{ width: 60 }}>
+              <MoreHorizIcon fontSize="large" sx={{ width: 70 }} />
             </IconButton>
           </Box>
         </Card>
       ))}
+
+      {/* Phân trang */}
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <Pagination
+          count={Math.ceil(sortedPosts.length / postsPerPage)}
+          page={page}
+          onChange={handleChangePage}
+          color="primary"
+        />
+      </Box>
     </Box>
   );
 }

@@ -5,9 +5,10 @@ import Home from "../../../modules/HomeTemplate/Community/Home";
 import Bookmarks from "../../../modules/HomeTemplate/Community/Bookmarks";
 import MyGroups from "../../../modules/HomeTemplate/Community/MyGroups";
 import Activity from "../../../modules/HomeTemplate/Community/Activity";
+import GroupList from "../../../modules/HomeTemplate/Community/GroupList";
 
 // Danh sách các tab trong phần Community
-const tabLabels = ["Home", "Bookmarks", "My Groups", "Activity"];
+const tabLabels = ["Home", "Bookmarks", "My Groups", "Activity", "Group List"];
 
 export default function CommunityPages() {
   // Quản lý state cho tab đang được chọn
@@ -49,6 +50,7 @@ export default function CommunityPages() {
             {activeTab === 1 && <Bookmarks />}
             {activeTab === 2 && <MyGroups />}
             {activeTab === 3 && <Activity />}
+            {activeTab === 4 && <GroupList />}
           </Box>
         </div>
         <div className="col-4">

@@ -1,24 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
-import Avatar from "../../../../assets/PregnantAvatar.jpg";
+import avatar from "../../../../assets/PregnantAvatar.jpg";
 import { useNavigate } from "react-router-dom";
 
-export default function ViewGroup() {
+export default function ViewGroup({ group }) {
   const navigate = useNavigate();
-  const [group, setGroup] = useState({
-    name: "Pregnancy",
-    avatar: Avatar,
-    members: 381.9,
-    posts: 107.2,
-    descriptionL:
-      "WELCOME!! You're expecting... Congratulations! Talk here about all the ups and downs of pregnancy.",
-    owner: "John",
-    date: "19/02/2025",
-  });
 
   // Direct to create post pages
   const onHandlePost = () => {
-    navigate("/create-post");
+    navigate(`/community/group/create-post/${group?.id}`);
   };
 
   return (
@@ -32,21 +22,21 @@ export default function ViewGroup() {
     >
       {/* Avatar of grou[] */}
       <img
-        src={group.avatar}
+        src={avatar}
         alt="Avatar of group"
         style={{ width: 100, borderRadius: 10, marginBottom: 20 }}
       />
 
       {/* Group Name */}
       <Typography variant="h2" fontWeight="bold" gutterBottom>
-        {group.name}
+        {group?.name}
       </Typography>
 
       {/* Members and posts and info */}
       <div className="row justify-content-md-center mb-5">
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group.members}k
+            {group?.users.length}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             members
@@ -54,7 +44,7 @@ export default function ViewGroup() {
         </div>
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group.posts}k
+            {group?.blogs.length}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             posts
@@ -62,7 +52,7 @@ export default function ViewGroup() {
         </div>
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group.owner}
+            {group?.owner.fullName}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             owner

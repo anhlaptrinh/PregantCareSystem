@@ -1,41 +1,65 @@
-import { Box, Container, TextField, Typography } from "@mui/material";
-import  { useState } from "react";
+import {
+  Box,
+  Container,
+  TextField,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import Advertisement from "../../../../component/Advertisement";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useGetCategories } from "../../../../apis/CallAPICategory";
+import BackdropLoader from "../../../../component/BackdropLoader";
+import { useCreateBlog } from "../../../../apis/CallAPIBlog";
+import { message as Message } from "antd";
+import BackButton from "../../../../component/BackButton";
 
 export default function CreatePostPages() {
   const navigate = useNavigate();
+  const { groupId } = useParams();
   const [post, setPost] = useState({
     title: "",
-    date: "",
     description: "",
+    groupId: groupId,
+    blogCategoryId: 0,
   });
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const onHandle = () => {
-    // Ví dụ: alert hiển thị dữ liệu post dưới dạng JSON
-    alert(JSON.stringify(post));
+  const handleGetCategories = async () => {
+    setLoading(true);
+    const res = await useGetCategories();
+    if (res.code === 200 && res.data) {
+      setCategories(res.data);
+      setLoading(false);
+    }
   };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const res = await useCreateBlog(post);
+    if (res.code == 200) {
+      Message.success("Success!");
+      navigate(-1);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetCategories();
+  }, []);
 
   return (
     <Container>
+      <BackdropLoader open={loading} />
       <div className="row">
         <div className="col-8 mt-5">
-          {/* Create a post */}
           <Box>
-            <Link
-              underline="hover"
-              onClick={() => navigate(-1)}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-                width: "fit-content",
-              }}
-            >
-              <ArrowBackIcon fontSize="small" sx={{ mr: 0.5 }} />
-              Back
-            </Link>
+            <BackButton />
             <Typography variant="h2" fontWeight="bold" gutterBottom>
               Create a post
             </Typography>
@@ -48,9 +72,8 @@ export default function CreatePostPages() {
               value={post.title}
               onChange={(e) => setPost({ ...post, title: e.target.value })}
               sx={{
-                // Dành cho input bình thường
                 "& input::placeholder": {
-                  fontSize: "3rem", // Tăng kích thước placeholder
+                  fontSize: "3rem",
                 },
               }}
             />
@@ -66,18 +89,37 @@ export default function CreatePostPages() {
                 setPost({ ...post, description: e.target.value })
               }
               sx={{
-                // Dành cho input bình thường
                 "& input::placeholder": {
-                  fontSize: "1.5rem", // Tăng kích thước placeholder
+                  fontSize: "1.5rem",
                 },
-                // Nếu là TextField multiline (textarea)
                 "& textarea::placeholder": {
                   fontSize: "1.5rem",
                 },
               }}
             />
+            {/* Select danh mục */}
+            <FormControl fullWidth className="mb-5">
+              <InputLabel id="category-select-label">Category</InputLabel>
+              <Select
+                labelId="category-select-label"
+                value={post.blogCategoryId}
+                label="Category"
+                onChange={(e) =>
+                  setPost({ ...post, blogCategoryId: e.target.value })
+                }
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <div className="row mb-5">
-              <button className="rts-btn btn-primary" onClick={onHandle}>
+              <button
+                className="rts-btn btn-primary"
+                onClick={() => handleSubmit()}
+              >
                 Create Post
               </button>
             </div>

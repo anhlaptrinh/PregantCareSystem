@@ -80,7 +80,7 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
 
   return (
     <Modal
-      visible={visible}
+      open={visible}
       onCancel={onClose}
       footer={null}
       closeIcon={<span style={{ cursor: "pointer" }}>&times;</span>}

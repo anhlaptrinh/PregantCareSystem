@@ -1,4 +1,3 @@
-
 import FetusRecord from "../../../modules/FetusTrackerTemplate/FetusRecord";
 
 import GrowthChart from "../../../modules/FetusTrackerTemplate/GrowthChart";
@@ -11,7 +10,7 @@ export default function FetusGrowthChart() {
         <div className="row">
           <div className="col" style={{ height: "100vh" }}>
             <GrowthChart />
-            <AdviceForm />
+            {/* <AdviceForm /> */}
           </div>
           <div
             className="col"
