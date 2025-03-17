@@ -1,64 +1,61 @@
 import ReactEcharts from "echarts-for-react";
 
-
 const ChartContent = () => {
-  const option = {
-    title: {
-      text: "Fetus Growth Chart",
-    },
-    tooltip: {
-      trigger: "axis",
-    },
-    legend: {
-      data: ["Fetus", "WHO Standard"],
-    },
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
-      containLabel: true,
-    },
-    toolbox: {
-      feature: {
-        saveAsImage: {},
-      },
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: true,
-      name: "Weeks", // Đặt tên cột X
-      nameLocation: "middle",
-      nameGap: 20,
-      data: ["4", "8", "12", "16", "20", "24", "28"], // Số tuần thai nhi
-    },
-    yAxis: {
-      type: "value",
-      name: "Weight (gram)", // Đặt tên cột Y
-      nameLocation: "middle",
-      nameGap: 22,
-      data: ["4", "8", "12", "16", "20"],
-    },
-    series: [
-      {
-        name: "Fetus",
-        type: "line",
-        stack: "Total",
-        data: [2, 5, 7, 9, 10, 12, 18], // Cân nặng thực tế của thai nhi theo tuần
-      },
-      {
-        name: "WHO Standard",
-        type: "line",
-        stack: "Total",
-        data: [3, 6, 10, 12, 16, 17, 18], // Chuẩn của WHO
-      },
-    ],
-  };
+    const option = {
+        title: {
+            left: "center",
+        },
+        tooltip: {
+            trigger: "axis",
+        },
+        legend: {
+            data: ["Label 1", "Label 2", "Label 3"],
+            top: "10px",
+        },
+        grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+            containLabel: true,
+        },
+        xAxis: {
+            type: "category",
+            boundaryGap: false,
+            data: ["A", "B", "C", "D", "E", "F", "G"],
+        },
+        yAxis: {
+            type: "value",
+        },
+        series: [
+            {
+                name: "Label 1",
+                type: "line",
+                data: [5, 2, 7, 3, 9, 4, 2],
+                itemStyle: { color: "#3F51B5" },
+                symbol: "circle",
+            },
+            {
+                name: "Label 2",
+                type: "line",
+                data: [3, 6, 4, 8, 10, 9, 7],
+                itemStyle: { color: "#E91E63" },
+                symbol: "circle",
+            },
+            {
+                name: "Label 3",
+                type: "line",
+                data: [6, 4, 8, 10, 5, 3, 6],
+                itemStyle: { color: "#4CAF50" },
+                symbol: "circle",
+            },
+        ],
+    };
 
-  return (
-    <div className="container">
-      <ReactEcharts option={option} />
-      
-    </div>
-  );
+    return (
+        <div className="container">
+            <ReactEcharts option={option} />
+        </div>
+    );
 };
+
 export default ChartContent;
