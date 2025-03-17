@@ -13,23 +13,37 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import moment from "moment/moment";
 import { useCreateComment } from "../../../../apis/CallAPIComment";
 import { message as Message } from "antd";
+import BackdropLoader from "../../../../component/BackdropLoader";
 
-export default function ViewPost({ data }) {
+export default function ViewPost({ data, onCommentCreated }) {
   // Information of a post
   const [post, setPost] = useState(data);
   // Comment
-  const [comment, setComment] = useState();
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Khi prop data thay đổi, cập nhật lại state local
+  useEffect(() => {
+    setPost(data);
+  }, [data]);
 
   const handleSubmit = async () => {
+    setLoading(true);
     const res = await useCreateComment(data.id, comment);
     if (res.code === 200) {
       setComment("");
-      Message.success("comment successfully");
+      Message.success("Comment successfully");
+      // Gọi callback để re-render comment list
+      if (onCommentCreated) {
+        onCommentCreated();
+      }
+      setLoading(false);
     }
   };
 
   return (
     <Box>
+      <BackdropLoader open={loading} />
       <Typography variant="h2" fontWeight="bold" gutterBottom>
         {post.title}
       </Typography>
@@ -39,7 +53,7 @@ export default function ViewPost({ data }) {
           <img
             src={avatar}
             alt="Avatar of member"
-            style={{ width: 50, borderRadius: 50 }}
+            style={{ width: 50, borderRadius: "50%" }}
           />
         </div>
         <div className="col-8">
@@ -84,11 +98,17 @@ export default function ViewPost({ data }) {
         multiline
         rows={6}
         fullWidth
-        sx={{ mb: 3 }}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
+        sx={{
+          mb: 3,
+          "& .MuiInputBase-input": {
+            fontSize: "16px",
+            padding: 1,
+          },
+        }}
       />
-      <button className="rts-btn btn-primary" onClick={() => handleSubmit()}>
+      <button className="rts-btn btn-primary" onClick={handleSubmit}>
         Comment
       </button>
     </Box>

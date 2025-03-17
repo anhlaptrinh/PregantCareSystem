@@ -28,6 +28,8 @@ const CustomEvent = ({ event }) => {
   return (
     <div
       style={{
+        width: "100%",
+        height: "100%",
         fontSize: "18px",
         padding: "10px",
         border: "1px solid #ddd",

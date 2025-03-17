@@ -74,23 +74,6 @@ const Headers = () => {
                       <a onClick={() => navigate("/")}>Home</a>
                     </li>
                     <li className="main-nav has-dropdown">
-                      <a href="#">Page</a>
-                    </li>
-                    <li className="main-nav has-dropdown">
-                      <a href="#">Service</a>
-                      <ul className="submenu parent-nav">
-                        <li>
-                          <a href="blog.html">Blog Grid</a>
-                        </li>
-                        <li>
-                          <a href="blog-list.html">Blog List</a>
-                        </li>
-                        <li>
-                          <a href="blog-details.html">Blog Details</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li className="main-nav has-dropdown">
                       <a onClick={() => navigate("/our-expert")}>Our Expert</a>
                     </li>
                     <li className="main-nav has-dropdown">
@@ -119,9 +102,6 @@ const Headers = () => {
                           </a>
                         </li>
                       </ul>
-                    </li>
-                    <li className="main-nav">
-                      <a href="contactus.html">Contact</a>
                     </li>
                   </ul>
                 </div>

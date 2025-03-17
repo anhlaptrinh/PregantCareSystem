@@ -3,23 +3,25 @@ import { Button, Col, Menu, Row } from "antd";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
-import MenuIcon from "@mui/icons-material/Menu"; // Icon dành cho Drawer Button
 import "./index.css";
 import DrawerMenu from "../../component/DrawerMenu";
 
 const menuAppointment = () => [
   {
-    icon: <CalendarTodayOutlinedIcon />,
+    icon: <HomeOutlinedIcon />,
     label: "Home",
     key: "/",
   },
   {
-    icon: <MenuIcon />,
+    icon: <PersonOutlineIcon />,
     label: "My profile",
     key: "drawer-menu",
   },
@@ -30,10 +32,11 @@ const menuAppointment = () => [
   },
   {
     icon: <EditCalendarOutlinedIcon />,
-    label: "Appointment Schedule",
+    label: "Schedule",
     key: "/appointment/schedule",
   },
   {
+    icon: <TrendingUpIcon />,
     label: "Growth Chart",
     key: "/appointment/fetus-growth-chart",
   },

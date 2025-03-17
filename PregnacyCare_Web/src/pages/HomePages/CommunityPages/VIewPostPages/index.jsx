@@ -11,24 +11,24 @@ import BackdropLoader from "../../../../component/BackdropLoader";
 export default function ViewPostPages() {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
-  const [loading, SetLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
   const handleGetPostDetail = async () => {
-    SetLoading(true);
+    setLoading(true);
     const res = await useGetPostDetail(postId);
-    if (res.code == 200) {
+    if (res.code === 200) {
       setPost(res.data);
-      SetLoading(false);
+      setLoading(false);
     }
   };
 
   const getUserInfo = async () => {
-    SetLoading(true);
+    setLoading(true);
     const storedUser = localStorage.getItem("USER_TOKEN");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      SetLoading(false);
+      setLoading(false);
     }
   };
 
@@ -44,7 +44,7 @@ export default function ViewPostPages() {
           <BackButton />
           {post ? (
             <>
-              <ViewPost data={post} />
+              <ViewPost data={post} onCommentCreated={handleGetPostDetail} />
               <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
               <CommentList data={post} currentUser={user} />
             </>

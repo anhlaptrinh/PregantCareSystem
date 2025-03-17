@@ -24,3 +24,10 @@ export const useDeleteComment = (commentId) => {
     url: `/api/blog-comments/${commentId}`,
   });
 };
+
+export const useUpdateComment = (commentId, description) => {
+  return APIClient.put({
+    url: `/api/blog-comments/${commentId}`,
+    params: { description },
+  });
+};

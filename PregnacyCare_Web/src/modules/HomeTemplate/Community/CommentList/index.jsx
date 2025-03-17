@@ -13,7 +13,11 @@ import moment from "moment";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import CommentActionMenu from "./CommentActionMenu";
-import { useDeleteComment } from "../../../../apis/CallAPIComment";
+import {
+  useDeleteComment,
+  useUpdateComment,
+} from "../../../../apis/CallAPIComment";
+import BackdropLoader from "../../../../component/BackdropLoader";
 
 export default function CommentList({ data, currentUser }) {
   const [comments, setComments] = useState([]);
@@ -22,6 +26,7 @@ export default function CommentList({ data, currentUser }) {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedCommentText, setEditedCommentText] = useState("");
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Mở menu
   const handleMenuOpen = (event, comment) => {
@@ -35,9 +40,35 @@ export default function CommentList({ data, currentUser }) {
   };
 
   // Call API để edit comment
-  const handleSaveEdit = () => {
-    setEditingCommentId(null);
-    setEditedCommentText("");
+  const handleSaveEdit = async () => {
+    if (!selectedComment) {
+      console.error("No comment selected for editing.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await useUpdateComment(selectedComment.id, editedCommentText);
+      if (res.code === 200) {
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id === selectedComment.id
+              ? { ...comment, description: editedCommentText }
+              : comment
+          )
+        );
+        handleMenuClose();
+        setEditingCommentId(null);
+        setEditedCommentText("");
+        // Bạn có thể hiển thị thông báo thành công ở đây
+      } else {
+        // Xử lý khi API trả về lỗi
+        console.error("Failed to update comment", res);
+      }
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Khi nhấn "Edit" từ menu, hàm này sẽ chuyển comment sang chế độ chỉnh sửa
@@ -81,6 +112,7 @@ export default function CommentList({ data, currentUser }) {
 
   return (
     <Box>
+      <BackdropLoader open={loading} />
       {comments.length > 0 ? (
         comments.map((comment) => (
           <Card key={comment?.id} sx={{ mb: 2, p: 2, position: "relative" }}>
@@ -115,20 +147,45 @@ export default function CommentList({ data, currentUser }) {
                   rows={3}
                   value={editedCommentText}
                   onChange={(e) => setEditedCommentText(e.target.value)}
-                  sx={{ mt: 2 }}
+                  sx={{
+                    mt: 2,
+                    "& .MuiInputBase-input": {
+                      fontSize: "16px",
+                      padding: 1,
+                    },
+                  }}
                 />
                 <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
                   <Button
                     variant="contained"
-                    color="primary"
                     onClick={handleSaveEdit}
+                    sx={{
+                      mt: 1,
+                      p: 1.5,
+                      fontSize: 12,
+                      backgroundColor: "#615EFC", // Màu nền của button Save
+                      color: "#FFFFFF", // Màu chữ của button Save
+                      "&:hover": {
+                        backgroundColor: "#5045D9", // Màu nền khi hover
+                      },
+                    }}
                   >
                     Save
                   </Button>
                   <Button
                     variant="outlined"
-                    color="secondary"
                     onClick={handleCancelEdit}
+                    sx={{
+                      mt: 1,
+                      p: 1.5,
+                      fontSize: 12,
+                      borderColor: "#615EFC", // Màu viền của button Cancel
+                      color: "#615EFC", // Màu chữ của button Cancel
+                      "&:hover": {
+                        borderColor: "#5045D9", // Màu viền khi hover
+                        backgroundColor: "#f0f0f0", // Màu nền khi hover
+                      },
+                    }}
                   >
                     Cancel
                   </Button>
