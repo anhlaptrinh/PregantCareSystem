@@ -28,6 +28,10 @@ export default function ViewPost({ data, onCommentCreated }) {
   }, [data]);
 
   const handleSubmit = async () => {
+    if (comment === "") {
+      Message.error("Please enter comment");
+      return;
+    }
     setLoading(true);
     const res = await useCreateComment(data.id, comment);
     if (res.code === 200) {

@@ -4,11 +4,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
 import { Avatar } from "antd";
-import StyledButton from "../StyleButton";
 import avatar from "../../assets/PregnantAvatar.jpg";
 import { useNavigate } from "react-router-dom";
 import { useGetImageUrl } from "../../apis/CallAPIFirebase";
 import DrawerMenu from "../DrawerMenu";
+import { motion } from "framer-motion";
+
+const headerVariants = {
+  hidden: { y: -100, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 50, damping: 10 },
+  },
+};
 
 const Headers = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -59,27 +68,53 @@ const Headers = () => {
   }, []);
 
   return (
-    <header className={`header--sticky ${isSticky ? "sticky" : ""}`}>
+    <motion.header
+      className={`header--sticky ${isSticky ? "sticky" : ""}`}
+      variants={headerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="container-full-header">
         <div className="row">
           <div className="col-lg-12">
             <div className="header-wrapper-1">
               <div className="logo-area-start">
-                <a onClick={() => navigate("/")} className="logo">
+                <motion.a
+                  onClick={() => navigate("/")}
+                  className="logo"
+                  whileHover={{ scale: 1.1 }}
+                  style={{ display: "inline-block" }}
+                >
                   <img src={logo} alt="logo_area" />
-                </a>
+                </motion.a>
                 <div className="nav-area">
                   <ul>
-                    <li className="main-nav">
+                    <motion.li
+                      className="main-nav"
+                      whileHover={{ scale: 1.05 }}
+                      style={{ display: "inline-block", marginRight: 20 }}
+                    >
                       <a onClick={() => navigate("/")}>Home</a>
-                    </li>
-                    <li className="main-nav has-dropdown">
+                    </motion.li>
+                    <motion.li
+                      className="main-nav has-dropdown"
+                      whileHover={{ scale: 1.05 }}
+                      style={{ display: "inline-block", marginRight: 20 }}
+                    >
                       <a onClick={() => navigate("/our-expert")}>Our Expert</a>
-                    </li>
-                    <li className="main-nav has-dropdown">
+                    </motion.li>
+                    <motion.li
+                      className="main-nav has-dropdown"
+                      whileHover={{ scale: 1.05 }}
+                      style={{ display: "inline-block", marginRight: 20 }}
+                    >
                       <a onClick={() => navigate("/community")}>Community</a>
-                    </li>
-                    <li className="main-nav has-dropdown">
+                    </motion.li>
+                    <motion.li
+                      className="main-nav has-dropdown"
+                      whileHover={{ scale: 1.05 }}
+                      style={{ display: "inline-block", marginRight: 20 }}
+                    >
                       <a>Appointment</a>
                       <ul className="submenu parent-nav">
                         <li>
@@ -102,7 +137,7 @@ const Headers = () => {
                           </a>
                         </li>
                       </ul>
-                    </li>
+                    </motion.li>
                   </ul>
                 </div>
               </div>
@@ -116,16 +151,22 @@ const Headers = () => {
                 </div>
 
                 {user ? (
-                  <Avatar
-                    src={url || avatar}
-                    size={40}
-                    style={{ cursor: "pointer" }}
-                    onClick={handleOpenDrawer}
-                  />
+                  <motion.div whileHover={{ scale: 1.1 }}>
+                    <Avatar
+                      src={url || avatar}
+                      size={40}
+                      style={{ cursor: "pointer" }}
+                      onClick={handleOpenDrawer}
+                    />
+                  </motion.div>
                 ) : (
-                  <button onClick={handleOpen} className="rts-btn btn-primary">
+                  <motion.button
+                    onClick={handleOpen}
+                    className="rts-btn btn-primary"
+                    whileHover={{ scale: 1.05 }}
+                  >
                     Login/Signin
-                  </button>
+                  </motion.button>
                 )}
 
                 <LoginSignin
@@ -150,7 +191,7 @@ const Headers = () => {
           </div>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 };
 

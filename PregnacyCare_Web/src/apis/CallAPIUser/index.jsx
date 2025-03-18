@@ -65,7 +65,16 @@ export const useUpdateUser = (id, user) => {
     params: {
       name: user.fullName,
       email: user.email,
-      password: user.password || null,
+    },
+  });
+};
+
+export const useChangePassword = (oldPassword, newPassword) => {
+  return APIClient.put({
+    url: `/api/authentication/change-password`,
+    params: {
+      oldPassword: oldPassword,
+      newPassword: newPassword,
     },
   });
 };
