@@ -92,10 +92,7 @@ export default function Login({ onClose }) {
             <Form.Item>
               <div class="row justify-content-md-center">
                 <div class="col-md-auto">
-                  <button
-                    className="rts-btn btn-primary"
-                    onClick={() => handleSubmit()}
-                  >
+                  <button className="rts-btn btn-primary" type="submit">
                     Log in
                   </button>
                 </div>
