@@ -5,6 +5,20 @@ import BackdropLoader from "../../../../component/BackdropLoader";
 import moment from "moment";
 import { useGetMyComments } from "../../../../apis/CallAPIComment";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function Activity() {
   const [loading, setLoading] = useState(false);
@@ -33,11 +47,11 @@ export default function Activity() {
     setLoading(false);
   };
 
-  const handlePostClick = async (postId) => {
+  const handlePostClick = (postId) => {
     navigate(`/community/post-detail/${postId}`);
   };
 
-  const handleGroupClick = async (groupId) => {
+  const handleGroupClick = (groupId) => {
     navigate(`/community/group/${groupId}`);
   };
 
@@ -57,7 +71,7 @@ export default function Activity() {
   };
 
   return (
-    <Box>
+    <motion.div initial="hidden" animate="visible" variants={containerVariants}>
       <BackdropLoader open={loading} />
       {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
@@ -107,13 +121,11 @@ export default function Activity() {
 
       {/* My post list */}
       <Box mb={5}>
-        {/* Title */}
         <Typography id="my-posts" variant="h4" fontWeight="bold" gutterBottom>
           My posts
         </Typography>
-        {/* Post List */}
         {posts.map((post) => (
-          <div className="row" key={post.id}>
+          <motion.div key={post.id} variants={itemVariants}>
             <Typography variant="h5">
               created post{" "}
               <Link sx={linkSx} onClick={() => handlePostClick(post.id)}>
@@ -124,18 +136,16 @@ export default function Activity() {
                 "{post.group.name}"
               </Link>
             </Typography>
-            {/* Time */}
             <Typography variant="h6" color="text.secondary">
               {moment(post.datePublish).format("MMMM D, YYYY")}
             </Typography>
             <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
-          </div>
+          </motion.div>
         ))}
       </Box>
 
       {/* My comment list */}
       <Box mb={5}>
-        {/* Title */}
         <Typography
           id="my-comments"
           variant="h4"
@@ -144,9 +154,8 @@ export default function Activity() {
         >
           My comments
         </Typography>
-        {/* Comment List */}
         {comments.map((comment) => (
-          <div className="row" key={comment.id}>
+          <motion.div key={comment.id} variants={itemVariants}>
             <Typography variant="h5">
               commented on post{" "}
               <Link
@@ -163,14 +172,13 @@ export default function Activity() {
                 "{comment.blog.group.name}"
               </Link>
             </Typography>
-            {/* Time */}
             <Typography variant="h6" color="text.secondary">
               {moment(comment.datePublish).format("MMMM D, YYYY")}
             </Typography>
             <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
-          </div>
+          </motion.div>
         ))}
       </Box>
-    </Box>
+    </motion.div>
   );
 }

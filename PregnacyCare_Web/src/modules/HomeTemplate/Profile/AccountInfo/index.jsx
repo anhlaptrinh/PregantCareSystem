@@ -7,6 +7,7 @@ import { useUpdateUser, useUserInfo } from "../../../../apis/CallAPIUser";
 import avatar from "../../../../assets/PregnantAvatar.jpg";
 import { Box } from "@mui/material";
 import BackdropLoader from "../../../../component/BackdropLoader";
+import ChangePassword from "./ChangePassword";
 
 export default function AccountInfo() {
   const [form] = Form.useForm();
@@ -21,6 +22,7 @@ export default function AccountInfo() {
   const [loading, setLoading] = useState(null);
   const defaultAvatar = avatar;
   const [refresh, setRefresh] = useState(0);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // Lấy ảnh từ firebase
   const handleGetImage = async (id) => {
@@ -32,7 +34,8 @@ export default function AccountInfo() {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error get image", error);
+      setLoading(false);
+      setUser((prev) => ({ ...prev, url: avatar }));
     }
   };
 
@@ -43,6 +46,7 @@ export default function AccountInfo() {
       await uploadBytes(storageRef, user.image);
     } catch (error) {
       console.error("Upload error:", error);
+      setLoading(false);
     }
   };
 
@@ -160,7 +164,15 @@ export default function AccountInfo() {
           />
         </Form.Item>
 
-        <a href="#" className="text-decoration-underline">
+        {/* Link mở modal ChangePassword */}
+        <a
+          href="#"
+          className="text-decoration-underline"
+          onClick={(e) => {
+            e.preventDefault();
+            setShowChangePassword(true);
+          }}
+        >
           Change password
         </a>
 
@@ -174,6 +186,12 @@ export default function AccountInfo() {
           </div>
         </Form.Item>
       </Form>
+
+      {/* Gọi ChangePasswordModal */}
+      <ChangePassword
+        visible={showChangePassword}
+        onCancel={() => setShowChangePassword(false)}
+      />
     </Box>
   );
 }
