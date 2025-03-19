@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     let errMsg = "";
-    const { response, message } = error || {};
+    const { response, message, config } = error || {};
 
     if (response?.status === 401) {
       Message.error("Token Expired! Redirecting to Home Page...");
@@ -52,10 +52,16 @@ axiosInstance.interceptors.response.use(
       }, 1000);
       return Promise.reject(error);
     }
+    if(response?.status === 404){
+      
+      return Promise.reject(error);
+    }
+
 
     try {
       errMsg = response?.data?.message || message;
       Message.error(errMsg);
+      
     } catch (error) {
       throw new Error(error.toString());
     }
