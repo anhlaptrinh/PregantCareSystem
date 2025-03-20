@@ -6,8 +6,8 @@ import API_ROUTES from "../apiRoute";
 const scheduleApi = {
   getScheduleById: (id) => APIClient.get({ url: `${API_ROUTES.SCHEDULE}${id}`,silent:true }),
   createSchedule: (data) => APIClient.post({ url: `${API_ROUTES.SCHEDULE}`, data }),
-  updateSchedule: (id, data) => APIClient.put({ url: `${API_ROUTES.SCHEDULE}/${id}`, data }),
-  deleteSchedule: (id) => APIClient.delete({ url: `${API_ROUTES.APPOINTMENT}/${id}` }),
+  updateSchedule: (data) => APIClient.put({ url: `${API_ROUTES.SCHEDULE_UPDATE}`, data }),
+  deleteSchedule: (id) => APIClient.delete({ url: `${API_ROUTES.SCHEDULE_DELETE}/${id}` }),
 };
 
 export default scheduleApi;

@@ -69,12 +69,12 @@ const CustomEvent = ({ event }) => {
     setModalFields(
       mode === "Appointment"
         ? [
-            { name: "id", label: "id", type: "text", value: event.id },
+            { name: "id", label: "id", type: "hidden", value: event.id },
             { name: "event", label: "Event", type: "text", value: event.title },
             { name: "dateIssue", label: "Date Issue", type: "date", value: dayjs(event.start) },
           ]
         : [
-            { name: "appointmentId", label: "appointmentId", type: "text", value: event.id },
+            { name: "appointmentId", label: "appointmentId", type: "hidden", value: event.id },
             { name: "notify", label: "Notify", type: "text" },
             { name: "dateRemind", label: "Date Remind", type: "date", value: dayjs(event.start) },
             { name: "type", label: "Type", type: "text" },
@@ -129,29 +129,30 @@ const CustomEvent = ({ event }) => {
   return (
     <>
       <Popover content={content} title="Appointment Details" trigger="hover">
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "16px",
-        fontWeight: "bold",
-        borderRadius: "8px",
-        background: "linear-gradient(to right,  #DD83E0, #B6C0C5)"
-, // Màu gradient xanh dương
-        color: "white",
-        textAlign: "center",
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Đổ bóng nhẹ
-        border: "none",
-        cursor: "pointer",
-      }}
-    >
-      {event.title}
-    </div>
-
-  </Popover>
+  <div
+    style={{
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "16px",
+      fontWeight: "bold",
+      borderRadius: "8px",
+      background: new Date(event.start) > new Date()
+        ? "linear-gradient(to right, #DD83E0, #B6C0C5)" // Màu xám khi event.start lớn hơn hiện tại
+        : "gray", // Gradient bình thường
+      color: "white",
+      textAlign: "center",
+      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+      border: "none",
+      cursor: new Date(event.start) < new Date() ? "not-allowed" : "pointer",
+      pointerEvents: new Date(event.start) < new Date() ? "none" : "auto", // Tắt sự kiện click nếu đã qua ngày
+    }}
+  >
+    {event.title}
+  </div>
+</Popover>
   <FlexModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
