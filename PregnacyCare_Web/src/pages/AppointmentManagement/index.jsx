@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Col, Menu, Row } from "antd";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
@@ -13,6 +13,8 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import "./index.css";
 import DrawerMenu from "../../component/DrawerMenu";
+import FlexModal from "../../component/FlexModal";
+import { useCreateAppointment } from "../../hooks/AppointmentHooks/useCreateAppointment";
 
 const menuAppointment = () => [
   {
@@ -62,6 +64,30 @@ const AppointmentManagement = ({ children }) => {
     localStorage.removeItem("USER_TOKEN");
     setUser(null);
     setDrawerVisible(false);
+  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalFields, setModalFields] = useState([]);
+  const { mutate: createAppointment } = useCreateAppointment();
+  const handleSubmit = async (values) => {
+    const localDate = new Date(values.dateIssue);
+  localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset()); // Giữ nguyên ngày theo local time
+
+  const formattedValues = {
+    ...values,
+    dateIssue: localDate.toISOString(), // Giữ nguyên ngày đúng với local time
+  };
+    
+    createAppointment(formattedValues);
+
+  };
+  const handleOpenModal = () => {
+    setModalTitle("Create Appointment");
+      setModalFields([
+        { name: "event", label: "Event", type: "text" },
+        { name: "dateIssue", label: "Date Issue", type: "date" },
+      ]);
+      setModalVisible(true);
   };
 
   return (
@@ -125,9 +151,11 @@ const AppointmentManagement = ({ children }) => {
                 justifyContent: "space-between",
               }}
             >
-              <Button icon={<AddIcon />} className="rts-btn btn-primary">
-                Create
-              </Button>
+              {location?.pathname !== "/appointment/schedule" && (
+                <Button onClick={() =>{handleOpenModal()}} icon={<AddIcon />} className="rts-btn btn-primary">
+                  Create
+                </Button>
+              )}
               <div style={{ marginLeft: "12px" }}>
                 <SearchIcon style={{ fontSize: "23px" }} />
               </div>
@@ -166,6 +194,13 @@ const AppointmentManagement = ({ children }) => {
         user={user}
         url={url}
         handleLogout={handleLogout}
+      />
+      <FlexModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleSubmit}
+        fields={modalFields}
+        title={modalTitle}
       />
     </>
   );

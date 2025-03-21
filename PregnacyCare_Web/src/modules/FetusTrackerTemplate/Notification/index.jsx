@@ -9,133 +9,182 @@ import {
   Space,
   Image,
   Button,
+  Typography,
+  Divider,
 } from "antd";
 import FetusRecord from "../FetusRecord";
 
+const { Title, Text } = Typography;
 const FetusInput = () => {
   const [form] = Form.useForm();
 
+  const handleCalculate = () => {
+      const values = form.getFieldsValue();
+      console.log("Form values:", values);
+  };
   return (
-    <div style={{ maxWidth: 800, margin: "10px auto", position: "relative" }}>
-      <FetusRecord />
+      <div
+          style={{ maxWidth: 800, margin: "10px auto", position: "relative" }}
+      >
+          <FetusRecord />
 
-      {/* Ảnh minh họa - đường dẫn tượng trưng */}
-      <Image
-        src="path/to/top-image.png"
-        preview={false}
-        style={{
-          position: "absolute",
-          right: -120,
-          top: 0,
-          width: 100,
-          height: 100,
-        }}
-      />
+          {/* Ảnh minh họa - đường dẫn tượng trưng */}
+          <Image
+              src="path/to/top-image.png"
+              preview={false}
+              style={{
+                  position: "absolute",
+                  right: -120,
+                  top: 0,
+                  width: 100,
+                  height: 100,
+              }}
+          />
 
-      <Form form={form} layout="vertical">
-        <h2 style={{ marginBottom: 24, fontSize: "20px" }}>
-          Fetus Information
-        </h2>
+          <div
+              style={{ maxWidth: 500, padding: 24, backgroundColor: "white" }}
+          >
+              <Title level={4} style={{ marginBottom: 24, fontWeight: 500 }}>
+                  Fetus Record
+              </Title>
 
-        {/* Giới tính */}
-        <Form.Item label="Sex" name="sex">
-          <Radio.Group>
-            <Radio value="girl">Girl</Radio>
-            <Radio value="boy">Boy</Radio>
-          </Radio.Group>
-        </Form.Item>
+              <Form form={form} layout="vertical">
+                  {/* Weight Field */}
+                  <Form.Item label="Weight" style={{ marginBottom: 16 }}>
+                      <Row gutter={8}>
+                          <Col span={16}>
+                              <InputNumber
+                                  style={{
+                                      width: "100%",
+                                      height: 40,
+                                      backgroundColor: "#f9fafb",
+                                  }}
+                                  min={0}
+                                  defaultValue={0.0}
+                                  step={0.1}
+                                  precision={1}
+                              />
+                          </Col>
+                          <Col span={8}>
+                              <Select
+                                  defaultValue="lb"
+                                  style={{ width: "100%", height: 40 }}
+                              >
+                                  <Select.Option value="lb">lb</Select.Option>
+                                  <Select.Option value="kg">kg</Select.Option>
+                              </Select>
+                          </Col>
+                      </Row>
+                  </Form.Item>
 
-        {/* Ngày tháng */}
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item label="Child's birthday" name="birthday">
-              <DatePicker style={{ width: "100%" }} format="MM-DD-YYYY" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Date of measurement" name="measurementDate">
-              <DatePicker style={{ width: "100%" }} format="MM-DD-YYYY" />
-            </Form.Item>
-          </Col>
-        </Row>
+                  {/* Height Field */}
+                  <Form.Item label="Height" style={{ marginBottom: 16 }}>
+                      <Row gutter={8} align="middle">
+                          <Col span={5}>
+                              <InputNumber
+                                  style={{
+                                      width: "100%",
+                                      height: 40,
+                                      backgroundColor: "#f9fafb",
+                                  }}
+                                  min={0}
+                                  defaultValue={0.0}
+                                  step={0.1}
+                                  precision={1}
+                              />
+                          </Col>
+                          <Col span={1} style={{ textAlign: "center" }}>
+                              ×
+                          </Col>
+                          <Col span={5}>
+                              <InputNumber
+                                  style={{
+                                      width: "100%",
+                                      height: 40,
+                                      backgroundColor: "#f9fafb",
+                                  }}
+                                  min={0}
+                                  defaultValue={0.0}
+                                  step={0.1}
+                                  precision={1}
+                              />
+                          </Col>
+                          <Col span={1} style={{ textAlign: "center" }}>
+                              ×
+                          </Col>
+                          <Col span={5}>
+                              <InputNumber
+                                  style={{
+                                      width: "100%",
+                                      height: 40,
+                                      backgroundColor: "#f9fafb",
+                                  }}
+                                  min={0}
+                                  defaultValue={0.0}
+                                  step={0.1}
+                                  precision={1}
+                              />
+                          </Col>
+                          <Col span={7}>
+                              <Select
+                                  defaultValue="inch"
+                                  style={{ width: "100%", height: 40 }}
+                              >
+                                  <Select.Option value="inch">
+                                      inch
+                                  </Select.Option>
+                                  <Select.Option value="cm">cm</Select.Option>
+                              </Select>
+                          </Col>
+                      </Row>
+                  </Form.Item>
 
-        {/* Các chỉ số đo lường */}
-        <Form.Item label="Weight">
-          <Row gutter={8}>
-            <Col span={8}>
-              <Space.Compact>
-                <Form.Item name="weight_lb" noStyle initialValue={0}>
-                  <InputNumber style={{ width: "60%" }} min={0} />
-                </Form.Item>
-                <Form.Item name="weight_lb_unit" noStyle initialValue="lb">
-                  <Select style={{ width: "40%", height: 45 }}>
-                    <Select.Option value="lb">lb</Select.Option>
-                    <Select.Option value="kg">kg</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Space.Compact>
-            </Col>
-            <Col span={8}>
-              <Space.Compact>
-                <Form.Item name="weight_oz" noStyle initialValue={0}>
-                  <InputNumber style={{ width: "60%" }} min={0} />
-                </Form.Item>
-                <Form.Item name="weight_oz_unit" noStyle initialValue="oz">
-                  <Select style={{ width: "40%", height: 45 }}>
-                    <Select.Option value="oz">oz</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Space.Compact>
-            </Col>
-          </Row>
-        </Form.Item>
+                  <Divider style={{ margin: "24px 0" }} />
 
-        <Form.Item label="Height">
-          <Space.Compact style={{ width: "100%" }}>
-            <Form.Item name="height" noStyle initialValue={0}>
-              <InputNumber style={{ width: "70%" }} min={0} />
-            </Form.Item>
-            <Form.Item name="height_unit" noStyle initialValue="in">
-              <Select style={{ width: "30%", height: 45 }}>
-                <Select.Option value="in">in</Select.Option>
-                <Select.Option value="cm">cm</Select.Option>
-              </Select>
-            </Form.Item>
-          </Space.Compact>
-        </Form.Item>
+                  {/* Notification Section */}
+                  <div style={{ marginBottom: 24 }}>
+                      <Title
+                          level={5}
+                          style={{ marginBottom: 8, fontWeight: 500 }}
+                      >
+                          Title of Notification
+                      </Title>
+                      <Text type="secondary" style={{ fontSize: 14 }}>
+                          Information for worldwide shipping will be printed
+                          on shipping forms & labels during fulfillment
+                      </Text>
+                  </div>
 
-        <Form.Item label="Head circumference">
-          <Space.Compact style={{ width: "100%" }}>
-            <Form.Item name="head_circumference" noStyle initialValue={0}>
-              <InputNumber style={{ width: "70%" }} min={0} />
-            </Form.Item>
-            <Form.Item name="head_unit" noStyle initialValue="cm">
-              <Select style={{ width: "30%", height: 45 }}>
-                <Select.Option value="cm">cm</Select.Option>
-                <Select.Option value="in">in</Select.Option>
-              </Select>
-            </Form.Item>
-            {/* Measurement input for head circumference */}
-          </Space.Compact>
-        </Form.Item>
-        <Button size="large" color="primary">
-          Caculate
-        </Button>
-      </Form>
+                  {/* Update Button */}
+                  <Button
+                      type="primary"
+                      size="large"
+                      block
+                      onClick={handleCalculate}
+                      style={{
+                          height: 44,
+                          backgroundColor: "#6366f1",
+                          borderColor: "#6366f1",
+                      }}
+                  >
+                      Update
+                  </Button>
+              </Form>
+          </div>
 
-      {/* Ảnh ở góc dưới */}
-      <Image
-        src="path/to/bottom-image.png"
-        preview={false}
-        style={{
-          position: "absolute",
-          left: -120,
-          bottom: 0,
-          width: 100,
-          height: 100,
-        }}
-      />
-    </div>
+          {/* Ảnh ở góc dưới */}
+          <Image
+              src="path/to/bottom-image.png"
+              preview={false}
+              style={{
+                  position: "absolute",
+                  left: -120,
+                  bottom: 0,
+                  width: 100,
+                  height: 100,
+              }}
+          />
+      </div>
   );
 };
 

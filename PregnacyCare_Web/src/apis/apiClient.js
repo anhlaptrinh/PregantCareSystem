@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     let errMsg = "";
-    const { response, message } = error || {};
+    const { response, message, config } = error || {};
 
     if (response?.status === 401) {
       // Token hết hạn: xóa token và chuyển hướng về trang chủ để đăng nhập lại.
@@ -50,10 +50,16 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/";
       return Promise.reject(error);
     }
+    if(response?.status === 404){
+      
+      return Promise.reject(error);
+    }
+
 
     try {
       errMsg = response?.data?.message || message;
       Message.error(errMsg);
+      
     } catch (error) {
       throw new Error(error.toString());
     }

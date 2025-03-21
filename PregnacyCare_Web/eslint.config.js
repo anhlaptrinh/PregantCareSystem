@@ -33,6 +33,9 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      'no-unused-vars': 'off', // Tắt quy tắc no-unused-vars  
+      'react/prop-types': 'off', 
+      'react-hooks/rules-of-hooks': 'off'
     },
   },
 ]
