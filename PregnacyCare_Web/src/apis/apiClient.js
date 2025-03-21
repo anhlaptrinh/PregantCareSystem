@@ -11,9 +11,9 @@ const StorageEnum = {
 };
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_APP_BASE_API || 'http://localhost:8080',
-    timeout: 50000,
-    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  baseURL: import.meta.env.VITE_APP_BASE_API || "http://localhost:8080",
+  timeout: 50000,
+  headers: { "Content-Type": "application/json;charset=utf-8" },
 });
 
 axiosInstance.interceptors.request.use(
@@ -44,12 +44,10 @@ axiosInstance.interceptors.response.use(
     const { response, message } = error || {};
 
     if (response?.status === 401) {
-      Message.error("Token Expired! Redirecting to Home Page...");
-      setTimeout(() => {
-        removeItem(StorageEnum.Token);
-        window.location.hash = "#/";
-        window.location.reload();
-      }, 1000);
+      // Token hết hạn: xóa token và chuyển hướng về trang chủ để đăng nhập lại.
+      removeItem(StorageEnum.Token);
+      Message.error("Token Expired! Please log in again.");
+      window.location.href = "/";
       return Promise.reject(error);
     }
 

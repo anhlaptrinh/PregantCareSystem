@@ -72,6 +72,17 @@ const DrawerMenu = ({
             Personal Info
           </StyledButton>
         </motion.div>
+        {user?.role === "ADMIN" && (
+          <motion.div variants={itemVariants}>
+            <StyledButton
+              to="/admin/dashboard"
+              className="mb-4 p-5 fs-3"
+              onCloseDrawer={handleCloseDrawer}
+            >
+              Admin
+            </StyledButton>
+          </motion.div>
+        )}
         <motion.div variants={itemVariants}>
           <StyledButton
             to="/"

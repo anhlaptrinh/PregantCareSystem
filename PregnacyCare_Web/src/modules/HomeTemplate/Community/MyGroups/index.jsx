@@ -14,6 +14,7 @@ import { message as Message } from "antd";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import BackdropLoader from "../../../../component/BackdropLoader";
 import { useGetImageUrl } from "../../../../apis/CallAPIFirebase";
+import axios from "axios";
 
 export default function MyGroups() {
   const navigate = useNavigate();
@@ -155,7 +156,7 @@ export default function MyGroups() {
         .filter((group) => group !== undefined)
         .map((group) => (
           <Card
-            key={group.id}
+            key={group?.id}
             sx={{
               mb: 2,
               p: 2,
@@ -177,17 +178,17 @@ export default function MyGroups() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Box sx={{ width: 70 }}>
                 <img
-                  src={group.imageUrl || avatar}
+                  src={group?.imageUrl || avatar}
                   alt="Avatar of group"
                   style={{ width: "100%", borderRadius: "8px" }}
                 />
               </Box>
               <Box>
                 <Typography variant="h5" gutterBottom sx={{ color: "#201F57" }}>
-                  {group.name}
+                  {group?.name}
                 </Typography>
                 <Typography variant="h6" color="text.secondary" gutterBottom>
-                  {group.users.length} members .{" "}
+                  {group?.users.length} members .{" "}
                   {moment(group.date).format("MMMM D, YYYY")}
                 </Typography>
               </Box>

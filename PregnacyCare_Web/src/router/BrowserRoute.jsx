@@ -56,7 +56,10 @@ const routes = [
         element: <HomePages />,
         children: [
           { path: "/our-expert", element: <OurExpert /> },
-          { path: "/article", element: <ArticlePage /> },
+          {
+            path: "/our-expert/article/:articleSlug",
+            element: <ArticlePage />,
+          },
           { path: "/forum", element: <QAForum /> },
           { path: "/forum/:id", element: <ForumPostDetail /> },
         ],
@@ -84,6 +87,30 @@ const routes = [
             element: <CreatePostPages />,
           },
           { path: "/payment", element: <PaymentPage /> },
+          {
+            path: "/appointment/schedule",
+            element: (
+              <AppointmentManagement>
+                <AppointmentSchedule />
+              </AppointmentManagement>
+            ),
+          },
+          {
+            path: "/appointment/calendar",
+            element: (
+              <AppointmentManagement>
+                <AppointmentCalendar />
+              </AppointmentManagement>
+            ),
+          },
+          {
+            path: "/appointment/fetus-growth-chart",
+            element: (
+              <AppointmentManagement>
+                <FetusGrowthChart />
+              </AppointmentManagement>
+            ),
+          },
         ],
       },
     ],
@@ -135,30 +162,7 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/appointment/schedule",
-    element: (
-      <AppointmentManagement>
-        <AppointmentSchedule />
-      </AppointmentManagement>
-    ),
-  },
-  {
-    path: "/appointment/calendar",
-    element: (
-      <AppointmentManagement>
-        <AppointmentCalendar />
-      </AppointmentManagement>
-    ),
-  },
-  {
-    path: "/appointment/fetus-growth-chart",
-    element: (
-      <AppointmentManagement>
-        <FetusGrowthChart />
-      </AppointmentManagement>
-    ),
-  },
+
   // Route bắt lỗi cho các URL không khớp
   {
     path: "*",

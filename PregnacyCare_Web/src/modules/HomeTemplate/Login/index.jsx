@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
 import { useLogin } from "../../../apis/CallAPIUser";
-import { error } from "jquery";
 import { useNavigate } from "react-router-dom";
 import BackdropLoader from "../../../component/BackdropLoader";
 

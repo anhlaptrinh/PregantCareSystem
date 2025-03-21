@@ -22,9 +22,9 @@ const itemVariants = {
 
 export default function Activity() {
   const [loading, setLoading] = useState(false);
-  // Post List
+  // Danh sách post
   const [posts, setPosts] = useState([]);
-  // Comment List
+  // Danh sách comment
   const [comments, setComments] = useState([]);
 
   const navigate = useNavigate();
@@ -73,11 +73,11 @@ export default function Activity() {
   return (
     <motion.div initial="hidden" animate="visible" variants={containerVariants}>
       <BackdropLoader open={loading} />
-      {/* Title */}
+      {/* Tiêu đề */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         Browse your activity
       </Typography>
-      {/* My post button and My comment button */}
+      {/* Nút chuyển đến My posts và My comments */}
       <div className="row">
         <div className="col-2">
           <Link
@@ -119,7 +119,7 @@ export default function Activity() {
 
       <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
 
-      {/* My post list */}
+      {/* Danh sách My posts */}
       <Box mb={5}>
         <Typography id="my-posts" variant="h4" fontWeight="bold" gutterBottom>
           My posts
@@ -132,9 +132,16 @@ export default function Activity() {
                 "{post.title}"
               </Link>{" "}
               in group{" "}
-              <Link sx={linkSx} onClick={() => handleGroupClick(post.group.id)}>
-                "{post.group.name}"
-              </Link>
+              {post.group ? (
+                <Link
+                  sx={linkSx}
+                  onClick={() => handleGroupClick(post.group.id)}
+                >
+                  "{post.group.name}"
+                </Link>
+              ) : (
+                "Unknown Group"
+              )}
             </Typography>
             <Typography variant="h6" color="text.secondary">
               {moment(post.datePublish).format("MMMM D, YYYY")}
@@ -144,7 +151,7 @@ export default function Activity() {
         ))}
       </Box>
 
-      {/* My comment list */}
+      {/* Danh sách My comments */}
       <Box mb={5}>
         <Typography
           id="my-comments"
@@ -165,12 +172,16 @@ export default function Activity() {
                 "{comment.blog.title}"
               </Link>{" "}
               in group{" "}
-              <Link
-                sx={linkSx}
-                onClick={() => handleGroupClick(comment.blog.group.id)}
-              >
-                "{comment.blog.group.name}"
-              </Link>
+              {comment.blog.group ? (
+                <Link
+                  sx={linkSx}
+                  onClick={() => handleGroupClick(comment.blog.group.id)}
+                >
+                  "{comment.blog.group.name}"
+                </Link>
+              ) : (
+                "Unknown Group"
+              )}
             </Typography>
             <Typography variant="h6" color="text.secondary">
               {moment(comment.datePublish).format("MMMM D, YYYY")}
