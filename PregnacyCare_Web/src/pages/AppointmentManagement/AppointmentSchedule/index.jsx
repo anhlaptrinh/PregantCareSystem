@@ -16,7 +16,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import { useFetchAppointment } from "../../../hooks/AppointmentHooks/useFetchAppointment";
 import { useEffect, useState } from "react";
 import scheduleApi from "../../../apis/CallAPIAppointment/ScheduleAPI";
-import { DeleteOutline, EditOutlined } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined, LocalDining, Mail } from "@mui/icons-material";
 import { useUpdateSchedule } from "../../../hooks/ScheduleHooks/useUpdateSchedule";
 import FlexModal from "../../../component/FlexModal";
 import dayjs from "dayjs";
@@ -87,8 +87,8 @@ const refreshData = () => {
   setRefreshTrigger((prev) => prev + 1);
 };
 
-  if (isLoading) return <div>Loading appointments...</div>;
-  if (error) return <div>Error loading appointments</div>;
+  if (isLoading) return <div><LocalDining/></div>;
+  if (error) return <div>Error loading...</div>;
   const handleSubmit = async (values) => {
     const localDate = new Date(values.dateIssue);
     localDate.setMinutes(
@@ -241,6 +241,7 @@ const handleDelete = async (id) => {
                                 Delete
                               </Button>
                             </Popconfirm>
+                           
                           </Space>
                         </Space>
                       </Card>

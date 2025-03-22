@@ -9,6 +9,15 @@ export const useGetFetusList = () => {
     url: "/api/fetus",
   });
 };
+/**
+ * Hàm lấy danh sách thai nhi từ API Spring Boot.
+ * @returns {Promise} - Promise trả về kết quả từ API với danh sách thai nhi.
+ */
+export const useGetMyFetusList = () => {
+  return APIClient.get({
+    url: "/api/fetus/MyFetus",
+  });
+};
 
 /**
  * Hàm tạo một thai nhi mới thông qua API Spring Boot.
