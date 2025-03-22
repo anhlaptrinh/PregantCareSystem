@@ -2,11 +2,11 @@ import {
   Form,
   DatePicker,
   InputNumber,
-  Radio,
+  Alert,
   Select,
   Row,
   Col,
-  Space,
+  Spin,
   Image,
   Button,
   Typography,
@@ -15,18 +15,20 @@ import {
 import FetusRecord from "../FetusRecord";
 
 const { Title, Text } = Typography;
-const FetusInput = () => {
+const FetusInput = ({ selectedFetus }) => {
   const [form] = Form.useForm();
-
+  
+  
+ 
   const handleCalculate = () => {
       const values = form.getFieldsValue();
       console.log("Form values:", values);
   };
   return (
       <div
-          style={{ maxWidth: 800, margin: "10px auto", position: "relative" }}
+          style={{ maxWidth: 1000, margin: "10px auto", position: "relative" }}
       >
-          <FetusRecord />
+          <FetusRecord selectedFetus={selectedFetus}  />
 
           {/* Ảnh minh họa - đường dẫn tượng trưng */}
           <Image
@@ -167,7 +169,7 @@ const FetusInput = () => {
                           borderColor: "#6366f1",
                       }}
                   >
-                      Update
+                      Create Record
                   </Button>
               </Form>
           </div>
