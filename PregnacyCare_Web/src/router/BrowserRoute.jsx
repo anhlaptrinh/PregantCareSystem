@@ -13,7 +13,6 @@ import ForumPostDetail from "../pages/QAForum/ForumPostDetail";
 import AppointmentManagement from "../pages/AppointmentManagement";
 import AppointmentCalendar from "../pages/AppointmentManagement/AppointmentCalendar";
 import AppointmentSchedule from "../pages/AppointmentManagement/AppointmentSchedule";
-import ProfilePages from "../pages/HomePages/ProfilePages";
 import FetusGrowthChart from "../pages/HomePages/FetusGrowthChart";
 import CommunityPages from "../pages/HomePages/CommunityPages";
 import ViewPostPages from "../pages/HomePages/CommunityPages/VIewPostPages";
@@ -31,6 +30,10 @@ import MainLayout from "../component/AdminLayout";
 import ForumAdmin from "../pages/AdminPages/ForumAdmin";
 import UserManagement from "../pages/AdminPages/User";
 import ErrorPage from "../pages/ErrorPages";
+import AccountInfo from "../modules/HomeTemplate/Profile/AccountInfo";
+import FamilyInfo from "../modules/HomeTemplate/Profile/FamilyInfo";
+import ProfilePages from "../pages/HomePages/ProfilePages";
+import Home from "../modules/HomeTemplate/Community/Home";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
@@ -44,25 +47,39 @@ const routes = [
         path: "/due-date/result",
         element: <DueDateCalculatorResultTemplate />,
       },
+      { path: "/community", element: <CommunityPages /> },
+      { path: "/community/home", element: <Home /> },
+      {
+        path: "/community/post-detail/:postId",
+        element: <ViewPostPages />,
+      },
+      { path: "/our-expert", element: <OurExpert /> },
+      {
+        path: "/our-expert/article/:articleSlug",
+        element: <ArticlePage />,
+      },
     ],
   },
 
   // Các route chung cho MEMBER và EXPERT (ví dụ: trang chủ và các trang thông tin chung)
   {
-    element: <ProtectedRoute allowedRoles={["MEMBER", "EXPERT"]} />,
+    element: <ProtectedRoute allowedRoles={["EXPERT"]} />,
     children: [
       {
-        path: "/",
-        element: <HomePages />,
-        children: [
-          { path: "/our-expert", element: <OurExpert /> },
-          {
-            path: "/our-expert/article/:articleSlug",
-            element: <ArticlePage />,
-          },
-          { path: "/forum", element: <QAForum /> },
-          { path: "/forum/:id", element: <ForumPostDetail /> },
-        ],
+        path: "/expert/forum/:id",
+        element: (
+          <MainLayout>
+            <ForumPostDetail />
+          </MainLayout>
+        ),
+      },
+      {
+        path: "/expert/forum",
+        element: (
+          <MainLayout>
+            <ForumAdmin />
+          </MainLayout>
+        ),
       },
     ],
   },
@@ -76,40 +93,51 @@ const routes = [
         element: <HomePages />,
         children: [
           { path: "/profile", element: <ProfilePages /> },
-          { path: "/community", element: <CommunityPages /> },
-          {
-            path: "/community/post-detail/:postId",
-            element: <ViewPostPages />,
-          },
           { path: "/community/group/:groupId", element: <ViewGroupPages /> },
           {
             path: "/community/group/create-post/:groupId",
             element: <CreatePostPages />,
           },
           { path: "/payment", element: <PaymentPage /> },
+        ],
+      },
+      {
+        path: "/appointment/schedule",
+        element: (
+          <AppointmentManagement>
+            <AppointmentSchedule />
+          </AppointmentManagement>
+        ),
+      },
+      {
+        path: "/appointment/calendar",
+        element: (
+          <AppointmentManagement>
+            <AppointmentCalendar />
+          </AppointmentManagement>
+        ),
+      },
+      {
+        path: "/appointment/fetus-growth-chart",
+        element: (
+          <AppointmentManagement>
+            <FetusGrowthChart />
+          </AppointmentManagement>
+        ),
+      },
+    ],
+  },
+
+  {
+    element: <ProtectedRoute allowedRoles={["MEMBER", "EXPERT", "ADMIN"]} />,
+    children: [
+      {
+        path: "/",
+        element: <HomePages />,
+        children: [
           {
-            path: "/appointment/schedule",
-            element: (
-              <AppointmentManagement>
-                <AppointmentSchedule />
-              </AppointmentManagement>
-            ),
-          },
-          {
-            path: "/appointment/calendar",
-            element: (
-              <AppointmentManagement>
-                <AppointmentCalendar />
-              </AppointmentManagement>
-            ),
-          },
-          {
-            path: "/appointment/fetus-growth-chart",
-            element: (
-              <AppointmentManagement>
-                <FetusGrowthChart />
-              </AppointmentManagement>
-            ),
+            path: "/account-info",
+            element: <AccountInfo />,
           },
         ],
       },
@@ -144,14 +172,7 @@ const routes = [
           </MainLayout>
         ),
       },
-      {
-        path: "/admin/forum",
-        element: (
-          <MainLayout>
-            <ForumAdmin />
-          </MainLayout>
-        ),
-      },
+
       {
         path: "/admin/user",
         element: (

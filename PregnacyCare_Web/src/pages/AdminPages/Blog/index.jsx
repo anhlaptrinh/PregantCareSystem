@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Layout,
   Card,
@@ -33,11 +33,21 @@ import {
   useRestoreBlog,
 } from "../../../apis/CallAPIBlog";
 import BackdropLoader from "../../../component/BackdropLoader";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 const { Content } = Layout;
 const { TabPane } = Tabs;
 const { Option } = Select;
+
+// Hàm fetchAllBlogs dùng để gọi API và trả về danh sách blog
+const fetchAllBlogs = async () => {
+  const res = await useGetAllBlogs();
+  if (res.code !== 200) {
+    throw new Error("Error fetching blogs");
+  }
+  return res.data;
+};
 
 // Component motion cho mỗi hàng của bảng
 const MotionBodyRow = (props) => {
@@ -55,14 +65,73 @@ const MotionBodyRow = (props) => {
 };
 
 export default function BlogManagement() {
-  // Dữ liệu mẫu (giả sử id là int)
-  const [blogs, setBlogs] = useState([]);
   // State cho việc chọn các hàng (sử dụng id kiểu int)
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   // State cho tìm kiếm và filter
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [loading, setLoading] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  // Sử dụng useQuery để fetch danh sách blog
+  const {
+    data: blogs = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: fetchAllBlogs,
+    staleTime: 1000 * 60 * 5, // dữ liệu fresh trong 5 phút
+  });
+
+  // Mutation cho xóa nhiều blog
+  const deleteManyMutation = useMutation({
+    mutationFn: useDeleteManyBlogs,
+    onSuccess: () => {
+      message.success("Blog(s) moved to trash!");
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      setSelectedRowIds([]);
+    },
+    onError: () => {
+      message.error("Error deleting blogs!");
+    },
+  });
+
+  // Mutation cho khôi phục blog
+  const restoreMutation = useMutation({
+    mutationFn: useRestoreBlog,
+    onSuccess: () => {
+      message.success("Blog restored!");
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+    onError: () => {
+      message.error("Error restoring blog!");
+    },
+  });
+
+  // Mutation cho xóa blog vĩnh viễn
+  const deletePermanentlyMutation = useMutation({
+    mutationFn: useDeleteBlogPermanently,
+    onSuccess: () => {
+      message.success("Blog permanently deleted!");
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+    onError: () => {
+      message.error("Failed to permanently delete the blog!");
+    },
+  });
+
+  // Mutation cho publish blog
+  const approveMutation = useMutation({
+    mutationFn: useApproveBlog,
+    onSuccess: () => {
+      message.success("Blog published!");
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+    onError: () => {
+      message.error("Error publishing blog!");
+    },
+  });
 
   const onSelectChange = (newSelectedRowIds) => {
     setSelectedRowIds(newSelectedRowIds);
@@ -72,46 +141,19 @@ export default function BlogManagement() {
     selectedRowKeys: selectedRowIds,
     onChange: onSelectChange,
   };
+
   const handleDeleteSelected = () => {
     Modal.confirm({
       title: "Are you sure you want to delete the selected blogs?",
       async onOk() {
-        try {
-          // Gọi API xóa nhiều blog với mảng id
-          await useDeleteManyBlogs(selectedRowIds);
-          // Cập nhật lại danh sách blogs (đánh dấu là deleted)
-          setBlogs(
-            blogs.map((blog) =>
-              selectedRowIds.includes(blog.id)
-                ? { ...blog, deleted: true }
-                : blog
-            )
-          );
-          setSelectedRowIds([]);
-          message.success("Blog(s) moved to trash!");
-        } catch (error) {
-          console.log(error.message);
-          message.error("Error deleting blogs!");
-        }
+        deleteManyMutation.mutate(selectedRowIds);
       },
     });
   };
 
-  // Khôi phục blog đã bị đưa vào trash
-  const handleRestore = async (id) => {
-    try {
-      const res = await useRestoreBlog(id);
-      if (res.code == 200) {
-        message.success("Blog restored!");
-        setBlogs(
-          blogs.map((blog) =>
-            blog.id === id ? { ...blog, deleted: false } : blog
-          )
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
+  // Khôi phục blog từ trash
+  const handleRestore = (id) => {
+    restoreMutation.mutate(id);
   };
 
   // Xóa blog vĩnh viễn
@@ -119,32 +161,14 @@ export default function BlogManagement() {
     Modal.confirm({
       title: "Are you sure you want to permanently delete this blog?",
       async onOk() {
-        try {
-          const res = await useDeleteBlogPermanently(id);
-          if (res.code === 200) {
-            message.success("Blog permanently deleted!");
-            // Cập nhật lại state hoặc thực hiện các hành động cần thiết khác
-            setBlogs(blogs.filter((blog) => blog.id !== id));
-          }
-        } catch (error) {
-          message.error("Failed to permanently delete the blog!");
-        }
+        deletePermanentlyMutation.mutate(id);
       },
     });
   };
 
-  //  Nút Publish để chuyển từ Pending sang Published
-  const handlePublish = async (id) => {
-    try {
-      const res = await useApproveBlog(id);
-      if (res.code == 200) {
-        await handleGetAllBlogs();
-        message.success("Blog published!");
-      }
-    } catch (err) {
-      console.log(err);
-      message.error("Error publishing blog!");
-    }
+  // Publish blog (chuyển từ Pending sang Published)
+  const handlePublish = (id) => {
+    approveMutation.mutate(id);
   };
 
   // Định nghĩa cột cho bảng Active Blogs
@@ -215,30 +239,14 @@ export default function BlogManagement() {
     );
   }
 
-  // Lấy toàn bộ blog (post and articles)
-  const handleGetAllBlogs = async () => {
-    setLoading(true);
-    try {
-      const res = await useGetAllBlogs();
-      if (res.code === 200) {
-        setBlogs(res.data);
-      }
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching blogs:", err);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    handleGetAllBlogs();
-  }, []);
+  if (error) {
+    message.error("Error fetching blogs");
+  }
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#fff" }}>
-      <BackdropLoader open={loading} />
+      <BackdropLoader open={isLoading} />
       <Content style={{ padding: "20px" }}>
-        {/* Bọc nội dung chính trong motion.div */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

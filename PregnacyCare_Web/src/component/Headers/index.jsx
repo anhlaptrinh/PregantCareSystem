@@ -4,21 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { useGetImageUrl } from "../../apis/CallAPIFirebase";
 import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
 import DrawerMenu from "../DrawerMenu";
-import { Layout, Menu, Input, Button, Avatar } from "antd";
+import { Layout, Menu, Input, Avatar } from "antd";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import avatar from "../../assets/PregnantAvatar.jpg";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Header } = Layout;
 const { Search } = Input;
 
 const Headers = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [url, setUrl] = useState(null);
-  const navigate = useNavigate();
 
   // Lấy ảnh từ Firebase
   const handleGetImage = async () => {
@@ -43,30 +45,79 @@ const Headers = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("USER_TOKEN");
+    queryClient.removeQueries(["userInfo"]);
     setUser(null);
     setDrawerOpen(false);
   };
 
-  // Xử lý mở và đóng modal Login/Signin
+  // Xử lý mở/đóng modal Login/Signin
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 150);
+      const sticky = window.scrollY > 150;
+      setIsSticky(sticky);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Xây dựng mảng menu items dựa theo điều kiện của user
+  const menuItems = [
+    {
+      key: "home",
+      label: "Home",
+      onClick: () => navigate("/"),
+    },
+    (!user || (user && (user.role === "MEMBER" || user.role === "EXPERT"))) && {
+      key: "expert",
+      label: "Our Expert",
+      onClick: () => navigate("/our-expert"),
+    },
+    !user
+      ? {
+          key: "community",
+          label: "Community",
+          onClick: () => navigate("/community/home"),
+        }
+      : user &&
+        user.role === "MEMBER" && {
+          key: "community",
+          label: "Community",
+          onClick: () => navigate("/community"),
+        },
+    user &&
+      user.role === "MEMBER" && {
+        key: "appointment",
+        label: "Appointment",
+        children: [
+          {
+            key: "calendar",
+            label: "Calendar",
+            onClick: () => navigate("/appointment/calendar"),
+          },
+          {
+            key: "schedule",
+            label: "Schedule",
+            onClick: () => navigate("/appointment/schedule"),
+          },
+          {
+            key: "growth",
+            label: "Growth Chart",
+            onClick: () => navigate("/appointment/fetus-growth-chart"),
+          },
+        ],
+      },
+  ].filter(Boolean); // Lọc bỏ các giá trị false/null
+
   return (
     <>
       <Header
         className={`header--sticky ${isSticky ? "sticky" : ""}`}
         style={{
-          marginTop: 20,
-          padding: "0 20px",
+          padding: "12px 20px",
           background: "#fff",
           boxShadow: isSticky ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
         }}
@@ -78,7 +129,7 @@ const Headers = () => {
             justifyContent: "space-between",
           }}
         >
-          {/* Logo và Navigation */}
+          {/* Logo và Navigation luôn hiển thị */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <img
               src={logo}
@@ -89,37 +140,8 @@ const Headers = () => {
             <Menu
               mode="horizontal"
               style={{ borderBottom: "none", marginLeft: 20 }}
-            >
-              <Menu.Item key="home" onClick={() => navigate("/")}>
-                Home
-              </Menu.Item>
-              <Menu.Item key="expert" onClick={() => navigate("/our-expert")}>
-                Our Expert
-              </Menu.Item>
-              <Menu.Item key="community" onClick={() => navigate("/community")}>
-                Community
-              </Menu.Item>
-              <Menu.SubMenu key="appointment" title="Appointment">
-                <Menu.Item
-                  key="calendar"
-                  onClick={() => navigate("/appointment/calendar")}
-                >
-                  Calendar
-                </Menu.Item>
-                <Menu.Item
-                  key="schedule"
-                  onClick={() => navigate("/appointment/schedule")}
-                >
-                  Schedule
-                </Menu.Item>
-                <Menu.Item
-                  key="growth"
-                  onClick={() => navigate("/appointment/fetus-growth-chart")}
-                >
-                  Growth Chart
-                </Menu.Item>
-              </Menu.SubMenu>
-            </Menu>
+              items={menuItems}
+            />
           </div>
 
           {/* Phần tìm kiếm và tài khoản */}
@@ -129,7 +151,11 @@ const Headers = () => {
               allowClear
               enterButton={<FontAwesomeIcon icon={faMagnifyingGlass} />}
               onSearch={(value) => console.log(value)}
-              style={{ width: 200, marginRight: 20 }}
+              style={{
+                width: 200,
+                marginRight: 20,
+                marginBottom: 5,
+              }}
             />
 
             {user ? (
@@ -142,7 +168,7 @@ const Headers = () => {
             ) : (
               <button
                 className="rts-btn btn-primary"
-                type="primary"
+                type="button"
                 onClick={handleOpen}
               >
                 Login/Signin
@@ -161,6 +187,7 @@ const Headers = () => {
         }}
       />
 
+      {/* DrawerMenu vẫn được giữ nếu bạn cần sử dụng cho các chức năng khác */}
       <DrawerMenu
         drawerOpen={drawerOpen}
         handleCloseDrawer={handleCloseDrawer}

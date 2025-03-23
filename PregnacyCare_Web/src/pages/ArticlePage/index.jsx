@@ -2,11 +2,11 @@
 
 import { Avatar, Card, Collapse, Typography, Space } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { useGetArticleDetail } from "../../apis/CallAPIBlog";
-import BackdropLoader from "../../component/BackdropLoader";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, Link } from "react-router-dom";
 import moment from "moment";
-import { useLocation } from "react-router-dom";
+import BackdropLoader from "../../component/BackdropLoader";
+import { useGetArticleDetail } from "../../apis/CallAPIBlog";
 
 const { Title, Paragraph, Text } = Typography;
 const { Panel } = Collapse;
@@ -14,33 +14,33 @@ const { Panel } = Collapse;
 export default function ArticlePage() {
   const location = useLocation();
   const { articleId } = location.state || {};
-  const [article, setArticle] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleGetArticleDetail = async () => {
-    if (!articleId) return;
-    setLoading(true);
-    try {
+  // Sử dụng React Query để lấy chi tiết bài viết
+  const {
+    data: article,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["articleDetail", articleId],
+    queryFn: async () => {
+      if (!articleId) throw new Error("Missing articleId");
       const res = await useGetArticleDetail(articleId);
       if (res.code === 200) {
-        setArticle(res.data);
+        return res.data;
+      } else {
+        throw new Error("Error fetching article detail");
       }
-    } catch (error) {
-      console.error("Error fetching article detail:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    enabled: !!articleId,
+    staleTime: 1000 * 60 * 5, // dữ liệu fresh trong 5 phút
+  });
 
-  useEffect(() => {
-    handleGetArticleDetail();
-  }, [articleId]);
+  if (isLoading) return <BackdropLoader open={isLoading} />;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="container py-4">
-      {loading ? (
-        <BackdropLoader open={loading} />
-      ) : article ? (
+      {article ? (
         <div className="row justify-content-center">
           <div className="col-12 col-lg-8">
             {/* Breadcrumb */}
@@ -119,10 +119,7 @@ export default function ArticlePage() {
                   <Title level={2} id={section.anchor} className="mb-3">
                     {section.sectionTitle}
                   </Title>
-                  <Paragraph>
-                    {/* Nội dung của từng mục có thể được lấy từ API nếu backend hỗ trợ */}
-                    {section.description}.
-                  </Paragraph>
+                  <Paragraph>{section.description}.</Paragraph>
                 </div>
               ))}
             </article>

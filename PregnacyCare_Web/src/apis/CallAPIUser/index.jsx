@@ -78,3 +78,12 @@ export const useChangePassword = (oldPassword, newPassword) => {
     },
   });
 };
+
+export const useForgotPassword = (email) => {
+  return APIClient.post({
+    url: `/api/authentication/forgot-password`,
+    params: {
+      email,
+    },
+  });
+};

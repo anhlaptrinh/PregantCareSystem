@@ -9,6 +9,8 @@ import {
   IconButton,
   Button,
   Divider,
+  Container,
+  Box,
 } from "@mui/material";
 import { Add, Edit, CalendarToday } from "@mui/icons-material";
 import PregnantAvatar from "../../../../assets/PregnantAvatar.jpg";
@@ -28,7 +30,7 @@ export default function FamilyInfo() {
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedFetus, setSelectedFetus] = useState(null);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Khi bấm nút edit, lưu fetus được chọn vào state và mở modal edit
   const handleEditClick = (fetus) => {
@@ -64,11 +66,11 @@ export default function FamilyInfo() {
           })
         );
         setFetusList(fetusWithImages);
-        setLoading(false);
       }
     } catch (err) {
       console.error("Error fetching fetus list:", err);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function FamilyInfo() {
   }, []);
 
   return (
-    <div>
+    <Box>
       <BackdropLoader open={loading} />
       {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
@@ -88,17 +90,17 @@ export default function FamilyInfo() {
       </Typography>
 
       {/* I'm pregnant */}
-      <Typography variant="h5" fontWeight="bold">
+      <Typography variant="h5" fontWeight="bold" sx={{ mt: 4 }}>
         I&apos;m pregnant
       </Typography>
-      <Divider />
+      <Divider sx={{ mb: 3 }} />
 
       <List>
         {fetusList.map((fetus) => (
-          <ListItem key={fetus.id} sx={{ width: 500 }}>
+          <ListItem key={fetus.id} sx={{ width: "100%" }}>
             {/* Avatar */}
             <ListItemAvatar>
-              <Avatar sx={{ width: 60, height: 60, marginRight: 2 }}>
+              <Avatar sx={{ width: 60, height: 60, mr: 2 }}>
                 <img src={fetus.imageUrl} alt="Avatar of Pregnant" />
               </Avatar>
             </ListItemAvatar>
@@ -157,6 +159,31 @@ export default function FamilyInfo() {
         onClose={() => setVisibleAdd(false)}
         refreshFetusList={fetchFetusList}
       />
-    </div>
+
+      {/* Thêm thông tin bổ sung để làm trang dài ra */}
+      <Box sx={{ mt: 8, mb: 8 }}>
+        <Typography variant="h4" gutterBottom>
+          Additional Information
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Here is some extra content to make the page longer. You can add more
+          details about your pregnancy journey, health tips, or any other useful
+          information.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet
+          lacus enim. Phasellus at lacus vitae velit fermentum ullamcorper.
+          Fusce malesuada, massa eu egestas fermentum, velit arcu laoreet nulla,
+          eget commodo justo purus ac eros. Vivamus posuere, sapien at facilisis
+          ultrices, magna dolor porta nibh, ut fringilla nulla elit ac libero.
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Integer vel mauris nec ligula tristique vestibulum. Nulla facilisi.
+          Duis bibendum, erat vitae dictum tincidunt, lectus mauris tincidunt
+          nibh, in cursus elit magna id nisl. Praesent sed turpis non odio
+          feugiat faucibus a eget nibh. Aenean at dignissim orci.
+        </Typography>
+      </Box>
+    </Box>
   );
 }

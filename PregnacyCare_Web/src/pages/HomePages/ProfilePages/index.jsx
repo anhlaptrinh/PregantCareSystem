@@ -2,10 +2,9 @@ import { useState } from "react";
 import { AppBar, Tabs, Tab, Box, Typography, Container } from "@mui/material";
 import AccountInfo from "../../../modules/HomeTemplate/Profile/AccountInfo";
 import FamilyInfo from "../../../modules/HomeTemplate/Profile/FamilyInfo";
-import CommunityInfo from "../../../modules/HomeTemplate/Profile/CommunityInfo";
 
 // Danh sách các tab trong phần Account Settings
-const tabLabels = ["Account Info", "Family Info", "Community Profile"];
+const tabLabels = ["My Family Info", "My advices"];
 
 export default function ProfilePages() {
   // Quản lý state cho tab đang được chọn
@@ -41,9 +40,7 @@ export default function ProfilePages() {
         </AppBar>
 
         {/* Nội dung cho từng tab*/}
-        {activeTab === 0 && <AccountInfo />}
-        {activeTab === 1 && <FamilyInfo />}
-        {activeTab === 2 && <CommunityInfo />}
+        {activeTab === 0 && <FamilyInfo />}
       </Box>
     </Container>
   );

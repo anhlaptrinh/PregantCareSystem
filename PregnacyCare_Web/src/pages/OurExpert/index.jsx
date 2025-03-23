@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   SearchOutlined,
   CloseCircleOutlined,
@@ -14,6 +14,7 @@ import "./style.css";
 import moment from "moment";
 import { useGetArticles } from "../../apis/CallAPIBlog";
 import BackdropLoader from "../../component/BackdropLoader";
+import { useQuery } from "@tanstack/react-query";
 
 // Tách các variants ra ngoài component
 const titleVariants = {
@@ -30,9 +31,6 @@ export default function OurExpert() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [articles, setArticles] = useState([]);
-  const [filterOptions, setFilterOptions] = useState([]);
 
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => setIsModalVisible(false);
@@ -43,49 +41,57 @@ export default function OurExpert() {
   };
   const handleClearFilters = () => setSelectedFilters([]);
 
-  // Lấy bài viết từ API (dữ liệu bao gồm blogCategory)
-  const handleGetArticles = async () => {
-    setLoading(true);
-    try {
+  // Sử dụng React Query để lấy bài viết từ API
+  const {
+    data: articles = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["articles"],
+    queryFn: async () => {
       const res = await useGetArticles();
       if (res.code === 200) {
-        setArticles(res.data);
-        // Xây dựng filterOptions dựa trên blogCategory có trong bài viết (loại bỏ giá trị null và trùng lặp)
-        const options = [
-          ...new Set(
-            res.data
-              .map((article) => article.blogCategory?.name)
-              .filter((name) => !!name)
-          ),
-        ].map((name) => ({ label: name, value: name }));
-        setFilterOptions(options);
+        return res.data;
+      } else {
+        throw new Error("Error fetching articles");
       }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching articles:", error);
-      setLoading(false);
-    }
-  };
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    handleGetArticles();
-  }, []);
+  // Xây dựng filterOptions dựa trên blogCategory có trong bài viết
+  const filterOptions = useMemo(() => {
+    if (!articles || articles.length === 0) return [];
+    return [
+      ...new Set(
+        articles
+          .map((article) => article.blogCategory?.name)
+          .filter((name) => !!name)
+      ),
+    ].map((name) => ({ label: name, value: name }));
+  }, [articles]);
 
   // Lọc bài viết dựa trên searchTerm và selectedFilters (so sánh với blogCategory.name)
-  const filteredArticles = articles.filter((article) => {
-    const matchesSearch = article.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedFilters.length === 0 ||
-      (article.blogCategory &&
-        selectedFilters.includes(article.blogCategory.name));
-    return matchesSearch && matchesCategory;
-  });
+  const filteredArticles = useMemo(() => {
+    return articles.filter((article) => {
+      const matchesSearch = article.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedFilters.length === 0 ||
+        (article.blogCategory &&
+          selectedFilters.includes(article.blogCategory.name));
+      return matchesSearch && matchesCategory;
+    });
+  }, [articles, searchTerm, selectedFilters]);
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="container py-4">
-      <BackdropLoader open={loading} />
+      <BackdropLoader open={isLoading} />
       <div className="relative w-full mb-4">
         <Input
           value={searchTerm}
