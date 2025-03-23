@@ -1,6 +1,12 @@
 import APIClient from "../apiClient";
 import { jwtDecode } from "jwt-decode";
 
+export const useGetAllUsers = () => {
+  return APIClient.get({
+    url: `/api/users`,
+  });
+};
+
 /**
  * Hàm loginUser gọi API đăng nhập từ Spring Boot.
  * @param {string} email - Email của người dùng.

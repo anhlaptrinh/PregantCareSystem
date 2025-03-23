@@ -4,14 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { useGetImageUrl } from "../../apis/CallAPIFirebase";
 import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
 import DrawerMenu from "../DrawerMenu";
-import { Layout, Menu, Input, Avatar } from "antd";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Avatar, Layout } from "antd";
 import avatar from "../../assets/PregnantAvatar.jpg";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  TextField,
+  IconButton,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  Box,
+  Button,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 const { Header } = Layout;
-const { Search } = Input;
 
 const Headers = () => {
   const queryClient = useQueryClient();
@@ -21,6 +28,10 @@ const Headers = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [url, setUrl] = useState(null);
+
+  // Cho dropdown menu con
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openDropdown = Boolean(anchorEl);
 
   // Lấy ảnh từ Firebase
   const handleGetImage = async () => {
@@ -54,6 +65,14 @@ const Headers = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const handleAppointmentClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleAppointmentClose = () => {
+    setAnchorEl(null);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const sticky = window.scrollY > 150;
@@ -64,60 +83,12 @@ const Headers = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Xây dựng mảng menu items dựa theo điều kiện của user
-  const menuItems = [
-    {
-      key: "home",
-      label: "Home",
-      onClick: () => navigate("/"),
-    },
-    (!user || (user && (user.role === "MEMBER" || user.role === "EXPERT"))) && {
-      key: "expert",
-      label: "Our Expert",
-      onClick: () => navigate("/our-expert"),
-    },
-    !user
-      ? {
-          key: "community",
-          label: "Community",
-          onClick: () => navigate("/community/home"),
-        }
-      : user &&
-        user.role === "MEMBER" && {
-          key: "community",
-          label: "Community",
-          onClick: () => navigate("/community"),
-        },
-    user &&
-      user.role === "MEMBER" && {
-        key: "appointment",
-        label: "Appointment",
-        children: [
-          {
-            key: "calendar",
-            label: "Calendar",
-            onClick: () => navigate("/appointment/calendar"),
-          },
-          {
-            key: "schedule",
-            label: "Schedule",
-            onClick: () => navigate("/appointment/schedule"),
-          },
-          {
-            key: "growth",
-            label: "Growth Chart",
-            onClick: () => navigate("/appointment/fetus-growth-chart"),
-          },
-        ],
-      },
-  ].filter(Boolean); // Lọc bỏ các giá trị false/null
-
   return (
     <>
       <Header
         className={`header--sticky ${isSticky ? "sticky" : ""}`}
         style={{
-          padding: "12px 20px",
+          padding: "14px 28px",
           background: "#fff",
           boxShadow: isSticky ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
         }}
@@ -129,32 +100,97 @@ const Headers = () => {
             justifyContent: "space-between",
           }}
         >
-          {/* Logo và Navigation luôn hiển thị */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <img
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box
+              component="img"
               src={logo}
               alt="logo_area"
-              style={{ height: 40, cursor: "pointer" }}
+              sx={{ height: 40, cursor: "pointer" }}
               onClick={() => navigate("/")}
             />
-            <Menu
-              mode="horizontal"
-              style={{ borderBottom: "none", marginLeft: 20 }}
-              items={menuItems}
-            />
-          </div>
+            <Box
+              sx={{
+                ml: 2,
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Button
+                onClick={() => navigate("/")}
+                sx={{
+                  textTransform: "none",
+                  color: "black",
+                  fontSize: 18,
+                  marginRight: 2,
+                  "&:hover": { backgroundColor: "#615EFC", color: "white" },
+                }}
+              >
+                Home
+              </Button>
+              {(!user ||
+                (user &&
+                  (user.role === "MEMBER" || user.role === "EXPERT"))) && (
+                <Button
+                  onClick={() => navigate("/our-expert")}
+                  sx={{
+                    textTransform: "none",
+                    color: "black",
+                    fontSize: 18,
+                    marginRight: 2,
+                    "&:hover": { backgroundColor: "#615EFC", color: "white" },
+                  }}
+                >
+                  Our Expert
+                </Button>
+              )}
+              {!user ? (
+                <Button
+                  onClick={() => navigate("/community/home")}
+                  sx={{
+                    textTransform: "none",
+                    color: "black",
+                    fontSize: 18,
+                    marginRight: 2,
+                    "&:hover": { backgroundColor: "#615EFC", color: "white" },
+                  }}
+                >
+                  Community
+                </Button>
+              ) : (
+                user.role === "MEMBER" && (
+                  <Button
+                    onClick={() => navigate("/community")}
+                    sx={{
+                      textTransform: "none",
+                      color: "black",
+                      fontSize: 18,
+                      marginRight: 2,
+                      "&:hover": { backgroundColor: "#615EFC", color: "white" },
+                    }}
+                  >
+                    Community
+                  </Button>
+                )
+              )}
+            </Box>
+          </Box>
 
           {/* Phần tìm kiếm và tài khoản */}
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Search
+            <TextField
               placeholder="Search..."
-              allowClear
-              enterButton={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-              onSearch={(value) => console.log(value)}
-              style={{
-                width: 200,
-                marginRight: 20,
-                marginBottom: 5,
+              variant="outlined"
+              sx={{
+                marginRight: 5,
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
 

@@ -8,7 +8,6 @@ export default function HomePages() {
     <>
       <Headers />
       <Outlet />
-      <Advertisement />
       <Footers />
     </>
   );
