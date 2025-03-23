@@ -1,71 +1,115 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import React, { useState } from "react";
+import { EditOutlined, DeleteOutlined,InfoCircleOutlined } from "@ant-design/icons";
+import { Table, Button, Modal, Input, Form, Tooltip, Popconfirm } from "antd";
+import useFetusRecordStore from "../../../zustand/fetusRecordStore";
+import { useFetchFetusRecordList } from "../../../hooks/FetusRecordHooks/useGetFetusRecord";
+import dayjs from "dayjs";
+import { useDeleteFetusRecord } from "../../../hooks/FetusRecordHooks/useDeleteFetusRecord";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
+export default function FetusRecord({ selectedFetus }) {
+  const { fetusRecords, setFetusRecords, updateRecord, deleteRecord } =
+    useFetusRecordStore();
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
+  const {mutate: deletFetusRecord} = useDeleteFetusRecord();
+  // Lấy danh sách dữ liệu từ Zustand theo fetusId
+  const {
+    data: records = [],
+    isLoading,
+    isError,
+  } = useFetchFetusRecordList(selectedFetus?.id);
+  const today = dayjs().startOf("day");
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+  const showEditModal = (record) => {
+    setEditingRecord(record);
+    setIsModalVisible(true);
+    form.setFieldsValue(record);
+  };
 
-export default function FetusRecord() {
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead
-          sx={{
-            minWidth: 650,
-            "& *": {
-              fontSize: "12px !important",
-              fontWeight: "bold !important",
-            },
+  const handleUpdate = () => {
+    form.validateFields().then((values) => {
+      updateRecord(selectedFetus.id, editingRecord.id, values);
+      setIsModalVisible(false);
+      setEditingRecord(null);
+    });
+  };
+
+  const handleDelete = (recordId) => {
+    deleteRecord(selectedFetus.id, recordId);
+  };
+
+  const columns = [
+    {
+      title: "Date Record",
+      dataIndex: "dateRecord",
+      align: "center",
+      key: "dateRecord",
+      render: (text) => {
+        if (!text) return "N/A";
+        const date = new Date(text);
+        return new Intl.DateTimeFormat("vi-VN").format(date); // Định dạng theo chuẩn Việt Nam
+      },
+    },
+    {
+      title: "Weight (gram)",
+      dataIndex: "weight",
+      align: "center",
+      key: "weight",
+      width: 100,
+    },
+    {
+      title: "Height (cm)",
+      dataIndex: "height",
+      align: "center",
+      key: "height",
+      width: 100,
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      align: "center",
+      width: 180,
+      render: (_, record) => (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 8,
           }}
         >
-          <TableRow>
-            <TableCell>Dessert</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{
-                "&:last-child td, &:last-child th": {
-                  border: true,
-                },
-                "& td": {
-                  fontSize: "12px !important", // Áp dụng font size cho tất cả các TableCell trong TableRow
-                },
-                "& th": {
-                  fontSize: "12px !important", // Áp dụng font size cho các TableCell th (thường dùng trong TableHead)
-                },
-              }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <Tooltip title={record.warningMess || "No warnings"}>
+            <Button style={{ backgroundColor: "green" }} type="primary" icon={<InfoCircleOutlined />} size="middle" />
+          </Tooltip>
+          
+          <Popconfirm
+          title="Are you sure you want to delete this event?"
+          onConfirm={(e) => {
+            e.stopPropagation();
+            deletFetusRecord(record.id);
+          }}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button type="primary" size="middle" danger icon={<DeleteOutlined />} onClick={(e) => e.stopPropagation()}>
+            
+          </Button>
+        </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Table
+        loading={isLoading}
+        dataSource={records}
+        columns={columns}
+        rowKey="id"
+        pagination={{ pageSize: 3 }} // Luôn hiển thị 3 dòng
+      />
+    </>
   );
 }
