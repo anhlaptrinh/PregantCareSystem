@@ -32,6 +32,9 @@ const DrawerMenu = ({
   url,
   handleLogout,
 }) => {
+  // Xác định role dưới dạng chữ thường nếu user tồn tại
+  const role = user && user.role ? user.role.toLowerCase() : null;
+
   return (
     <Drawer
       placement="right"
@@ -54,34 +57,91 @@ const DrawerMenu = ({
           </Typography>
         </motion.div>
         <Divider />
-        <motion.div variants={itemVariants}>
-          <StyledButton
-            to="/profile"
-            className="mb-4 p-5 fs-3"
-            onCloseDrawer={handleCloseDrawer}
-          >
-            My Family Info
-          </StyledButton>
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <StyledButton
-            to="/profile"
-            className="mb-4 p-5 fs-3"
-            onCloseDrawer={handleCloseDrawer}
-          >
-            Personal Info
-          </StyledButton>
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <StyledButton
-            to="/"
-            className="mb-4 p-5 fs-3"
-            type="danger"
-            onClick={handleLogout}
-          >
-            Log out
-          </StyledButton>
-        </motion.div>
+
+        {/* Hiển thị theo role */}
+        {role === "member" && (
+          <>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/profile"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                My Family Info
+              </StyledButton>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/account-info"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Account Info
+              </StyledButton>
+            </motion.div>
+          </>
+        )}
+
+        {role === "expert" && (
+          <>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/account-info"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Account Info
+              </StyledButton>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/expert/forum"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Forum
+              </StyledButton>
+            </motion.div>
+          </>
+        )}
+
+        {role === "admin" && (
+          <>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/account-info"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Account Info
+              </StyledButton>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/admin/dashboard"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Admin
+              </StyledButton>
+            </motion.div>
+          </>
+        )}
+
+        {/* Nếu user chưa đăng nhập (null) thì không hiển thị các mục trên */}
+        {/* Nút Log out luôn được hiển thị nếu có user */}
+        {user && (
+          <motion.div variants={itemVariants}>
+            <StyledButton
+              to="/"
+              className="mb-4 p-5 fs-3"
+              type="danger"
+              onClick={handleLogout}
+            >
+              Log out
+            </StyledButton>
+          </motion.div>
+        )}
       </motion.div>
     </Drawer>
   );

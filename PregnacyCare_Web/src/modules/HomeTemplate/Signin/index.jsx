@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import SigninBackground from "../../../assets/Signin.jpg";
 import { useRegister } from "../../../apis/CallAPIUser";
-import BackdropLoader from "../../../component/BackdropLoader";
+import { Button } from "@mui/material";
 
 const { Title, Text } = Typography;
 
@@ -31,11 +31,10 @@ export default function Signin({ setActiveTab }) {
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
-      <BackdropLoader open={loading} />
       <div style={{ flex: 1, padding: "20px" }}>
         <div className="row justify-content-md-center">
           <div className="col-md-auto mb-3">
-            <Title>Sign in</Title>
+            <Title style={{ color: "#615EFC" }}>Sign in to new world</Title>
           </div>
         </div>
         <Text style={{ display: "block", marginBottom: "20px" }}>
@@ -79,13 +78,27 @@ export default function Signin({ setActiveTab }) {
             />
           </Form.Item>
           <Form.Item>
-            <div className="row justify-content-md-center">
-              <div className="col-md-auto">
-                <button className="rts-btn btn-primary" type="submit">
-                  Sign in
-                </button>
-              </div>
-            </div>
+            <Button
+              variant="contained"
+              type="submit"
+              disabled={loading}
+              onClick={handleSubmit}
+              sx={{
+                width: "100%",
+                backgroundColor: "#615EFC",
+                borderColor: "#615EFC",
+                fontSize: 12,
+
+                py: 1,
+                transition: "background-color 0.3s, border-color 0.3s",
+                "&:hover": {
+                  backgroundColor: "#4a3ecf", // màu tối hơn khi hover
+                  borderColor: "#4a3ecf",
+                },
+              }}
+            >
+              {loading ? "Logging in..." : "Sign in"}
+            </Button>
           </Form.Item>
         </Form>
         <div style={{ textAlign: "center", marginTop: "20px" }}>
