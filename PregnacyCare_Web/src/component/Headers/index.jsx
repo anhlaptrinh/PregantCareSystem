@@ -1,8 +1,7 @@
 import logo from "../../assets/images/logo/logo.svg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetImageUrl } from "../../apis/CallAPIFirebase";
-import LoginSignin from "../../modules/HomeTemplate/LoginSignin";
 import DrawerMenu from "../DrawerMenu";
 import { Avatar, Layout } from "antd";
 import avatar from "../../assets/PregnantAvatar.jpg";
@@ -11,12 +10,11 @@ import {
   TextField,
   IconButton,
   InputAdornment,
-  Menu,
-  MenuItem,
   Box,
   Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { UserContext } from "../../context/UserContext";
 
 const { Header } = Layout;
 
@@ -26,12 +24,8 @@ const Headers = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(UserContext);
   const [url, setUrl] = useState(null);
-
-  // Cho dropdown menu con
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openDropdown = Boolean(anchorEl);
 
   // Lấy ảnh từ Firebase
   const handleGetImage = async () => {
@@ -59,18 +53,7 @@ const Headers = () => {
     queryClient.removeQueries(["userInfo"]);
     setUser(null);
     setDrawerOpen(false);
-  };
-
-  // Xử lý mở/đóng modal Login/Signin
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleAppointmentClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleAppointmentClose = () => {
-    setAnchorEl(null);
+    navigate("/");
   };
 
   useEffect(() => {
@@ -205,7 +188,7 @@ const Headers = () => {
               <button
                 className="rts-btn btn-primary"
                 type="button"
-                onClick={handleOpen}
+                onClick={() => navigate("/login")}
               >
                 Login/Signin
               </button>
@@ -213,15 +196,6 @@ const Headers = () => {
           </div>
         </div>
       </Header>
-
-      <LoginSignin
-        open={open}
-        onClose={() => {
-          handleClose();
-          const storedUser = localStorage.getItem("USER_TOKEN");
-          if (storedUser) setUser(JSON.parse(storedUser));
-        }}
-      />
 
       {/* DrawerMenu vẫn được giữ nếu bạn cần sử dụng cho các chức năng khác */}
       <DrawerMenu

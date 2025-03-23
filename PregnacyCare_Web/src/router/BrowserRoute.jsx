@@ -6,7 +6,6 @@ import HomePages from "../pages/HomePages";
 import HomeTemplate from "../modules/HomeTemplate";
 import OurExpert from "../pages/OurExpert";
 import ArticlePage from "../pages/ArticlePage";
-import QAForum from "../pages/QAForum";
 import ForumPostDetail from "../pages/QAForum/ForumPostDetail";
 
 // Các trang chỉ dành cho MEMBER
@@ -34,9 +33,12 @@ import AccountInfo from "../modules/HomeTemplate/Profile/AccountInfo";
 import FamilyInfo from "../modules/HomeTemplate/Profile/FamilyInfo";
 import ProfilePages from "../pages/HomePages/ProfilePages";
 import Home from "../modules/HomeTemplate/Community/Home";
+import LoginSignin from "../modules/HomeTemplate/LoginSignin";
+import ExpertDetail from "../pages/ArticlePage/ExpertDetail";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
+  { path: "/login", element: <LoginSignin /> },
   {
     element: <HomePages />,
     children: [
@@ -54,12 +56,14 @@ const routes = [
         element: <ViewPostPages />,
       },
       { path: "/our-expert", element: <OurExpert /> },
+      { path: "/our-expert/expert-detail", element: <ExpertDetail /> },
       {
         path: "/our-expert/article/:articleSlug",
         element: <ArticlePage />,
       },
     ],
   },
+  { path: "/login", element: <LoginSignin /> },
 
   // Các route chung cho MEMBER và EXPERT (ví dụ: trang chủ và các trang thông tin chung)
   {
@@ -99,6 +103,10 @@ const routes = [
             element: <CreatePostPages />,
           },
           { path: "/payment", element: <PaymentPage /> },
+          {
+            path: "/appointment/fetus-growth-chart",
+            element: <FetusGrowthChart />,
+          },
         ],
       },
       {
@@ -114,14 +122,6 @@ const routes = [
         element: (
           <AppointmentManagement>
             <AppointmentCalendar />
-          </AppointmentManagement>
-        ),
-      },
-      {
-        path: "/appointment/fetus-growth-chart",
-        element: (
-          <AppointmentManagement>
-            <FetusGrowthChart />
           </AppointmentManagement>
         ),
       },

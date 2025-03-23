@@ -65,7 +65,6 @@ const ForgotPassword = ({ setActiveTab }) => {
               variant="contained"
               type="submit"
               disabled={loading}
-              onClick={handleSubmit}
               sx={{
                 width: "100%",
                 backgroundColor: "#615EFC",

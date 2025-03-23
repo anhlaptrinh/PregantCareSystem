@@ -1,45 +1,63 @@
 import React, { useState } from "react";
-import { Modal } from "antd";
-import { AppBar, Box, Tab, Tabs } from "@mui/material";
+import { Box, AppBar, Tab, Tabs } from "@mui/material";
 import { motion } from "framer-motion";
 import Login from "../Login";
 import Signin from "../Signin";
 import ForgotPassword from "../ForgotPassword";
+import backgroundImage from "../../../assets/LoginBackground.jpg";
+import { useNavigate } from "react-router-dom";
 
 const primaryColor60 = "#615EFC";
-const tabLabels = ["Log in", "Sign in", "Forgot Password"];
+const tabLabels = ["Home", "Log in", "Sign in", "Forgot Password"];
 
-export default function LoginSignin({ open, onClose }) {
-  // Quản lý state cho tab đang được chọn
-  const [activeTab, setActiveTab] = useState(0);
+export default function LoginSignin() {
+  const [activeTab, setActiveTab] = useState(1);
+  const navigate = useNavigate();
 
   const handleChangeTab = (event, newValue) => {
-    setActiveTab(newValue);
+    if (newValue === 0) {
+      navigate("/");
+    } else {
+      setActiveTab(newValue);
+    }
   };
 
   return (
-    <Modal
-      open={open}
-      onCancel={onClose}
-      footer={null}
-      width={900}
-      style={{ marginTop: -90 }}
+    <Box
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundImage: `url(${backgroundImage})`, // Đặt ảnh nền
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backdropFilter: "blur(6px)", // Hiệu ứng làm mờ background
+      }}
     >
-      {/* Áp dụng hiệu ứng với Framer Motion */}
+      {/* Hiệu ứng nổi của Box */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Box margin={3}>
+        <Box
+          width={900}
+          p={4}
+          sx={{
+            backgroundColor: "rgba(255, 255, 255, 0.95)", // Làm box trắng mờ
+            borderRadius: 3,
+            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)", // Hiệu ứng đổ bóng
+          }}
+        >
           <AppBar
             position="static"
             color="default"
-            sx={{
-              boxShadow: "none",
-              mb: "30px",
-              backgroundColor: "#fff",
-            }}
+            sx={{ boxShadow: "none", mb: 2, backgroundColor: "#fff" }}
           >
             <Tabs
               value={activeTab}
@@ -58,11 +76,11 @@ export default function LoginSignin({ open, onClose }) {
           </AppBar>
 
           {/* Nội dung cho từng tab */}
-          {activeTab === 0 && <Login onClose={onClose} />}
-          {activeTab === 1 && <Signin setActiveTab={setActiveTab} />}
-          {activeTab === 2 && <ForgotPassword setActiveTab={setActiveTab} />}
+          {activeTab === 1 && <Login />}
+          {activeTab === 2 && <Signin setActiveTab={setActiveTab} />}
+          {activeTab === 3 && <ForgotPassword setActiveTab={setActiveTab} />}
         </Box>
       </motion.div>
-    </Modal>
+    </Box>
   );
 }
