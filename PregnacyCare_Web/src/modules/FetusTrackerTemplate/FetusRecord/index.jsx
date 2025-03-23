@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Table, Button, Modal, Input, Form } from "antd";
+import { EditOutlined, DeleteOutlined,InfoCircleOutlined } from "@ant-design/icons";
+import { Table, Button, Modal, Input, Form, Tooltip, Popconfirm } from "antd";
 import useFetusRecordStore from "../../../zustand/fetusRecordStore";
 import { useFetchFetusRecordList } from "../../../hooks/FetusRecordHooks/useGetFetusRecord";
 import dayjs from "dayjs";
+import { useDeleteFetusRecord } from "../../../hooks/FetusRecordHooks/useDeleteFetusRecord";
 
 export default function FetusRecord({ selectedFetus }) {
   const { fetusRecords, setFetusRecords, updateRecord, deleteRecord } =
@@ -11,7 +12,7 @@ export default function FetusRecord({ selectedFetus }) {
   const [editingRecord, setEditingRecord] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-
+  const {mutate: deletFetusRecord} = useDeleteFetusRecord();
   // Lấy danh sách dữ liệu từ Zustand theo fetusId
   const {
     data: records = [],
@@ -19,7 +20,6 @@ export default function FetusRecord({ selectedFetus }) {
     isError,
   } = useFetchFetusRecordList(selectedFetus?.id);
   const today = dayjs().startOf("day");
-  console.log("lấy duodjc id ", records);
 
   const showEditModal = (record) => {
     setEditingRecord(record);
@@ -70,48 +70,34 @@ export default function FetusRecord({ selectedFetus }) {
       key: "actions",
       align: "center",
       width: 180,
-      render: (_, record) => {
-        const recordDate = dayjs(record.dateRecord.split("T")[0]);
-
-        return recordDate.isBefore(today) ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center", // Căn giữa nội dung
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-              onClick={() => handleDelete(record.id)}
-            />
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center", // Căn giữa nội dung
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <Button
-              onClick={() => showEditModal(record)}
-              icon={<EditOutlined />}
-              size="small"
-            />
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-              onClick={() => handleDelete(record.id)}
-            />
-          </div>
-        );
-      },
+      render: (_, record) => (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <Tooltip title={record.warningMess || "No warnings"}>
+            <Button style={{ backgroundColor: "green" }} type="primary" icon={<InfoCircleOutlined />} size="middle" />
+          </Tooltip>
+          
+          <Popconfirm
+          title="Are you sure you want to delete this event?"
+          onConfirm={(e) => {
+            e.stopPropagation();
+            deletFetusRecord(record.id);
+          }}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button type="primary" size="middle" danger icon={<DeleteOutlined />} onClick={(e) => e.stopPropagation()}>
+            
+          </Button>
+        </Popconfirm>
+        </div>
+      ),
     },
   ];
 
