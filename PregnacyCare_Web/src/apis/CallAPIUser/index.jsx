@@ -14,7 +14,7 @@ export const useLogin = (email, password) => {
     params: { email, password },
   }).then((response) => {
     // API trả về đối tượng có cấu trúc { code, message, data } với data là token
-    if (response.code === 200 && response.data) {
+    if (response.code === 200) {
       const token = response.data;
       // Giải mã token để lấy thông tin role (nếu token có chứa thông tin này)
       let decoded = {};
@@ -98,6 +98,15 @@ export const useChangePassword = (oldPassword, newPassword) => {
     params: {
       oldPassword: oldPassword,
       newPassword: newPassword,
+    },
+  });
+};
+
+export const useForgotPassword = (email) => {
+  return APIClient.post({
+    url: `/api/authentication/forgot-password`,
+    params: {
+      email,
     },
   });
 };

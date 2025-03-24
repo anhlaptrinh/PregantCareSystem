@@ -29,7 +29,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
-    "@tanstack/react-query": "^5.66.0",
+    "@tanstack/react-query": "^5.69.0",
     "antd": "^5.24.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",

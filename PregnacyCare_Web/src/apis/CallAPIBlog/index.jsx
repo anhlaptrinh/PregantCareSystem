@@ -12,6 +12,25 @@ export const useCreateBlog = (blog) => {
   });
 };
 
+export const useGetAllBlogs = (blog) => {
+  return APIClient.get({
+    url: "/api/blogs",
+  });
+};
+
+export const useDeleteManyBlogs = (ids) => {
+  return APIClient.delete({
+    url: "/api/blogs",
+    data: ids,
+  });
+};
+
+export const useApproveBlog = (id) => {
+  return APIClient.put({
+    url: `/api/blogs/status/${id}`,
+  });
+};
+
 /**
  * Lấy danh sách tất cả các post.
  * @returns {Promise} Promise trả về danh sách blog.
@@ -33,21 +52,23 @@ export const useGetMyPosts = () => {
 };
 
 /**
- * Lấy danh sách tất cả các article.
- * @returns {Promise} Promise trả về danh sách blog.
- */
-export const useGetArticles = () => {
-  return APIClient.get({
-    url: "/api/blogs/articles",
-  });
-};
-
-/**
  * Xóa blog theo id.
  * @param {number} id - ID của blog cần xóa.
  * @returns {Promise} Promise trả về kết quả từ API.
  */
 export const useDeleteBlog = (id) => {
+  return APIClient.delete({
+    url: `/api/blogs/trash/${id}`,
+  });
+};
+
+export const useRestoreBlog = (id) => {
+  return APIClient.put({
+    url: `/api/blogs/restoration/${id}`,
+  });
+};
+
+export const useDeleteBlogPermanently = (id) => {
   return APIClient.delete({
     url: `/api/blogs/${id}`,
   });
@@ -69,5 +90,21 @@ export const useUpdateBlog = (id, blog) => {
 export const useGetPostDetail = (id) => {
   return APIClient.get({
     url: `/api/blogs/post-detail/${id}`,
+  });
+};
+
+/**
+ * Lấy danh sách tất cả các article.
+ * @returns {Promise} Promise trả về danh sách blog.
+ */
+export const useGetArticles = () => {
+  return APIClient.get({
+    url: "/api/blogs/articles",
+  });
+};
+
+export const useGetArticleDetail = (articleId) => {
+  return APIClient.get({
+    url: `/api/blogs/article-detail/${articleId}`,
   });
 };
