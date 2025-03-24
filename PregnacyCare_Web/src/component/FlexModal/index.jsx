@@ -1,4 +1,4 @@
-import { Modal, Form, Input, DatePicker, Button } from "antd";
+import { Modal, Form, Input, DatePicker, Button, Select } from "antd";
 import { useEffect } from "react";
 const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
   const [form] = Form.useForm();
@@ -49,7 +49,7 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
       ]}
     >
       <Form form={form} layout="vertical" preserve={false}>
-        {fields.map(({ name, label, type, value }) => (
+        {fields.map(({ name, label, type, value, options }) => (
           <Form.Item
             key={name}
             name={name}
@@ -65,6 +65,14 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
               />
             ) : type === "date" ? (
               <DatePicker showTime style={{ width: "100%" }} />
+            ) : type === "select" ? (
+              <Select placeholder={`Select ${label}`}>
+                {options?.map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </Select>
             ) : (
               <Input type="hidden" />
             )}

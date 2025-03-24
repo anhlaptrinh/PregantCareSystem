@@ -27,12 +27,14 @@ const FetusInput = ({ selectedFetus }) => {
    const handleCalculate = () => {
     form.validateFields().then((values) => {
       const { weight, height, dateRecord } = values;
-
+      const localDate = new Date(dateRecord);
+      localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
       // Chuyển đổi giá trị sang định dạng phù hợp với BE
       const payload = {
+        id: 0,
         weight,
         height,
-        dateRecord: dateRecord.format("YYYY-MM-DDTHH:mm:ss"), // Chuyển đổi sang LocalDateTime
+        dateRecord: localDate.toISOString(), // Chuyển đổi sang LocalDateTime
       };
 
       if (selectedFetus?.id) {

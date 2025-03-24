@@ -1,12 +1,19 @@
 import React from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
 import {
-  UserOutlined,
-  FileTextOutlined,
-  AlignLeftOutlined,
+
+    UserOutlined,
+    CalendarOutlined,
+    FileTextOutlined,
+    SettingOutlined,
+    AlignLeftOutlined,
+    HomeOutlined,
+    DashboardOutlined,
+
 } from "@ant-design/icons";
 import avatar from "../../assets/avatar.jpg";
 import { Link, useLocation } from "react-router-dom";
+import { Dashboard, Home } from "@mui/icons-material";
 
 const { Header, Content, Sider } = Layout;
 
@@ -36,6 +43,7 @@ const MainLayout = ({ children }) => {
   const storedUser = localStorage.getItem("USER_TOKEN");
   const role = storedUser ? JSON.parse(storedUser).role : null;
 
+
   return (
     <Layout style={{ minHeight: "100vh", background: "#fff" }}>
       <Sider
@@ -50,7 +58,7 @@ const MainLayout = ({ children }) => {
         <Menu mode="vertical" defaultSelectedKeys={["1"]} style={{ background: "#f8f9fa" }}>
           {role === "ADMIN" && (
             <>
-              <Menu.Item key="1" icon={<UserOutlined />}>
+              <Menu.Item key="1" icon={<DashboardOutlined />}>
                 <Link to="/admin/dashboard">Dashboard</Link>
               </Menu.Item>
               <Menu.Item key="2" icon={<FileTextOutlined />}>
@@ -59,6 +67,9 @@ const MainLayout = ({ children }) => {
               <Menu.Item key="4" icon={<UserOutlined />}>
                 <Link to="/admin/user">User</Link>
               </Menu.Item>
+              <Menu.Item key="5" icon={<HomeOutlined />}>
+                        <Link to="/">Home</Link>
+                    </Menu.Item>
             </>
           )}
           {role === "EXPERT" && (
