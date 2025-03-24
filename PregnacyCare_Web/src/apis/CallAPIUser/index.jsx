@@ -93,3 +93,15 @@ export const useForgotPassword = (email) => {
     },
   });
 };
+
+export const useGetAllExperts = () => {
+  return APIClient.get({
+    url: `/api/users/experts`,
+  });
+};
+
+export const useGetExpertDetail = (id) => {
+  return APIClient.get({
+    url: `/api/users/experts/${id}`,
+  });
+};

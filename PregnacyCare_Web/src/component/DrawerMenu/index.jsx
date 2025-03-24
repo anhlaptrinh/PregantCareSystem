@@ -33,7 +33,7 @@ const DrawerMenu = ({
   handleLogout,
 }) => {
   // Xác định role dưới dạng chữ thường nếu user tồn tại
-  const role = user && user.role ? user.role.toLowerCase() : null;
+  const role = user && user.roleName ? user.roleName.toLowerCase() : null;
 
   return (
     <Drawer

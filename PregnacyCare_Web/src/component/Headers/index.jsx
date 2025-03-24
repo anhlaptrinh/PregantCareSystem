@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { UserContext } from "../../context/UserContext";
+import { useUserInfo } from "../../apis/CallAPIUser";
 
 const { Header } = Layout;
 
@@ -22,26 +23,33 @@ const Headers = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isSticky, setIsSticky] = useState(false);
-  const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [url, setUrl] = useState(null);
 
-  // Lấy ảnh từ Firebase
-  const handleGetImage = async () => {
+  // Lấy thông tin chi tiết của user hiện tại
+  const fetchUserInfo = async () => {
     try {
-      const result = await useGetImageUrl("pregnancyCareImages/users", 1);
-      setUrl(result);
+      const res = await useUserInfo();
+      if (res.code == 200) {
+        // Lấy ảnh từ Firebase
+        const imageUrl = await useGetImageUrl(
+          "pregnancyCareImages/users",
+          res.data.id
+        );
+        setUrl(imageUrl);
+        setUser(res.data);
+        queryClient.setQueryData(["userInfo"], res.data);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching user info:", error);
     }
   };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("USER_TOKEN");
     if (storedUser) {
-      handleGetImage();
-      setUser(JSON.parse(storedUser));
+      fetchUserInfo();
     }
   }, []);
 
@@ -112,7 +120,8 @@ const Headers = () => {
               </Button>
               {(!user ||
                 (user &&
-                  (user.role === "MEMBER" || user.role === "EXPERT"))) && (
+                  (user.roleName === "MEMBER" ||
+                    user.roleName === "EXPERT"))) && (
                 <Button
                   onClick={() => navigate("/our-expert")}
                   sx={{
@@ -140,7 +149,7 @@ const Headers = () => {
                   Community
                 </Button>
               ) : (
-                user.role === "MEMBER" && (
+                user.roleName === "MEMBER" && (
                   <Button
                     onClick={() => navigate("/community")}
                     sx={{

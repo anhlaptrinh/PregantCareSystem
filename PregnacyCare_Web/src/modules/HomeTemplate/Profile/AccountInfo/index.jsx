@@ -138,24 +138,25 @@ export default function AccountInfo() {
           </Form.Item>
 
           {/* Upload ảnh */}
-          <Form.Item name="image">
+          <Form.Item
+            name="image"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              // Nếu e là mảng (fileList) hoặc nếu e.fileList tồn tại
+              return Array.isArray(e) ? e : e && e.fileList;
+            }}
+          >
             <Upload
+              fileList={imageFile ? [imageFile] : []}
               showUploadList={false}
               beforeUpload={() => false} // Ngăn upload tự động
-              onChange={(value) => {
-                setImageFile(value.file);
+              onChange={({ fileList }) => {
+                // Lưu file đầu tiên vào state imageFile
+                setImageFile(fileList[0]);
               }}
             >
               <Button icon={<UploadOutlined />}>Update</Button>
             </Upload>
-          </Form.Item>
-
-          <Form.Item>
-            <Input
-              placeholder="Password"
-              disabled
-              style={{ height: 50, fontSize: 16 }}
-            />
           </Form.Item>
 
           {/* Link mở modal ChangePassword */}

@@ -9,33 +9,63 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Skeleton,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import backgroundImage from "../../../assets/ExpertDetailBackground.jpg";
-
-// Dữ liệu mẫu của expert
-const expertData = {
-  image:
-    "https://assets.babycenter.com/ims/2021/08/Karen-Miles-bio.jpeg?width=396",
-  name: "Dr. Jane Doe",
-  description:
-    "Dr. Jane Doe là chuyên gia hàng đầu về sản khoa với hơn 15 năm kinh nghiệm, nghiên cứu chuyên sâu về chăm sóc trước sinh và sức khỏe bà mẹ.",
-
-  certificates: [
-    {
-      name: "Board Certified in Obstetrics & Gynecology",
-      title: "ABOG",
-      date: 2010,
-    },
-    {
-      name: "Certified Maternal-Fetal Medicine Specialist",
-      title: "SMFM",
-      date: 2012,
-    },
-  ],
-};
+import avatar from "../../../assets/PregnantAvatar.jpg";
+import { useParams } from "react-router-dom";
+import { useGetExpertDetail } from "../../../apis/CallAPIUser";
+import moment from "moment";
+import { useGetImageUrl } from "../../../apis/CallAPIFirebase";
+import { useQuery } from "@tanstack/react-query";
 
 const ExpertDetail = () => {
+  const { id } = useParams();
+
+  // Hàm fetch expert detail kết hợp với việc lấy URL ảnh từ Firebase
+  const fetchExpertDetail = async () => {
+    const res = await useGetExpertDetail(id);
+    if (res.code === 200) {
+      let imageUrl;
+      try {
+        imageUrl = await useGetImageUrl(
+          "pregnancyCareImages/users",
+          res.data.id
+        );
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+      // Nếu không lấy được ảnh từ Firebase thì sử dụng avatar mặc định
+      const expertImage = imageUrl ? imageUrl : avatar;
+      return { ...res.data, image: expertImage };
+    }
+    throw new Error("Failed to fetch expert detail");
+  };
+
+  // Sử dụng react-query để lưu expert vào cache
+  const { data: expert, isLoading } = useQuery({
+    queryKey: ["expert", id],
+    queryFn: fetchExpertDetail,
+    staleTime: 1000 * 60 * 5, // dữ liệu fresh trong 5 phút
+  });
+
+  // Nếu dữ liệu đang được fetch thì hiển thị Skeleton của MUI
+  if (isLoading) {
+    return (
+      <Box sx={{ width: "50%", margin: "0 auto", padding: 4 }}>
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={300}
+          sx={{ borderRadius: 2, mb: 4 }}
+        />
+        <Skeleton variant="text" height={40} sx={{ mb: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={200} />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ width: "50%", margin: "0 auto", padding: 4 }}>
       {/* Phần Header với background image */}
@@ -68,6 +98,7 @@ const ExpertDetail = () => {
               width: "100%",
               height: "100%",
               borderRadius: 2,
+              backgroundColor: "rgba(0,0,0,0.5)",
             }}
           />
           <Box
@@ -82,8 +113,8 @@ const ExpertDetail = () => {
             {/* Expert image hiển thị dưới dạng avatar */}
             <Box
               component="img"
-              src={expertData.image}
-              alt={expertData.name}
+              src={expert?.image}
+              alt={expert?.fullName}
               sx={{
                 width: 150,
                 height: 150,
@@ -96,18 +127,12 @@ const ExpertDetail = () => {
             <Typography
               variant="h3"
               component="div"
-              sx={{ mb: 1, color: "black" }}
+              sx={{ mb: 1, color: "white" }}
             >
-              {expertData.name}
+              {expert?.fullName}
             </Typography>
           </Box>
         </Box>
-        <Typography variant="h2" gutterBottom>
-          About {expertData.name}
-        </Typography>
-        <Typography variant="h4" gutterBottom>
-          {expertData.description}
-        </Typography>
       </motion.div>
 
       {/* Bảng Certificates */}
@@ -124,21 +149,21 @@ const ExpertDetail = () => {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontSize: 22 }}>Name</TableCell>
-                <TableCell sx={{ fontSize: 22 }}>Title</TableCell>
-                <TableCell sx={{ fontSize: 22 }}>Year</TableCell>
+                <TableCell sx={{ fontSize: 22 }}>Date Begin</TableCell>
+                <TableCell sx={{ fontSize: 22 }}>Date End</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {expertData.certificates.map((certificate, index) => (
+              {expert?.certificates.map((certificate, index) => (
                 <TableRow key={index}>
-                  <TableCell sx={{ fontSize: 18 }}>
+                  <TableCell sx={{ fontSize: 16 }}>
                     {certificate.name}
                   </TableCell>
-                  <TableCell sx={{ fontSize: 18 }}>
-                    {certificate.title}
+                  <TableCell sx={{ fontSize: 16 }}>
+                    {moment(certificate.dateBegin).format("MMMM D, YYYY")}
                   </TableCell>
-                  <TableCell sx={{ fontSize: 18 }}>
-                    {certificate.date}
+                  <TableCell sx={{ fontSize: 16 }}>
+                    {moment(certificate.dateEnd).format("MMMM D, YYYY")}
                   </TableCell>
                 </TableRow>
               ))}

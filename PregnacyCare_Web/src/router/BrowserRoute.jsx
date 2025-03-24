@@ -56,7 +56,7 @@ const routes = [
         element: <ViewPostPages />,
       },
       { path: "/our-expert", element: <OurExpert /> },
-      { path: "/our-expert/expert-detail", element: <ExpertDetail /> },
+      { path: "/our-expert/expert-detail/:id", element: <ExpertDetail /> },
       {
         path: "/our-expert/article/:articleSlug",
         element: <ArticlePage />,
