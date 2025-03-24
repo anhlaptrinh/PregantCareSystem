@@ -3,22 +3,14 @@ import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetImageUrl } from "../../apis/CallAPIFirebase";
 import DrawerMenu from "../DrawerMenu";
-import { Avatar, Layout } from "antd";
+import { Avatar } from "antd";
 import avatar from "../../assets/PregnantAvatar.jpg";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  TextField,
-  IconButton,
-  InputAdornment,
-  Box,
-  Button,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+
 import { UserContext } from "../../context/UserContext";
 import { useUserInfo } from "../../apis/CallAPIUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-const { Header } = Layout;
 
 const Headers = () => {
   const queryClient = useQueryClient();
@@ -96,7 +88,7 @@ const Headers = () => {
                           (user.roleName === "MEMBER" ||
                             user.roleName === "EXPERT"))) && (
                         <li className="main-nav">
-                          <Link to="/our-expert">Articles</Link>
+                          <Link to="/our-expert">Article</Link>
                         </li>
                       )}
                       {!user ? (

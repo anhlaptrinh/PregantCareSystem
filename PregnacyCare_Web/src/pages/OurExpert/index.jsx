@@ -169,10 +169,7 @@ export default function OurExpert() {
             <div className="text-secondary small mb-2">
               {article.blogCategory.name}
             </div>
-            <Link
-              to={`/our-expert/article/${article.slug}`}
-              state={{ articleId: article.id }}
-            >
+            <Link to={`/our-expert/article/${article.slug}`}>
               <motion.div
                 initial="rest"
                 whileHover="hover"

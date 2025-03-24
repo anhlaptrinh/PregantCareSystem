@@ -14,6 +14,8 @@ import {
   Pagination,
   Tooltip,
   message,
+  Row,
+  Col,
 } from "antd";
 import {
   CaretUpOutlined,
@@ -116,7 +118,7 @@ export default function ForumAdmin() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="container"
+      className="container-fluid pe-5"
     >
       <div className="row">
         {/* Sidebar */}
@@ -126,7 +128,7 @@ export default function ForumAdmin() {
           transition={{ duration: 0.5 }}
           className="col-12 col-md-3"
         >
-          <Card className="border-0 shadow-sm">
+          <Card className="border-0 shadow-sm col-10">
             <List
               itemLayout="horizontal"
               dataSource={categories}
@@ -197,80 +199,76 @@ export default function ForumAdmin() {
             />
           </motion.div>
 
-          {/* Advices List */}
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
-            }}
-          >
+          {/* Advices Cards hiển thị theo hàng ngang */}
+          <Row gutter={[16, 16]} className="mt-4">
             {paginatedAdvices.map((advice) => (
-              <motion.div
-                key={advice.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="mb-3 border-0 shadow-sm">
-                  <div className="row">
-                    <div className="col-auto text-center">
-                      <Space direction="vertical" align="center">
-                        <Button type="text" icon={<CaretUpOutlined />} />
-                        <Text strong>{advice.status ? 1 : 0}</Text>
-                        <Button type="text" icon={<CaretDownOutlined />} />
-                      </Space>
-                    </div>
-                    <div className="col">
-                      <Space direction="vertical" className="w-100">
-                        <Space align="center">
-                          <Title level={5} className="mb-0">
-                            <Link
-                              to={`/expert/forum/${advice.id}`}
-                              className="text-decoration-none"
-                            >
-                              {advice.title}
-                            </Link>
-                          </Title>
-                          {advice.status && (
-                            <Tooltip title="Answered">
-                              <CheckCircleFilled style={{ color: "#52c41a" }} />
-                            </Tooltip>
-                          )}
+              <Col key={advice.id} xs={24} sm={12} md={8}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="mb-3 border-0 shadow-sm">
+                    <div className="row">
+                      <div className="col-auto text-center">
+                        <Space direction="vertical" align="center">
+                          <Button type="text" icon={<CaretUpOutlined />} />
+                          <Text strong>{advice.status ? 1 : 0}</Text>
+                          <Button type="text" icon={<CaretDownOutlined />} />
                         </Space>
-                        <Text type="secondary">{advice.description}</Text>
-                        <Space wrap>
-                          <Tag color="blue">
-                            {advice.blogCategory && advice.blogCategory.name}
-                          </Tag>
-                        </Space>
-                        <Space className="w-100 justify-content-between">
-                          <Space>
-                            <Avatar
-                              size="small"
-                              src="https://assets.babycenter.com/ims/2022/08/kate-shand-profile-picture.jpg?width=80"
-                            />
-                            <Text type="secondary">
-                              {advice.member && advice.member.fullName} •{" "}
-                              {moment(advice.datePublish).fromNow()}
-                            </Text>
+                      </div>
+                      <div className="col">
+                        <Space direction="vertical" className="w-100">
+                          <Space align="center">
+                            <Title level={5} className="mb-0">
+                              <Link
+                                to={`/expert/forum/${advice.id}`}
+                                className="text-decoration-none"
+                              >
+                                {advice.title}
+                              </Link>
+                            </Title>
+                            {advice.status && (
+                              <Tooltip title="Answered">
+                                <CheckCircleFilled
+                                  style={{ color: "#52c41a" }}
+                                />
+                              </Tooltip>
+                            )}
                           </Space>
-                          <Space size="large">
-                            <MessageOutlined />
-                            <Text type="secondary">
-                              {advice.answer ? "1 answer" : "No answer"}
-                            </Text>
-                            <EyeOutlined />
+                          <Text type="secondary">{advice.description}</Text>
+                          <Space wrap>
+                            <Tag color="blue">
+                              {advice.blogCategory && advice.blogCategory.name}
+                            </Tag>
+                          </Space>
+                          <Space className="w-100 justify-content-between">
+                            <Space>
+                              <Avatar
+                                size="small"
+                                src="https://assets.babycenter.com/ims/2022/08/kate-shand-profile-picture.jpg?width=80"
+                              />
+                              <Text type="secondary">
+                                {advice.member && advice.member.fullName} •{" "}
+                                {moment(advice.datePublish).fromNow()}
+                              </Text>
+                            </Space>
+                            <Space size="large">
+                              <MessageOutlined />
+                              <Text type="secondary">
+                                {advice.answer ? "1 answer" : "No answer"}
+                              </Text>
+                              <EyeOutlined />
+                            </Space>
                           </Space>
                         </Space>
-                      </Space>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </motion.div>
+                  </Card>
+                </motion.div>
+              </Col>
             ))}
-          </motion.div>
+          </Row>
 
           {/* Pagination */}
           <Pagination

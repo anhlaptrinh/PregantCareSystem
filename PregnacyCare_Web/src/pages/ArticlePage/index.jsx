@@ -3,7 +3,7 @@
 import { Avatar, Card, Collapse, Typography, Space } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import moment from "moment";
 import BackdropLoader from "../../component/BackdropLoader";
 import { useGetArticleDetail } from "../../apis/CallAPIBlog";
@@ -12,8 +12,7 @@ const { Title, Paragraph, Text } = Typography;
 const { Panel } = Collapse;
 
 export default function ArticlePage() {
-  const location = useLocation();
-  const { articleId } = location.state || {};
+  const { slug } = useParams();
 
   // Sử dụng React Query để lấy chi tiết bài viết
   const {
@@ -21,40 +20,33 @@ export default function ArticlePage() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["articleDetail", articleId],
+    queryKey: ["articleDetail", slug],
     queryFn: async () => {
-      if (!articleId) throw new Error("Missing articleId");
-      const res = await useGetArticleDetail(articleId);
+      if (!slug) console.log("Missing slug");
+      const res = await useGetArticleDetail(slug);
       if (res.code === 200) {
         return res.data;
       } else {
-        throw new Error("Error fetching article detail");
+        console.log("Error fetching article detail");
       }
     },
-    enabled: !!articleId,
+    enabled: !!slug,
     staleTime: 1000 * 60 * 5, // dữ liệu fresh trong 5 phút
   });
 
   if (isLoading) return <BackdropLoader open={isLoading} />;
   if (error) return <div>Error: {error.message}</div>;
 
+  // Sắp xếp các section theo displayOrder (nếu có)
+  const sortedSections = article?.articleSections
+    ?.slice()
+    .sort((a, b) => a.displayOrder - b.displayOrder);
+
   return (
     <div className="container py-4">
       {article ? (
         <div className="row justify-content-center">
           <div className="col-12 col-lg-8">
-            {/* Breadcrumb */}
-            <nav aria-label="breadcrumb" className="mb-3">
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="#">{article.blogCategory.name}</a>
-                </li>
-                <li className="breadcrumb-item">
-                  <a href="#">Innovation</a>
-                </li>
-              </ol>
-            </nav>
-
             {/* Article Header */}
             <Title level={1} className="mb-4">
               {article.title}
@@ -89,8 +81,8 @@ export default function ArticlePage() {
               </Text>
             </Card>
 
-            {/* Danh sách mục lục từ API */}
-            {article.articleSections?.length > 0 && (
+            {/* Danh mục lưu trữ (mục lục bài viết) */}
+            {sortedSections && sortedSections.length > 0 && (
               <Collapse
                 expandIcon={({ isActive }) => (
                   <CaretRightOutlined rotate={isActive ? 90 : 0} />
@@ -100,7 +92,7 @@ export default function ArticlePage() {
               >
                 <Panel header="In this article" key="1">
                   <ul className="list-unstyled mb-0">
-                    {article.articleSections.map((section) => (
+                    {sortedSections.map((section) => (
                       <li key={section.id} className="mb-2">
                         <a href={`#${section.anchor}`}>
                           {section.sectionTitle}
@@ -114,12 +106,12 @@ export default function ArticlePage() {
 
             {/* Nội dung bài viết */}
             <article className="mb-4">
-              {article.articleSections?.map((section) => (
+              {sortedSections?.map((section) => (
                 <div key={section.id}>
                   <Title level={2} id={section.anchor} className="mb-3">
                     {section.sectionTitle}
                   </Title>
-                  <Paragraph>{section.description}.</Paragraph>
+                  <Paragraph>{section.description}</Paragraph>
                 </div>
               ))}
             </article>

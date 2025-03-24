@@ -103,8 +103,8 @@ export const useGetArticles = () => {
   });
 };
 
-export const useGetArticleDetail = (articleId) => {
+export const useGetArticleDetail = (slug) => {
   return APIClient.get({
-    url: `/api/blogs/article-detail/${articleId}`,
+    url: `/api/blogs/article-detail/${slug}`,
   });
 };

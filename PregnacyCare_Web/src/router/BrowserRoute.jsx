@@ -58,32 +58,30 @@ const routes = [
       { path: "/our-expert", element: <OurExpert /> },
       { path: "/our-expert/expert-detail/:id", element: <ExpertDetail /> },
       {
-        path: "/our-expert/article/:articleSlug",
+        path: "/our-expert/article/:slug",
         element: <ArticlePage />,
       },
     ],
   },
   { path: "/login", element: <LoginSignin /> },
 
-  // Các route chung cho MEMBER và EXPERT (ví dụ: trang chủ và các trang thông tin chung)
+  // Các route dành cho EXPERT
   {
     element: <ProtectedRoute allowedRoles={["EXPERT"]} />,
     children: [
       {
-        path: "/expert/forum/:id",
-        element: (
-          <MainLayout>
-            <ForumPostDetail />
-          </MainLayout>
-        ),
-      },
-      {
-        path: "/expert/forum",
-        element: (
-          <MainLayout>
-            <ForumAdmin />
-          </MainLayout>
-        ),
+        path: "/",
+        element: <HomePages />,
+        children: [
+          {
+            path: "/expert/forum",
+            element: <ForumAdmin />,
+          },
+          {
+            path: "/expert/forum/:id",
+            element: <ForumPostDetail />,
+          },
+        ],
       },
     ],
   },
