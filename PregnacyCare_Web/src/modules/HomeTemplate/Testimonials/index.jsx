@@ -1,34 +1,73 @@
-import qoutes from '../../../assets/images/testimonials/quotes.png'
-import tem01 from '../../../assets/images/testimonials/01.png'
-import tem02 from '../../../assets/images/testimonials/02.png'
-import tem03 from '../../../assets/images/testimonials/03.png'
-import tem04 from '../../../assets/images/testimonials/04.png'
-// import { useState } from 'react'
+import React from "react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// import 'swiper/css/navigation';
 import "swiper/css/pagination";
-// import 'swiper/css/scrollbar';
+import { useQuery } from "@tanstack/react-query";
+import { useGetAllExperts } from "../../../apis/CallAPIUser";
+import { useGetImageUrl } from "../../../apis/CallAPIFirebase";
+import qoutes from "../../../assets/images/testimonials/quotes.png";
+import avatar from "../../../assets/PregnantAvatar.jpg";
+import { Link } from "react-router-dom";
+import { Box, Skeleton } from "@mui/material";
+
 export default function Testimonials() {
-  // const [testimonials] = useState([
-  //     {
-  //       disc: "Dr. Robert Thompson is an exceptional cardiologist. His ability to explain complex medical issues in a way that's easy to understand is truly impressive.",
-  //       author: "David Patel",
-  //       image: tem01,
-  //     },
-  //     {
-  //       disc: "An exceptional cardiologist. His ability to explain complex medical issues in a way that's easy to understand is truly impressive.",
-  //       author: "Malan Patel",
-  //       image: tem03,
-  //     },
-  //     {
-  //       disc: "Dr. Robert Thompson provides outstanding care. His clear explanations of complex heart conditions are remarkable.",
-  //       author: "Joker Vandi",
-  //       image: tem04,
-  //     },
-  //     // ... thêm testimonials
-  //   ]);
+  // Hàm fetch danh sách experts, kèm việc lấy ảnh từ Firebase cho từng expert
+  const fetchAllExperts = async () => {
+    const res = await useGetAllExperts();
+    if (res.code === 200 && res.data) {
+      const expertsWithImage = await Promise.all(
+        res.data.map(async (expert) => {
+          let imageUrl = null;
+          try {
+            imageUrl = await useGetImageUrl(
+              "pregnancyCareImages/users",
+              expert.id
+            );
+          } catch (error) {
+            console.error(
+              `Error fetching image for expert ${expert.id}:`,
+              error
+            );
+          }
+          return { ...expert, image: imageUrl ? imageUrl : avatar };
+        })
+      );
+      return expertsWithImage;
+    }
+    throw new Error("Error fetching experts");
+  };
+
+  // Sử dụng useQuery để lưu dữ liệu vào cache. Nếu đã có, sẽ không gọi lại API.
+  const {
+    data: experts,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["experts"],
+    queryFn: fetchAllExperts,
+    staleTime: 1000 * 60 * 5, // Dữ liệu fresh trong 5 phút
+  });
+
+  // Hiển thị Skeleton khi đang loading
+  if (isLoading) {
+    return (
+      <Box sx={{ padding: 4, width: "50%", margin: "0 auto" }}>
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={300}
+          sx={{ borderRadius: 2, mb: 4 }}
+        />
+        <Skeleton variant="text" height={40} sx={{ mb: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={200} />
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="rts-testimonials-area rts-section-gap">
@@ -45,176 +84,44 @@ export default function Testimonials() {
         <div className="row mt--0 g-5">
           <div className="col-lg-12">
             <Swiper
-              // install Swiper modules
               modules={[Navigation, Pagination, Scrollbar, A11y]}
               spaceBetween={50}
               slidesPerView={3}
               navigation
-              wrapperClass="swiper-wrapper"
               pagination={{ clickable: true }}
               scrollbar={{ draggable: true }}
-              onSwiper={(swiper) => console.log(swiper)}
-              onSlideChange={() => console.log("slide change")}
               loop={true}
             >
-              <SwiperSlide>
-                <div className="single-testimonials-style">
-                  <div className="quots">
-                    <img
-                      src={qoutes}
-                      alt="testimonails"
-                    />
-                  </div>
-                  <p className="disc">
-                    Dr. Robert Thompson is an exceptional cardiologist. His
-                    ability to explain with complex medical issues in a way
-                    that&apos;s easy to understand is truly impressive.
-                  </p>
-                  <div className="author-area">
-                    <a href="#" className="img">
-                      <img
-                        src={tem01}
-                        alt="testiminials"
-                      />
-                    </a>
-                    <div className="info">
-                      <h6 className="name">David Patel</h6>
-                      <div className="stars-area">
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
+              {experts.map((expert) => (
+                <SwiperSlide key={expert.id}>
+                  <div className="single-testimonials-style">
+                    <div className="quots">
+                      <img src={qoutes} alt="testimonials" />
+                    </div>
+                    <p className="disc">{expert.description}</p>
+                    <div className="author-area">
+                      <Link
+                        to={`/our-expert/expert-detail/${expert.id}`}
+                        className="img"
+                      >
+                        <img
+                          src={expert.image}
+                          alt={expert.fullName}
+                          style={{
+                            borderRadius: "50%",
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </Link>
+                      <div className="info">
+                        <h6 className="name">{expert.fullName}</h6>
                       </div>
                     </div>
                   </div>
-                  <div className="shape">
-                    <img
-                      src={tem02}
-                      alt="service"
-                    />
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="single-testimonials-style">
-                  <div className="quots">
-                    <img
-                      src={qoutes}
-                      alt="testimonails"
-                    />
-                  </div>
-                  <p className="disc">
-                    Dr. Robert Thompson is an exceptional cardiologist. His
-                    ability to explain with complex medical issues in a way
-                    that&apos;s easy to understand is truly impressive.
-                  </p>
-                  <div className="author-area">
-                    <a href="#" className="img">
-                      <img
-                        src={tem03}
-                        alt="testiminials"
-                      />
-                    </a>
-                    <div className="info">
-                      <h6 className="name">David Patel</h6>
-                      <div className="stars-area">
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="shape">
-                    <img
-                      src={tem02}
-                      alt="service"
-                    />
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="single-testimonials-style">
-                  <div className="quots">
-                    <img
-                      src={qoutes}
-                      alt="testimonails"
-                    />
-                  </div>
-                  <p className="disc">
-                    Dr. Robert Thompson is an exceptional cardiologist. His
-                    ability to explain with complex medical issues in a way
-                    that&apos;s easy to understand is truly impressive.
-                  </p>
-                  <div className="author-area">
-                    <a href="#" className="img">
-                      <img
-                        src={tem04}
-                        alt="testiminials"
-                      />
-                    </a>
-                    <div className="info">
-                      <h6 className="name">David Patel</h6>
-                      <div className="stars-area">
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="shape">
-                    <img
-                      src={tem02}
-                      alt="service"
-                    />
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="single-testimonials-style">
-                  <div className="quots">
-                    <img
-                      src={qoutes}
-                      alt="testimonails"
-                    />
-                  </div>
-                  <p className="disc">
-                    Dr. Robert Thompson is an exceptional cardiologist. His
-                    ability to explain with complex medical issues in a way
-                    that&apos;s easy to understand is truly impressive.
-                  </p>
-                  <div className="author-area">
-                    <a href="#" className="img">
-                      <img
-                        src={tem04}
-                        alt="testiminials"
-                      />
-                    </a>
-                    <div className="info">
-                      <h6 className="name">David Patel</h6>
-                      <div className="stars-area">
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                        <i className="fa-sharp fa-solid fa-star" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="shape">
-                    <img
-                      src={tem02}
-                      alt="service"
-                    />
-                  </div>
-                </div>
-              </SwiperSlide>
-             
-              ...
+                </SwiperSlide>
+              ))}
             </Swiper>
           </div>
         </div>

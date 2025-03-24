@@ -23,7 +23,6 @@ export default function Carousel() {
     try {
       const res = await useGetAllExperts();
       if (res.code == 200) {
-        console.log(res.data);
         setExperts(res.data);
       }
     } catch (error) {

@@ -8,20 +8,8 @@ import { UserContext } from "../../../context/UserContext";
 export default function ShortServices() {
   const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("USER_TOKEN");
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-  }, []);
-
   // Nếu user không tồn tại hoặc role khác "MEMBER", không hiển thị component
-  if (!user || user.role !== "MEMBER") return null;
+  if (!user || user.roleName !== "MEMBER") return null;
 
   return (
     <div className="short-service-area rts-section-gap2">

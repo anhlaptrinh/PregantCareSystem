@@ -133,6 +133,16 @@ const ExpertDetail = () => {
             </Typography>
           </Box>
         </Box>
+        <Typography
+          variant="h3"
+          component="div"
+          sx={{ mb: 3, fontWeight: "bold" }}
+        >
+          About {expert?.fullName}
+        </Typography>
+        <Typography variant="h4" component="div" sx={{ mb: 5 }}>
+          {expert?.description}
+        </Typography>
       </motion.div>
 
       {/* Bảng Certificates */}

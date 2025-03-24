@@ -1,5 +1,16 @@
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Appointment() {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    const storedUser = localStorage.getItem("USER_TOKEN");
+    if (storedUser) {
+      navigate("/appointment/calendar");
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <div className="request-appoinment-area rts-section-gapBottom">
       <div className="container">
@@ -11,9 +22,12 @@ export default function Appointment() {
                 Request Your <br />
                 <span>Appointment</span>
               </h2>
-              <a href="/appointment" className="rts-btn btn-primary">
+              <Link
+                onClick={() => handleClick()}
+                className="rts-btn btn-primary"
+              >
                 Get Appointment
-              </a>
+              </Link>
             </div>
           </div>
         </div>

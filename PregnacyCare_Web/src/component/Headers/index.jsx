@@ -1,6 +1,6 @@
 import logo from "../../assets/images/logo/logo.svg";
 import { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetImageUrl } from "../../apis/CallAPIFirebase";
 import DrawerMenu from "../DrawerMenu";
 import { Avatar, Layout } from "antd";
@@ -16,7 +16,8 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { UserContext } from "../../context/UserContext";
 import { useUserInfo } from "../../apis/CallAPIUser";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 const { Header } = Layout;
 
 const Headers = () => {
@@ -76,135 +77,75 @@ const Headers = () => {
 
   return (
     <>
-      <Header
-        className={`header--sticky ${isSticky ? "sticky" : ""}`}
-        style={{
-          padding: "14px 28px",
-          background: "#fff",
-          boxShadow: isSticky ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Box
-              component="img"
-              src={logo}
-              alt="logo_area"
-              sx={{ height: 40, cursor: "pointer" }}
-              onClick={() => navigate("/")}
-            />
-            <Box
-              sx={{
-                ml: 2,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                onClick={() => navigate("/")}
-                sx={{
-                  textTransform: "none",
-                  color: "black",
-                  fontSize: 18,
-                  marginRight: 2,
-                  "&:hover": { backgroundColor: "#615EFC", color: "white" },
-                }}
-              >
-                Home
-              </Button>
-              {(!user ||
-                (user &&
-                  (user.roleName === "MEMBER" ||
-                    user.roleName === "EXPERT"))) && (
-                <Button
-                  onClick={() => navigate("/our-expert")}
-                  sx={{
-                    textTransform: "none",
-                    color: "black",
-                    fontSize: 18,
-                    marginRight: 2,
-                    "&:hover": { backgroundColor: "#615EFC", color: "white" },
-                  }}
-                >
-                  Our Expert
-                </Button>
-              )}
-              {!user ? (
-                <Button
-                  onClick={() => navigate("/community/home")}
-                  sx={{
-                    textTransform: "none",
-                    color: "black",
-                    fontSize: 18,
-                    marginRight: 2,
-                    "&:hover": { backgroundColor: "#615EFC", color: "white" },
-                  }}
-                >
-                  Community
-                </Button>
-              ) : (
-                user.roleName === "MEMBER" && (
-                  <Button
-                    onClick={() => navigate("/community")}
-                    sx={{
-                      textTransform: "none",
-                      color: "black",
-                      fontSize: 18,
-                      marginRight: 2,
-                      "&:hover": { backgroundColor: "#615EFC", color: "white" },
-                    }}
-                  >
-                    Community
-                  </Button>
-                )
-              )}
-            </Box>
-          </Box>
+      <header className={`header--sticky ${isSticky ? "sticky" : ""}`}>
+        <div className="container-full-header">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="header-wrapper-1">
+                <div className="logo-area-start">
+                  <Link to="/" className="logo">
+                    <img src={logo} alt="logo_area" />
+                  </Link>
+                  <div className="nav-area">
+                    <ul className>
+                      <li className="main-nav">
+                        <Link to="/">Home</Link>
+                      </li>
+                      {(!user ||
+                        (user &&
+                          (user.roleName === "MEMBER" ||
+                            user.roleName === "EXPERT"))) && (
+                        <li className="main-nav">
+                          <Link to="/our-expert">Articles</Link>
+                        </li>
+                      )}
+                      {!user ? (
+                        <li className="main-nav">
+                          <Link to="/community/home">Community</Link>
+                        </li>
+                      ) : (
+                        user.roleName === "MEMBER" && (
+                          <li className="main-nav">
+                            <Link to="/community">Community</Link>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                </div>
 
-          {/* Phần tìm kiếm và tài khoản */}
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <TextField
-              placeholder="Search..."
-              variant="outlined"
-              sx={{
-                marginRight: 5,
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+                {/* Phần tìm kiếm và tài khoản */}
+                <div className="header-right">
+                  <div className="input-area">
+                    <input id="myInput" type="text" placeholder="Search..." />
+                    <FontAwesomeIcon
+                      icon={faMagnifyingGlass}
+                      className="search-icon"
+                    />
+                  </div>
 
-            {user ? (
-              <Avatar
-                src={url || avatar}
-                size={40}
-                style={{ cursor: "pointer" }}
-                onClick={handleOpenDrawer}
-              />
-            ) : (
-              <button
-                className="rts-btn btn-primary"
-                type="button"
-                onClick={() => navigate("/login")}
-              >
-                Login/Signin
-              </button>
-            )}
+                  {user ? (
+                    <Avatar
+                      src={url || avatar}
+                      size={40}
+                      style={{ cursor: "pointer" }}
+                      onClick={handleOpenDrawer}
+                    />
+                  ) : (
+                    <button
+                      className="rts-btn btn-primary"
+                      type="button"
+                      onClick={() => navigate("/login")}
+                    >
+                      Login/Signin
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </Header>
+      </header>
 
       {/* DrawerMenu vẫn được giữ nếu bạn cần sử dụng cho các chức năng khác */}
       <DrawerMenu
