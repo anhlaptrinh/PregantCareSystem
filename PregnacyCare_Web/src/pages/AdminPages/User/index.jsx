@@ -1,324 +1,222 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-    Table,
-    Input,
-    Button,
-    Card,
-    Typography,
-    Space,
-    Select,
-    Badge,
-    Pagination,
-    Modal,
-    Form,
-    message,
+  Table,
+  Input,
+  Button,
+  Card,
+  Typography,
+  Space,
+  Select,
+  Badge,
+  Pagination,
+  Modal,
+  Form,
+  message,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useGetAllUser } from "../../../apis/CallAPIUser";
+import FlexModal from "../../../component/FlexModal";
+import { useAddUser, useEditeUser } from "../../../apis/CallAPIUser";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-// Sample user data ban đầu
-const initialUsers = [
-    {
-        id: 1,
-        username: "johnDoe",
-        email: "john@example.com",
-        role: "Admin",
-        status: "Active",
-        registered: "2025-01-01",
-    },
-    {
-        id: 2,
-        username: "janeSmith",
-        email: "jane@example.com",
-        role: "User",
-        status: "Active",
-        registered: "2025-02-15",
-    },
-    {
-        id: 3,
-        username: "alexBrown",
-        email: "alex@example.com",
-        role: "User",
-        status: "Inactive",
-        registered: "2025-03-20",
-    },
-    {
-        id: 4,
-        username: "mariaGarcia",
-        email: "maria@example.com",
-        role: "User",
-        status: "Active",
-        registered: "2025-04-10",
-    },
-    {
-        id: 5,
-        username: "lindaLee",
-        email: "linda@example.com",
-        role: "Moderator",
-        status: "Active",
-        registered: "2025-05-05",
-    },
-    {
-        id: 6,
-        username: "markWong",
-        email: "mark@example.com",
-        role: "User",
-        status: "Inactive",
-        registered: "2025-06-01",
-    },
-];
-
 export default function UserManagement() {
-    const [users, setUsers] = useState(initialUsers);
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 5;
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalFields, setModalFields] = useState([]);
+  const [modalMode, setModalMode] = useState(""); // Lưu mode (update hoặc create)
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
+  const handleSubmit = async (values) => {
+    
 
-    const [form] = Form.useForm();
-
-    const columns = [
-        {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
-            width: 50,
-        },
-        {
-            title: "Username",
-            dataIndex: "username",
-            key: "username",
-            width: 150,
-        },
-        {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
-            width: 200,
-        },
-        {
-            title: "Role",
-            dataIndex: "role",
-            key: "role",
-            width: 120,
-        },
-        {
-            title: "Status",
-            dataIndex: "status",
-            key: "status",
-            width: 120,
-            render: (text) => (
-                <Badge
-                    status={text === "Active" ? "success" : "error"}
-                    text={text}
-                />
-            ),
-        },
-        {
-            title: "Registered Date",
-            dataIndex: "registered",
-            key: "registered",
-            width: 150,
-        },
-        {
-            title: "Action",
-            key: "action",
-            width: 150,
-            render: (_, record) => (
-                <Space size="middle">
-                    <Button type="link" onClick={() => handleEditUser(record)}>
-                        Edit
-                    </Button>
-                    <Button
-                        type="link"
-                        danger
-                        onClick={() => handleDeleteUser(record)}
-                    >
-                        Delete
-                    </Button>
-                </Space>
-            ),
-        },
-    ];
-
-    const handleAddUser = () => {
-        setEditingUser(null);
-        form.resetFields();
-        setIsModalVisible(true);
-    };
-
-    const handleEditUser = (record) => {
-        setEditingUser(record);
-        form.setFieldsValue(record);
-        setIsModalVisible(true);
-    };
-
-    const handleDeleteUser = (record) => {
-        Modal.confirm({
-            title: "Xác nhận",
-            content: `Bạn có chắc muốn xóa user "${record.username}"?`,
-            okText: "Xóa",
-            okType: "danger",
-            cancelText: "Hủy",
-            onOk: () => {
-                setUsers((prev) =>
-                    prev.filter((user) => user.id !== record.id)
-                );
-                message.success("Xóa user thành công!");
-            },
-        });
-    };
-
-    const handleModalOk = () => {
-        form.validateFields()
-            .then((values) => {
-                if (editingUser) {
-                    setUsers((prev) =>
-                        prev.map((user) =>
-                            user.id === editingUser.id
-                                ? { ...user, ...values }
-                                : user
-                        )
-                    );
-                    message.success("Cập nhật user thành công!");
-                } else {
-                    const newId =
-                        users.length > 0
-                            ? Math.max(...users.map((u) => u.id)) + 1
-                            : 1;
-                    const newUser = { id: newId, ...values };
-                    setUsers((prev) => [...prev, newUser]);
-                    message.success("Thêm user thành công!");
-                }
-                setIsModalVisible(false);
-                form.resetFields();
+    if (modalMode  === "update") {
+      const formattedValues = {
+        ...values,
+        
+      };
+      useEditeUser(formattedValues)
+            .then(() => {
+              message.success("Updated user successfully");
+              refreshData();
             })
-            .catch((info) => {
-                console.log("Validate Failed:", info);
+            .catch((error) => {
+              console.error("Update error:", error);
             });
-    };
+    } else if (modalMode  === "create") {
+      const formattedValues = {
+        ...values,
+      };
+      useAddUser(formattedValues)
+            .then((res) => {
+              message.success("Sign in successfully");
+              refreshData();
+            })
+            .catch((error) => {
+              message.error("Failed sign in" + error.message);
+              setLoading(false);
+            });
+    }
+  };
+  const refreshData = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
+  const handleOpenModal = (event, mode) => {
+    setModalMode(mode);
+    setModalTitle(
+      mode === "update" ? "Edit User" : "Create User"
+    );
+    setModalFields(
+      mode === "update"
+        ? [
+            { name: "id", label: "id", type: "hidden", value: event.id },
+            { name: "status", label: "status", type: "select",value: event.status, options: [
+                { label: "Active", value: true },
+                { label: "Inactive", value: false },] },
+            { name: "role", label: "Role", type: "select", value: event.roles, options: [
+                { label: "Admin", value: "ADMIN" },
+                { label: "Expert", value: "EXPERT" },
+                { label: "Member", value: "MEMBER" }
+              ]
+            }
+            
+          ]
+        : [
+            {
+              name: "fullName",
+              label: "Username",
+              type: "text",
+             
+            },
+            { name: "email", label: "Email", type: "text" },
+            { name: "password", label: "Password", type: "text" },
+            { name: "role", label: "Role", type: "select", value: "member", options: [
+                { label: "Admin", value: "ADMIN" },
+                { label: "Expert", value: "EXPERT" },
+                { label: "Member", value: "MEMBER" }
+              ]
+            },
 
-    const handleModalCancel = () => {
-        setIsModalVisible(false);
-        form.resetFields();
-    };
-
-    const paginatedUsers = users.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
+          ]
     );
 
-    return (
+    setModalVisible(true);
+  };
+  // 🛠 Gọi API lấy danh sách user
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const response = await useGetAllUser();
+        setUsers(response.data); // Giả sử API trả về `data`
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu người dùng:", error);
+        message.error("Không thể tải danh sách người dùng.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [refreshTrigger]);
+  
+  
+
+  const columns = [
+    { title: "ID", dataIndex: "id", key: "id", width: 50 },
+    { title: "Username", dataIndex: "fullName", key: "fullName", width: 150 },
+    { title: "Email", dataIndex: "email", key: "email", width: 200 },
+    { title: "Role", dataIndex: "roles", key: "roles", width: 120 },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 120,
+      render: (text) => (
+        <Badge
+          status={text === true ? "success" : "error"}
+          text={text === true ? "Active" : "Inactive"}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      align: "center",
+      width: 150,
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            type="link"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenModal(record, "update");
+            }}
+          >
+            Edit
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  return (
+    <div className="container">
+      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
         <div className="container">
-            {/* Thanh điều hướng */}
-            <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-                <div className="container">
-                    <Input
-                        prefix={<SearchOutlined />}
-                        placeholder="Tìm kiếm user..."
-                        className="w-50"
-                        style={{ marginRight: "1rem" }}
-                        size="large"
-                    />
-                    <Button type="primary" size="large" onClick={handleAddUser}>
-                        Thêm User
-                    </Button>
-                </div>
-            </nav>
-
-            {/* Nội dung chính */}
-            <Card className="mt-4">
-                <Title level={4}>Danh sách User</Title>
-                <Table
-                    dataSource={paginatedUsers}
-                    columns={columns}
-                    rowKey="id"
-                    pagination={{
-                        current: currentPage,
-                        pageSize: pageSize,
-                        total: users.length,
-                        onChange: (page) => setCurrentPage(page),
-                    }}
-                    bordered
-                />
-            </Card>
-
-            {/* Modal cho Thêm/Sửa User */}
-            <Modal
-                title={editingUser ? "Chỉnh sửa User" : "Thêm User"}
-                visible={isModalVisible}
-                onOk={handleModalOk}
-                onCancel={handleModalCancel}
-                okText="Lưu"
-                cancelText="Hủy"
-            >
-                <Form form={form} layout="vertical">
-                    <Form.Item
-                        name="username"
-                        label="Username"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập username",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="Nhập username" />
-                    </Form.Item>
-                    <Form.Item
-                        name="email"
-                        label="Email"
-                        rules={[
-                            { required: true, message: "Vui lòng nhập email" },
-                            { type: "email", message: "Email không hợp lệ" },
-                        ]}
-                    >
-                        <Input placeholder="Nhập email" />
-                    </Form.Item>
-                    <Form.Item
-                        name="role"
-                        label="Role"
-                        rules={[
-                            { required: true, message: "Vui lòng chọn role" },
-                        ]}
-                    >
-                        <Select placeholder="Chọn role">
-                            <Option value="Admin">Admin</Option>
-                            <Option value="Moderator">Moderator</Option>
-                            <Option value="User">User</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="status"
-                        label="Status"
-                        rules={[
-                            { required: true, message: "Vui lòng chọn status" },
-                        ]}
-                    >
-                        <Select placeholder="Chọn status">
-                            <Option value="Active">Active</Option>
-                            <Option value="Inactive">Inactive</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="registered"
-                        label="Registered Date"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Vui lòng nhập ngày đăng ký",
-                            },
-                        ]}
-                    >
-                        <Input placeholder="YYYY-MM-DD" />
-                    </Form.Item>
-                </Form>
-            </Modal>
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="Tìm kiếm user..."
+            className="w-50"
+            size="large"
+          />
+          <Button
+            type="primary"
+            size="large"
+            onClick={(e) => {
+                e.stopPropagation();
+                handleOpenModal({},"create");
+              }}
+          >
+            Add User
+          </Button>
         </div>
-    );
+      </nav>
+
+      <Card className="mt-4">
+        <Title level={4}>User List</Title>
+        <Table
+          dataSource={paginatedUsers}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
+            total: users.length,
+            onChange: (page) => setCurrentPage(page),
+          }}
+          bordered
+        />
+        <FlexModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleSubmit}
+        fields={modalFields}
+        title={modalTitle}
+        
+      />
+      </Card>
+    </div>
+  );
 }

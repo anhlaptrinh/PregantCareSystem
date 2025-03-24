@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import logo from "../../assets/images/logo/logo.svg";
 import { Link, useLocation } from "react-router-dom";
+import { Dashboard } from "@mui/icons-material";
 
 const { Header, Content, Sider } = Layout;
 
@@ -54,7 +55,7 @@ const MainLayout = ({ children }) => {
                     defaultSelectedKeys={["1"]}
                     style={{ background: "#f8f9fa" }}
                 >
-                    <Menu.Item key="1" icon={<UserOutlined />}>
+                    <Menu.Item key="1" icon={<Dashboard />}>
                         <Link to="/admin/dashboard">Dashboard</Link>
                     </Menu.Item>
                     {/* <Menu.Item key="2" icon={<CalendarOutlined />}>
@@ -70,7 +71,7 @@ const MainLayout = ({ children }) => {
                         <Link to="/admin/user">User</Link>
                     </Menu.Item>
                     <Menu.Item key="6" icon={<UserOutlined />}>
-                        <Link to="/admin/user">User</Link>
+                        <Link to="/">Home</Link>
                     </Menu.Item>
                     <Menu.Item key="7" icon={<SettingOutlined />}>
                         <Link to="/settings">Settings</Link>
