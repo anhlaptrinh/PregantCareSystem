@@ -3,32 +3,48 @@ import Advertisement from "../../../../component/Advertisement";
 import ViewGroup from "../../../../modules/HomeTemplate/Community/ViewGroup";
 import PostList from "../../../../modules/HomeTemplate/Community/PostList";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useGetGroup, useGetGroupList } from "../../../../apis/CallAPIGroup";
+import { useQuery } from "@tanstack/react-query";
 import BackdropLoader from "../../../../component/BackdropLoader";
 import BackButton from "../../../../component/BackButton";
+import { useGetGroup } from "../../../../apis/CallAPIGroup";
+import { useGetImageUrl } from "../../../../apis/CallAPIFirebase";
 
 export default function ViewGroupPages() {
   const { groupId } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [group, setGroup] = useState(null);
 
-  const handleGetGroup = async () => {
-    setLoading(true);
-    const res = await useGetGroup(groupId);
-    if (res.code === 200 && res.data) {
-      setGroup(res.data);
-      setLoading(false);
-    }
-  };
+  const {
+    data: group,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["GroupDetail", groupId],
+    queryFn: async () => {
+      const res = await useGetGroup(groupId);
+      if (res.code === 200 && res.data) {
+        const groupData = res.data;
+        try {
+          const url = await useGetImageUrl(
+            "pregnancyCareImages/groups",
+            groupData.id
+          );
+          return { ...groupData, imageUrl: url };
+        } catch (err) {
+          console.error("Error getting group image:", err);
+          return groupData;
+        }
+      }
+      throw new Error("Error fetching group detail");
+    },
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    handleGetGroup();
-  }, []);
+  if (isLoading) return <BackdropLoader open={true} />;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <Container>
-      <BackdropLoader open={loading} />
+      <BackdropLoader open={isLoading} />
       <div className="row">
         <div className="col-8">
           <BackButton />

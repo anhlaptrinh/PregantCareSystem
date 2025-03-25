@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import avatar from "../../../../assets/PregnantAvatar.jpg";
 import { useNavigate } from "react-router-dom";
 
@@ -20,9 +20,9 @@ export default function ViewGroup({ group }) {
       marginTop={5}
       width="100%"
     >
-      {/* Avatar of grou[] */}
+      {/* Avatar of group: sử dụng imageUrl nếu có, ngược lại sử dụng avatar mặc định */}
       <img
-        src={avatar}
+        src={group?.imageUrl || avatar}
         alt="Avatar of group"
         style={{ width: 100, borderRadius: 10, marginBottom: 20 }}
       />
@@ -32,11 +32,11 @@ export default function ViewGroup({ group }) {
         {group?.name}
       </Typography>
 
-      {/* Members and posts and info */}
+      {/* Members, posts and owner info */}
       <div className="row justify-content-md-center mb-5">
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group?.users.length}
+            {group?.users?.length || 0}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             members
@@ -44,7 +44,7 @@ export default function ViewGroup({ group }) {
         </div>
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group?.blogs.length}
+            {group?.blogs?.length || 0}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             posts
@@ -52,7 +52,7 @@ export default function ViewGroup({ group }) {
         </div>
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group?.owner.fullName}
+            {group?.owner?.fullName || "Unknown"}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             owner
@@ -61,7 +61,7 @@ export default function ViewGroup({ group }) {
       </div>
 
       {/* Post button */}
-      <button className="rts-btn btn-primary" onClick={() => onHandlePost()}>
+      <button className="rts-btn btn-primary" onClick={onHandlePost}>
         Post
       </button>
     </Box>

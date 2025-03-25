@@ -6,7 +6,7 @@ import {
   AlignLeftOutlined,
 } from "@ant-design/icons";
 import avatar from "../../assets/avatar.jpg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
 
@@ -21,6 +21,7 @@ const breadcrumbNameMap = {
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const pathSnippets = location.pathname.split("/").filter((i) => i);
 
   const breadcrumbItems = pathSnippets
@@ -42,9 +43,9 @@ const MainLayout = ({ children }) => {
         width={220}
         style={{ background: "#f8f9fa", borderRight: "1px solid #ddd" }}
       >
-        <div className="text-center my-4">
-          <h4 style={{ color: "#000" }}>
-            <img src={avatar} alt="Avatar" />
+        <div className="text-center my-4 pe-auto">
+          <h4 style={{ color: "#000"  }}>
+            <img src={avatar} alt="Avatar" onClick={() => navigate("/")}/>
           </h4>
         </div>
         <Menu mode="vertical" defaultSelectedKeys={["1"]} style={{ background: "#f8f9fa" }}>

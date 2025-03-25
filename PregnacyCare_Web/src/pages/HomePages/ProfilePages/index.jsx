@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppBar, Tabs, Tab, Box, Typography, Container } from "@mui/material";
 import AccountInfo from "../../../modules/HomeTemplate/Profile/AccountInfo";
 import FamilyInfo from "../../../modules/HomeTemplate/Profile/FamilyInfo";
+import MyAdvices from "../../../modules/HomeTemplate/Profile/MyAdvices";
 
 // Danh sách các tab trong phần Account Settings
 const tabLabels = ["My Family Info", "My advices"];
@@ -15,7 +16,7 @@ export default function ProfilePages() {
   };
 
   return (
-    <Container sx={{ width: "50%" }}>
+    <Container sx={{ width: "70%" }}>
       <Box>
         <Typography variant="h2" fontWeight="bold" gutterBottom>
           Account Settings
@@ -41,6 +42,7 @@ export default function ProfilePages() {
 
         {/* Nội dung cho từng tab*/}
         {activeTab === 0 && <FamilyInfo />}
+        {activeTab === 1 && <MyAdvices />}
       </Box>
     </Container>
   );

@@ -101,132 +101,121 @@ export default function Home() {
     <Container>
       <BackdropLoader open={isLoading} />
       {/* Sticky header với hiệu ứng fadeInDown */}
-      <div className="row">
-        <div className="col-8">
-          <Box
+      <Box
+        sx={{
+          width: "100%",
+          position: "sticky",
+          top: 0,
+          zIndex: 999,
+          backgroundColor: "#FFFFFF",
+          boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
+          p: 2,
+          mb: 2,
+          animation: "fadeInDown 0.5s ease-in-out",
+          "@keyframes fadeInDown": {
+            "0%": { opacity: 0, transform: "translateY(-20px)" },
+            "100%": { opacity: 1, transform: "translateY(0)" },
+          },
+        }}
+      >
+        <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
+          Posts
+        </Typography>
+        <SearchBar onSearch={handleSearch} placeholder="Search posts..." />
+        <FormControl sx={{ mt: 2, width: 150 }}>
+          <InputLabel id="sort-by" sx={{ fontSize: 12 }}>
+            Sort by
+          </InputLabel>
+          <Select
+            value={sortBy}
+            displayEmpty
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setCurrentPage(1);
+            }}
+            labelId="sort-by"
+            label="Sort by"
+          >
+            <MenuItem value="newest">Newest</MenuItem>
+            <MenuItem value="oldest">Oldest</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      {currentPosts.length > 0 ? (
+        currentPosts.map((post) => (
+          <Card
+            key={post.id}
             sx={{
-              width: "100%",
-              position: "sticky",
-              top: 0,
-              zIndex: 999,
-              backgroundColor: "#FFFFFF",
-              boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-              p: 2,
               mb: 2,
-              animation: "fadeInDown 0.5s ease-in-out",
-              "@keyframes fadeInDown": {
-                "0%": { opacity: 0, transform: "translateY(-20px)" },
-                "100%": { opacity: 1, transform: "translateY(0)" },
+              p: 2,
+              cursor: "pointer",
+              transition:
+                "border 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease",
+              border: "1px solid transparent",
+              overflow: "hidden",
+              "&:hover": {
+                border: "1px solid #615EFC",
+                transform: "scale(1.02)",
+                boxShadow: "0px 8px 16px rgba(0,0,0,0.2)",
+              },
+              "&:active": {
+                opacity: "0.5",
               },
             }}
+            onClick={() => handleCardClick(post.id)}
           >
-            <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
-              Posts
+            <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+              {post.title}
             </Typography>
-            <SearchBar onSearch={handleSearch} placeholder="Search posts..." />
-            <FormControl sx={{ mt: 2, width: 150 }}>
-              <InputLabel id="sort-by" sx={{ fontSize: 12 }}>
-                Sort by
-              </InputLabel>
-              <Select
-                value={sortBy}
-                displayEmpty
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  setCurrentPage(1);
-                }}
-                labelId="sort-by"
-                label="Sort by"
-              >
-                <MenuItem value="newest">Newest</MenuItem>
-                <MenuItem value="oldest">Oldest</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          {currentPosts.length > 0 ? (
-            currentPosts.map((post) => (
-              <Card
-                key={post.id}
-                sx={{
-                  mb: 2,
-                  p: 2,
-                  cursor: "pointer",
-                  transition:
-                    "border 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease",
-                  border: "1px solid transparent",
-                  overflow: "hidden",
-                  "&:hover": {
-                    border: "1px solid #615EFC",
-                    transform: "scale(1.02)",
-                    boxShadow: "0px 8px 16px rgba(0,0,0,0.2)",
-                  },
-                  "&:active": {
-                    opacity: "0.5",
-                  },
-                }}
-                onClick={() => handleCardClick(post.id)}
-              >
-                <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
-                  {post.title}
-                </Typography>
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
-                >
-                  <Avatar sx={{ width: 30, height: 30 }} />
-                  <Typography variant="h6">
-                    By <strong>{post.user.fullName}</strong> in{" "}
-                    <strong>{post.group.name}</strong>
-                  </Typography>
-                </Box>
-                <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
-                  {post.description}
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  {moment(post.datePublish).format("MMMM D, YYYY")}
-                </Typography>
-                <Divider sx={{ my: 1 }} />
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <IconButton size="small" disabled>
-                      <ChatBubbleOutlineIcon fontSize="large" />
-                    </IconButton>
-                    <Typography variant="h6">
-                      {post.blogComments.length}
-                    </Typography>
-                  </Box>
-                  <IconButton size="large" sx={{ width: 40 }}>
-                    <MoreHorizIcon fontSize="large" />
-                  </IconButton>
-                </Box>
-              </Card>
-            ))
-          ) : (
-            <Typography variant="h5">No post available</Typography>
-          )}
-          <Advertisement />
-          {totalPages > 1 && (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-              <Pagination
-                count={totalPages}
-                page={currentPage}
-                onChange={handlePageChange}
-                variant="outlined"
-                shape="rounded"
-              />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+              <Avatar sx={{ width: 30, height: 30 }} />
+              <Typography variant="h6">
+                By <strong>{post.user.fullName}</strong> in{" "}
+                <strong>{post.group.name}</strong>
+              </Typography>
             </Box>
-          )}
-        </div>
-        <div className="col-4">
-          <Advertisement />
-        </div>
-      </div>
+            <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>
+              {post.description}
+            </Typography>
+            <Typography variant="h6" color="text.secondary">
+              {moment(post.datePublish).format("MMMM D, YYYY")}
+            </Typography>
+            <Divider sx={{ my: 1 }} />
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconButton size="small" disabled>
+                  <ChatBubbleOutlineIcon fontSize="large" />
+                </IconButton>
+                <Typography variant="h6">{post.blogComments.length}</Typography>
+              </Box>
+              <IconButton size="large" sx={{ width: 40 }}>
+                <MoreHorizIcon fontSize="large" />
+              </IconButton>
+            </Box>
+          </Card>
+        ))
+      ) : (
+        <Typography variant="h5">No post available</Typography>
+      )}
+      <Advertisement />
+      {totalPages > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+          />
+        </Box>
+      )}
     </Container>
   );
 }

@@ -49,7 +49,6 @@ const routes = [
         path: "/due-date/result",
         element: <DueDateCalculatorResultTemplate />,
       },
-      { path: "/community", element: <CommunityPages /> },
       { path: "/community/home", element: <Home /> },
       {
         path: "/community/post-detail/:postId",
@@ -95,6 +94,7 @@ const routes = [
         element: <HomePages />,
         children: [
           { path: "/profile", element: <ProfilePages /> },
+          { path: "/community", element: <CommunityPages /> },
           { path: "/community/group/:groupId", element: <ViewGroupPages /> },
           {
             path: "/community/group/create-post/:groupId",
