@@ -1,8 +1,5 @@
 import React from "react";
-import avatarImage from "../../../assets/avatar.jpg";
-import DueDateCalculatorImage from "../../../assets/DueDateCalculator.jpg";
-import LightImage from "../../../assets/light.jpg";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -12,8 +9,32 @@ import {
   Avatar,
 } from "@mui/material";
 import PregnancyTimeline from "../PregnancyTimeline";
+import avatarImage from "../../../assets/avatar.jpg";
+import DueDateCalculatorImage from "../../../assets/DueDateCalculator.jpg";
+import LightImage from "../../../assets/light.jpg";
 
 export default function Result() {
+  // Lấy dữ liệu được truyền qua navigate từ trang Calculator
+  const location = useLocation();
+  const { result } = location.state || {};
+
+  // Nếu không có dữ liệu, có thể chuyển hướng về trang tính lại hoặc hiển thị thông báo
+  if (!result) {
+    return (
+      <Box mt={5} textAlign="center">
+        <Typography variant="h5">
+          No result found. Please recalculate your due date.
+        </Typography>
+        <Button component={Link} to="/dueDate" color="primary" sx={{ mt: 2 }}>
+          Recalculate your due date
+        </Button>
+      </Box>
+    );
+  }
+
+  // Format ngày dự sinh (có thể sử dụng thư viện date-fns hoặc moment nếu cần)
+  const formattedDueDate = result.data;
+
   return (
     <Box mt={5}>
       <Typography variant="h2" fontWeight="bold" gutterBottom>
@@ -21,16 +42,16 @@ export default function Result() {
       </Typography>
 
       <Box display="flex" alignItems="center" mb={3}>
-        <div className="row">
-          <div className="col-2">
-            <img className="w-15" src={avatarImage} alt="Written by" />
-          </div>
-          <div className="col">
-            <Typography variant="subtile-1">
-              Written by Pregnancy Care Staff | Dec 12, 2024
-            </Typography>
-          </div>
-        </div>
+        <Box mr={2}>
+          <Avatar
+            src={avatarImage}
+            alt="Written by"
+            sx={{ width: 60, height: 60 }}
+          />
+        </Box>
+        <Typography variant="subtitle1">
+          Written by Pregnancy Care Staff | Dec 12, 2024
+        </Typography>
       </Box>
 
       <Card sx={{ bgcolor: "#E3F2FD", p: 3, borderRadius: 2 }}>
@@ -59,7 +80,7 @@ export default function Result() {
             color="primary"
             gutterBottom
           >
-            November 24, 2025
+            {formattedDueDate}
           </Typography>
 
           <Box display="flex" justifyContent="center" mb={2}>
@@ -75,15 +96,16 @@ export default function Result() {
       <Box textAlign="center" my={2}>
         <Button
           component={Link}
-          to="/dueDate"
+          to="/due-date"
           color="primary"
-          className="fs-5 text-decoration-underline"
+          sx={{ fontSize: "1rem", textDecoration: "underline" }}
         >
           Recalculate your due date
         </Button>
       </Box>
 
-      <PregnancyTimeline />
+      {/* Truyền dữ liệu timeline cho component PregnancyTimeline nếu cần */}
+      <PregnancyTimeline timelineData={result.timeline} />
     </Box>
   );
 }

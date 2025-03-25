@@ -1,49 +1,64 @@
-import { TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  TextField,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
-export default function Ivf() {
-  const [ivfDate, setIvfDate] = useState(
+export default function Ivf({ onChange }) {
+  const [conceptionDate, setConceptionDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [transferType, setTransferType] = useState("3-day");
+  // Giới hạn ivdDate chỉ cho phép giá trị "3" hoặc "5", mặc định là "3"
+  const [ivdDate, setIvdDate] = useState("3");
+
+  // Payload: { conceptionDate: string, ivdDate: number }
+  useEffect(() => {
+    if (onChange) {
+      onChange({
+        conceptionDate,
+        ivdDate: parseInt(ivdDate, 10),
+      });
+    }
+  }, [conceptionDate, ivdDate, onChange]);
+
+  const handleConceptionChange = (e) => {
+    setConceptionDate(e.target.value);
+  };
+
+  const handleIvdDateChange = (e) => {
+    setIvdDate(e.target.value);
+  };
 
   return (
-    <>
-      <div>
-        <TextField
-          id="ivfDate"
-          label="Date of transfer"
-          type="date"
-          value={ivfDate}
-          onChange={(e) => setIvfDate(e.target.value)}
-          fullWidth
+    <Box mt={2}>
+      <TextField
+        id="conceptionDate"
+        label="Conception Date"
+        type="date"
+        value={conceptionDate}
+        onChange={handleConceptionChange}
+        InputLabelProps={{ shrink: true }}
+        fullWidth
+        className="bg-white mb-4"
+      />
+      <FormControl fullWidth>
+        <InputLabel id="ivdDate-label">IVD Date</InputLabel>
+        <Select
+          labelId="ivdDate-label"
+          id="ivdDate"
+          value={ivdDate}
+          label="IVD Date"
+          onChange={handleIvdDateChange}
           className="bg-white"
-        />
-        <div className="row ms-2 mt-3">
-          <label className="row space-x-2">
-            <input
-              type="radio"
-              name="transferType"
-              value="3-day"
-              checked={transferType === "3-day"}
-              onChange={() => setTransferType("3-day")}
-              className="text-blue-600 col"
-            />
-            <span className="col">IVF 3 Day Transfer Date</span>
-          </label>
-          <label className="row space-x-2 mt-2">
-            <input
-              type="radio"
-              name="transferType"
-              value="5-day"
-              checked={transferType === "5-day"}
-              onChange={() => setTransferType("5-day")}
-              className="text-blue-600 col"
-            />
-            <span className="col">IVF 5 Day Transfer Date</span>
-          </label>
-        </div>
-      </div>
-    </>
+        >
+          <MenuItem value="3">3</MenuItem>
+          <MenuItem value="5">5</MenuItem>
+        </Select>
+      </FormControl>
+    </Box>
   );
 }

@@ -1,10 +1,21 @@
-import React, { useState } from "react";
-import { TextField, Box } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, TextField } from "@mui/material";
 
-export default function ConceptionDate() {
+export default function ConceptionDate({ onChange }) {
   const [conceptionDate, setConceptionDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  // Gửi dữ liệu khi giá trị thay đổi
+  useEffect(() => {
+    if (onChange) {
+      onChange({ conceptionDate });
+    }
+  }, [conceptionDate, onChange]);
+
+  const handleChange = (e) => {
+    setConceptionDate(e.target.value);
+  };
 
   return (
     <Box mt={2}>
@@ -13,10 +24,8 @@ export default function ConceptionDate() {
         label="When did you conceive?"
         type="date"
         value={conceptionDate}
-        onChange={(e) => setConceptionDate(e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
+        onChange={handleChange}
+        InputLabelProps={{ shrink: true }}
         fullWidth
         className="bg-white"
       />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ConceptionDate from "./Method/ConceptionDate";
 import LastPeriod from "./Method/LastPeriod";
@@ -6,8 +6,6 @@ import Ivf from "./Method/Ivf";
 import Ultrasound from "./Method/Ultrasound";
 import KnowDueDate from "./Method/KnowDueDate";
 import DueDateCalculatorImage from "../../../assets/DueDateCalculator.jpg";
-
-// Import các component cần thiết từ MUI
 import {
   Box,
   Container,
@@ -20,31 +18,81 @@ import {
   Button,
 } from "@mui/material";
 
+import {
+  calculateDueDateFromLastPeriod,
+  calculateDueDateFromConception,
+  calculateDueDateForIVF,
+  getDueDateFromUltrasound,
+  getPregnancyTimelineFromDueDate,
+} from "../../../apis/CallAPIDueDate";
+
 export default function Calculator() {
   const navigate = useNavigate();
   const [calculationMethod, setCalculationMethod] = useState("lastPeriod");
+  const [lastPeriodData, setLastPeriodData] = useState({});
+  const [conceptionData, setConceptionData] = useState({});
+  const [ivfData, setIvfData] = useState({});
+  const [ultrasoundData, setUltrasoundData] = useState({});
+  const [dueDateData, setDueDateData] = useState({});
 
-  // Hàm submit
-  const handleSubmit = (e) => {
+  // Sử dụng useCallback để memo hóa các callback onChange
+  const handleLastPeriodChange = useCallback((data) => {
+    setLastPeriodData(data);
+  }, []);
+
+  const handleConceptionChange = useCallback((data) => {
+    setConceptionData(data);
+  }, []);
+
+  const handleIvfChange = useCallback((data) => {
+    setIvfData(data);
+  }, []);
+
+  const handleUltrasoundChange = useCallback((data) => {
+    setUltrasoundData(data);
+  }, []);
+
+  const handleDueDateChange = useCallback((data) => {
+    setDueDateData(data);
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Ví dụ: in ra console các giá trị đã chọn (lưu ý: các biến lastPeriodDate, cycleLength, conceptionDate cần được định nghĩa hoặc truyền từ các component con)
-    console.log({
-      calculationMethod,
-      lastPeriodDate, // cần được xác định trong component LastPeriod
-      cycleLength, // cần được xác định trong component LastPeriod
-      conceptionDate, // cần được xác định trong component ConceptionDate
-    });
+    let response;
+    try {
+      switch (calculationMethod) {
+        case "lastPeriod":
+          response = await calculateDueDateFromLastPeriod(lastPeriodData);
+          break;
+        case "conceptionDate":
+          response = await calculateDueDateFromConception(conceptionData);
+          break;
+        case "ivf":
+          response = await calculateDueDateForIVF(ivfData);
+          break;
+        case "ultrasound":
+          response = await getDueDateFromUltrasound(ultrasoundData);
+          break;
+        case "knowDueDate":
+          response = await getPregnancyTimelineFromDueDate(dueDateData);
+          break;
+        default:
+          break;
+      }
+      console.log("API response:", response);
+      navigate("/due-date/result", { state: { result: response } });
+    } catch (error) {
+      console.error("Error calculating due date:", error);
+    }
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Box mt={5}>
-        {/* Title */}
         <Typography variant="h2" fontWeight="bold" align="center" gutterBottom>
           Pregnancy Due Date Calculator
         </Typography>
 
-        {/* Icon */}
         <Box display="flex" justifyContent="center" mb={4}>
           <img
             src={DueDateCalculatorImage}
@@ -53,10 +101,8 @@ export default function Calculator() {
           />
         </Box>
 
-        {/* Form được bao bọc bởi Paper để tạo hiệu ứng nền */}
         <Paper elevation={3} className="p-5 mb-5" sx={{ bgcolor: "#E3F2FD" }}>
           <form onSubmit={handleSubmit}>
-            {/* Calculation method */}
             <FormControl fullWidth margin="normal" className="mb-5">
               <InputLabel
                 id="calculation-method-label"
@@ -80,19 +126,25 @@ export default function Calculator() {
               </Select>
             </FormControl>
 
-            {/* Conditional Rendering các method */}
-            {calculationMethod === "conceptionDate" && <ConceptionDate />}
-            {calculationMethod === "lastPeriod" && <LastPeriod />}
-            {calculationMethod === "ivf" && <Ivf />}
-            {calculationMethod === "ultrasound" && <Ultrasound />}
-            {calculationMethod === "knowDueDate" && <KnowDueDate />}
+            {calculationMethod === "conceptionDate" && (
+              <ConceptionDate onChange={handleConceptionChange} />
+            )}
+            {calculationMethod === "lastPeriod" && (
+              <LastPeriod onChange={handleLastPeriodChange} />
+            )}
+            {calculationMethod === "ivf" && <Ivf onChange={handleIvfChange} />}
+            {calculationMethod === "ultrasound" && (
+              <Ultrasound onChange={handleUltrasoundChange} />
+            )}
+            {calculationMethod === "knowDueDate" && (
+              <KnowDueDate onChange={handleDueDateChange} />
+            )}
 
-            {/* Nút Submit */}
             <Box mt={4} display="flex" justifyContent="start">
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => navigate("/dueDateResult")}
+                type="submit"
                 sx={{
                   borderRadius: "50px",
                   px: 4,
