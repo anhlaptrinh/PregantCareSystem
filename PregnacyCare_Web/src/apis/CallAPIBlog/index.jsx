@@ -108,3 +108,10 @@ export const useGetArticleDetail = (slug) => {
     url: `/api/blogs/article-detail/${slug}`,
   });
 };
+
+export const useCreateArticle = (article) => {
+  return APIClient.post({
+    url: `/api/blogs/articles`,
+    data: article,
+  });
+};

@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 import BackdropLoader from "../../component/BackdropLoader";
 import { useGetArticleDetail } from "../../apis/CallAPIBlog";
+import { useGetImageUrl } from "../../apis/CallAPIFirebase";
 
 const { Title, Paragraph, Text } = Typography;
 const { Panel } = Collapse;
@@ -14,55 +15,64 @@ const { Panel } = Collapse;
 export default function ArticlePage() {
   const { slug } = useParams();
 
-  // Sử dụng React Query để lấy chi tiết bài viết
+  // Sử dụng React Query để lấy chi tiết bài viết và imageUrl
   const {
-    data: article,
+    data: articleDetail,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["articleDetail", slug],
     queryFn: async () => {
-      if (!slug) console.log("Missing slug");
+      if (!slug) {
+        console.log("Missing slug");
+        return;
+      }
       const res = await useGetArticleDetail(slug);
       if (res.code === 200) {
-        return res.data;
+        const url = await useGetImageUrl(
+          "pregnancyCareImages/articles",
+          res.data.id
+        );
+        // Kết hợp res.data và url vào một object articleDetail
+        return { ...res.data, imageUrl: url };
       } else {
         console.log("Error fetching article detail");
+        return;
       }
     },
     enabled: !!slug,
-    staleTime: 1000 * 60 * 5, // dữ liệu fresh trong 5 phút
+    staleTime: 1000 * 5, // dữ liệu fresh trong 5s
   });
 
   if (isLoading) return <BackdropLoader open={isLoading} />;
   if (error) return <div>Error: {error.message}</div>;
 
   // Sắp xếp các section theo displayOrder (nếu có)
-  const sortedSections = article?.articleSections
+  const sortedSections = articleDetail?.articleSections
     ?.slice()
     .sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
     <div className="container py-4">
-      {article ? (
+      {articleDetail ? (
         <div className="row justify-content-center">
           <div className="col-12 col-lg-8">
             {/* Article Header */}
             <Title level={1} className="mb-4">
-              {article.title}
+              {articleDetail.title}
             </Title>
 
             {/* Article Meta */}
             <Space direction="vertical" className="w-100 mb-4">
-              <Text className="text-muted">{article.description}</Text>
+              <Text className="text-muted">{articleDetail.description}</Text>
               <Space className="align-items-center">
                 <Avatar
                   src="https://assets.babycenter.com/ims/2021/08/Karen-Miles-bio.jpeg?width=80"
                   size="small"
                 />
                 <Text className="text-muted">
-                  Written by {article.user?.fullName || "Unknown"} |{" "}
-                  {moment(article.datePublish).format("MMMM D, YYYY")}
+                  Written by {articleDetail.user?.fullName || "Unknown"} |{" "}
+                  {moment(articleDetail.datePublish).format("MMMM D, YYYY")}
                 </Text>
               </Space>
             </Space>
@@ -70,7 +80,10 @@ export default function ArticlePage() {
             {/* Featured Image */}
             <Card className="mb-4 border-0">
               <img
-                src="https://assets.babycenter.com/ims/2015/12/iStock_5280082_wide.jpg?width=850"
+                src={
+                  articleDetail.imageUrl ||
+                  "https://assets.babycenter.com/ims/2015/12/iStock_5280082_wide.jpg?width=850"
+                }
                 alt="Article Featured"
                 width={800}
                 height={400}

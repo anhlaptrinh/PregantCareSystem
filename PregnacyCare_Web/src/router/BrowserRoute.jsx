@@ -35,6 +35,7 @@ import ProfilePages from "../pages/HomePages/ProfilePages";
 import Home from "../modules/HomeTemplate/Community/Home";
 import LoginSignin from "../modules/HomeTemplate/LoginSignin";
 import ExpertDetail from "../pages/ArticlePage/ExpertDetail";
+import ArticleForm from "../modules/HomeTemplate/Profile/ArticleForm";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
@@ -79,6 +80,10 @@ const routes = [
           {
             path: "/expert/forum/:id",
             element: <ForumPostDetail />,
+          },
+          {
+            path: "/profile/article-form",
+            element: <ArticleForm />,
           },
         ],
       },

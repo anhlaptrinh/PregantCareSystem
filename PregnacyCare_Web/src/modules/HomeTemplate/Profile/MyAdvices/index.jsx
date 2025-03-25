@@ -82,15 +82,9 @@ export default function MyAdvices() {
   const columns = [
     {
       title: "",
-      dataIndex: "id",
       key: "id",
-      render: (id) => (
-        <Link
-          to={`/community/advice-detail/${id}`}
-          style={{ color: "#615EFC", fontSize: "1.5rem" }}
-        >
-          {id}
-        </Link>
+      render: (_, record, index) => (
+        <Text style={{ fontSize: "1.5rem" }}>{index + 1}</Text>
       ),
     },
     {

@@ -102,6 +102,15 @@ const DrawerMenu = ({
                 Forum
               </StyledButton>
             </motion.div>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/profile/article-form"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Article
+              </StyledButton>
+            </motion.div>
           </>
         )}
 
