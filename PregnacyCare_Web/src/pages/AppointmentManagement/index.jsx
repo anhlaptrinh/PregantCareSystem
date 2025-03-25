@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, message } from "antd";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
@@ -14,6 +14,7 @@ import "./index.css";
 import DrawerMenu from "../../component/DrawerMenu";
 import FlexModal from "../../component/FlexModal";
 import { useCreateAppointment } from "../../hooks/AppointmentHooks/useCreateAppointment";
+import dayjs from "dayjs";
 
 const menuAppointment = () => [
   {
@@ -64,6 +65,11 @@ const AppointmentManagement = ({ children }) => {
   const [modalFields, setModalFields] = useState([]);
   const { mutate: createAppointment } = useCreateAppointment();
   const handleSubmit = async (values) => {
+    const selectedDate = dayjs(values.dateIssue);
+    if (selectedDate.isBefore(dayjs())) {
+      message.error("Date can not in a past!");
+      return;
+    }
     const localDate = new Date(values.dateIssue);
     localDate.setMinutes(
       localDate.getMinutes() - localDate.getTimezoneOffset()
