@@ -59,7 +59,7 @@ const CustomEvent = ({ event }) => {
         dateRemind: localDate.toISOString(),
       };
       createSchedule(formattedValues);
-      console.log("data ",values.dateRemind);
+      
     }
   };
   

@@ -59,9 +59,25 @@ export const useRegister = (email, password, fullName) => {
   });
 };
 
+export const useAddUser = (data) => {
+  return APIClient.post({
+    url: "/api/Admin/addUser",
+    data: data,
+  }).then((res) => {
+    if (res.code === 200) {
+      return res;
+    } else throw new Error(res.message || "Failed sign in");
+  });
+};
+
 export const useUserInfo = () => {
   return APIClient.get({
     url: "/api/users/my-info",
+  });
+};
+export const useGetAllUser = () => {
+  return APIClient.get({
+    url: "/api/users",
   });
 };
 
@@ -72,6 +88,13 @@ export const useUpdateUser = (id, user) => {
       name: user.fullName,
       email: user.email,
     },
+  });
+};
+
+export const useEditeUser = (data) => {
+  return APIClient.put({
+    url: `/api/Admin/updateUser`,
+    data: data,
   });
 };
 

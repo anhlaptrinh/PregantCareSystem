@@ -26,7 +26,6 @@ const FetusInput = ({ selectedFetus }) => {
   const handleCalculate = () => {
     form.validateFields().then((values) => {
       const { weight, height, dateRecord } = values;
-
       const localDate = new Date(dateRecord);
       localDate.setMinutes(
         localDate.getMinutes() - localDate.getTimezoneOffset()
