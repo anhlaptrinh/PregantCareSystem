@@ -2,13 +2,12 @@ import { useState } from "react";
 import { AppBar, Tabs, Tab, Box, Typography, Container } from "@mui/material";
 import Advertisement from "../../../component/Advertisement";
 import Home from "../../../modules/HomeTemplate/Community/Home";
-import Bookmarks from "../../../modules/HomeTemplate/Community/Bookmarks";
 import MyGroups from "../../../modules/HomeTemplate/Community/MyGroups";
 import Activity from "../../../modules/HomeTemplate/Community/Activity";
 import GroupList from "../../../modules/HomeTemplate/Community/GroupList";
 
 // Danh sách các tab trong phần Community
-const tabLabels = ["Home", "Bookmarks", "My Groups", "Activity", "Group List"];
+const tabLabels = ["Home", "My Groups", "Activity", "Group List"];
 
 export default function CommunityPages() {
   // Quản lý state cho tab đang được chọn
@@ -47,10 +46,9 @@ export default function CommunityPages() {
 
             {/* Nội dung cho từng tab*/}
             {activeTab === 0 && <Home />}
-            {activeTab === 1 && <Bookmarks />}
-            {activeTab === 2 && <MyGroups />}
-            {activeTab === 3 && <Activity />}
-            {activeTab === 4 && <GroupList />}
+            {activeTab === 1 && <MyGroups />}
+            {activeTab === 2 && <Activity />}
+            {activeTab === 3 && <GroupList />}
           </Box>
         </div>
         <div className="col-4">

@@ -30,12 +30,12 @@ import ForumAdmin from "../pages/AdminPages/ForumAdmin";
 import UserManagement from "../pages/AdminPages/User";
 import ErrorPage from "../pages/ErrorPages";
 import AccountInfo from "../modules/HomeTemplate/Profile/AccountInfo";
-import FamilyInfo from "../modules/HomeTemplate/Profile/FamilyInfo";
 import ProfilePages from "../pages/HomePages/ProfilePages";
 import Home from "../modules/HomeTemplate/Community/Home";
 import LoginSignin from "../modules/HomeTemplate/LoginSignin";
 import ExpertDetail from "../pages/ArticlePage/ExpertDetail";
 import ArticleForm from "../modules/HomeTemplate/Profile/ArticleForm";
+import Verification from "../modules/HomeTemplate/Verification";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
@@ -64,6 +64,7 @@ const routes = [
     ],
   },
   { path: "/login", element: <LoginSignin /> },
+  { path: "/verification", element: <Verification /> },
 
   // Các route dành cho EXPERT
   {

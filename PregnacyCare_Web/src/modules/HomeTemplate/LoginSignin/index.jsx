@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Login from "../Login";
 import Signin from "../Signin";
 import ForgotPassword from "../ForgotPassword";
-import backgroundImage from "../../../assets/LoginBackground.jpg";
 import { useNavigate } from "react-router-dom";
 
 const primaryColor60 = "#615EFC";
@@ -33,7 +32,7 @@ export default function LoginSignin() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundImage: `url(${backgroundImage})`, // Đặt ảnh nền
+        backgroundColor: "#615EFC",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backdropFilter: "blur(6px)", // Hiệu ứng làm mờ background

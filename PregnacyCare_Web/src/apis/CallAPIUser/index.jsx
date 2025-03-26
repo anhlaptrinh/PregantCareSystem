@@ -41,21 +41,24 @@ export const useLogin = (email, password) => {
   });
 };
 
-/**
- * Đăng ký người dùng mới
- * @param {string} email
- * @param {string} password
- * @param {string} fullName -
- * @returns {Promise} - Promise chứa thông tin đăng ký thành công
- */
-export const useRegister = (email, password, fullName) => {
+export const useRegister = (
+  email,
+  password,
+  fullName,
+  role,
+  verificationCode
+) => {
   return APIClient.post({
-    url: "/api/users/register",
-    data: { email, password, fullName },
-  }).then((res) => {
-    if (res.code === 200) {
-      return res;
-    } else throw new Error(res.message || "Failed sign in");
+    url: "/api/authentication/register",
+    data: { email, password, fullName, role },
+    params: { verificationCode },
+  });
+};
+
+export const useVerification = (email) => {
+  return APIClient.post({
+    url: "/api/authentication/verification-code",
+    params: { email },
   });
 };
 
@@ -66,7 +69,7 @@ export const useAddUser = (data) => {
   }).then((res) => {
     if (res.code === 200) {
       return res;
-    } else throw new Error(res.message || "Failed sign in");
+    } else console.log(res.message || "Failed sign in");
   });
 };
 
