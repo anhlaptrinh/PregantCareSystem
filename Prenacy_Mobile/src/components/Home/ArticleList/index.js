@@ -2,41 +2,22 @@ import React from "react";
 import { View, Text, Image, FlatList, StyleSheet } from "react-native";
 import CustomPressableCard from "../../CustomPressableCard";
 
-const articles = [
-  {
-    id: 1,
-    image: require("../../../assets/images/article.jpg"),
-    title: "Article 1",
-    description:
-      "Write something about article 1 mething aboutcewqecdưqdwqdưqdwqdqwdqwdqwdqwdqwdưqdwqwqecwcewqecwqcưqdcqwartdưqdwqdwqdưqicle 1 mething about article 1",
-    datePublish: "2025-02-23",
-  },
-  {
-    id: 2,
-    image: require("../../../assets/images/article.jpg"),
-    title: "Article 1",
-    description: "Write something about article 2",
-    datePublish: "2025-02-22",
-  },
-];
-
 const ArticleCard = ({ article }) => {
   return (
     <View style={styles.cardContainer}>
-      <CustomPressableCard>
+      <CustomPressableCard onPress={() => console.log('Article pressed:', article.id)}>
         <View style={styles.card}>
-          {/* Phần hình ảnh */}
           <Image
-            source={article.image}
+            source={{ uri: article.thumbnail }}
             style={styles.image}
             resizeMode="cover"
+            defaultSource={require('../../../assets/images/article-placeholder.png')}
           />
-          {/* Phần thông tin */}
           <View style={styles.info}>
-            <Text style={styles.title}>{article.title}</Text>
-            <Text style={styles.date}>{article.datePublish}</Text>
+            <Text style={styles.title} numberOfLines={2}>{article.title}</Text>
+            <Text style={styles.date}>{article.createdAt || 'No date'}</Text>
             <Text style={styles.description} numberOfLines={3}>
-              {article.description}
+              {article.content}
             </Text>
           </View>
         </View>
@@ -45,21 +26,45 @@ const ArticleCard = ({ article }) => {
   );
 };
 
-export default function ArticleList() {
+const ArticleList = ({ data = [] }) => {
+  console.log('ArticleList received data:', data); // Debug log
+
+  if (!data || data.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No articles available</Text>
+      </View>
+    );
+  }
+
   const renderItem = ({ item }) => <ArticleCard article={item} />;
 
   return (
-    <FlatList
-      data={articles}
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      contentContainerStyle={styles.listContainer}
-      horizontal
-    />
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Latest Articles</Text>
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContainer}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  container: {
+    marginVertical: 20,
+  },
+  sectionTitle: {
+    fontSize: 25,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: "#333",
+    textAlign: "center",
+  },
   listContainer: {
     padding: 5,
     marginBottom: 20,
@@ -72,13 +77,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 20,
     marginBottom: 16,
-
-    // Shadow cho iOS
     shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    // Elevation cho Android
     elevation: 5,
   },
   card: {
@@ -87,6 +89,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 200,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   info: {
     padding: 20,
@@ -94,14 +98,28 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 8,
   },
   description: {
     fontSize: 14,
     marginTop: 4,
+    color: "#666",
   },
   date: {
     fontSize: 12,
     color: "gray",
     marginTop: 4,
+    marginBottom: 8,
   },
+  emptyContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+  }
 });
+
+export default ArticleList;
