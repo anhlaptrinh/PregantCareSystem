@@ -1,4 +1,3 @@
-// src/components/BlogList.js
 import React from "react";
 import {
   View,
@@ -7,61 +6,43 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Image,
+  ActivityIndicator
 } from "react-native";
 
-const BlogList = () => {
-  // Cập nhật dữ liệu blog với title, content và name
-  const blogs = [
-    {
-      id: "1",
-      title: "5 Tips for your life",
-      content:
-        "Đây là nội dung tóm tắt của blog post 1. Bạn có thể thêm thông tin chi tiết ở đây.",
-      name: "John",
-    },
-    {
-      id: "2",
-      title: "The Ultimate Guide to Shopping Spring",
-      content:
-        "Hướng dẫn chi tiết về mua sắm mùa xuân với nhiều mẹo và kinh nghiệm.",
-      name: "Bob",
-    },
-    {
-      id: "3",
-      title: "Shopping on Budget",
-      content:
-        "Cách mua sắm hiệu quả và tiết kiệm ngay cả khi ngân sách eo hẹp.",
-      name: "Tom",
-    },
-    {
-      id: "4",
-      title: "Shopping on Budget",
-      content:
-        "Cách mua sắm hiệu quả và tiết kiệm ngay cả khi ngân sách eo hẹp.",
-      name: "Harry",
-    },
-    {
-      id: "5",
-      title: "Shopping on Budget",
-      content:
-        "Cách mua sắm hiệu quả và tiết kiệm ngay cả khi ngân sách eo hẹp.",
-      name: "Henry",
-    },
-  ];
-
-  // Tính toán chiều rộng item để hiển thị 1 cột (hoặc điều chỉnh theo nhu cầu)
+const BlogList = ({ data = [] }) => {
   const screenWidth = Dimensions.get("window").width;
   const itemWidth = (screenWidth - 60) / 1;
 
+  if (!data || data.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No posts available</Text>
+      </View>
+    );
+  }
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.card, { width: itemWidth }]}>
-      <Text style={styles.title} numberOfLines={1}>
-        {item.title}
-      </Text>
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.content} numberOfLines={2}>
-        {item.content}
-      </Text>
+    <TouchableOpacity 
+      style={[styles.card, { width: itemWidth }]}
+      onPress={() => console.log('Blog pressed:', item.id)}
+    >
+      {item.thumbnail && (
+        <Image 
+          source={{ uri: item.thumbnail }}
+          style={styles.thumbnail}
+          defaultSource={require('../../../assets/images/blog-placeholder.png')}
+        />
+      )}
+      <View style={styles.contentContainer}>
+        <Text style={styles.title} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={styles.name}>{item.author || 'Unknown Author'}</Text>
+        <Text style={styles.content} numberOfLines={2}>
+          {item.content}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -69,21 +50,24 @@ const BlogList = () => {
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Posts in My Groups</Text>
       <FlatList
-        data={blogs}
+        data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
       />
     </View>
   );
 };
 
-export default BlogList;
-
 const styles = StyleSheet.create({
   container: {
     marginTop: 16,
     marginBottom: 20,
+  },
+  listContainer: {
+    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 25,
@@ -93,18 +77,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   card: {
-    height: 150,
+    height: 200,
     backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 20,
-    marginRight: 12,
+    borderRadius: 12,
+    marginRight: 15,
     marginBottom: 20,
-    // Tạo hiệu ứng đổ bóng cho card
+    overflow: 'hidden',
     shadowColor: "#615EFC",
-    shadowOffset: { width: 10, height: 10 },
-    shadowOpacity: 0.11,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  thumbnail: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+  },
+  contentContainer: {
+    padding: 12,
   },
   title: {
     fontSize: 16,
@@ -119,7 +110,18 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 12,
-    color: "#999",
+    color: "#615EFC",
     marginBottom: 8,
   },
+  emptyContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+  }
 });
+
+export default BlogList;
