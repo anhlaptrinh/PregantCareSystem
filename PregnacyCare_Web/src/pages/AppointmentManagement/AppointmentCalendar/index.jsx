@@ -85,22 +85,11 @@ const CustomEvent = ({ event }) => {
   };
   const content = (
     <>
-      <p><strong>Title:</strong> {event.title}</p>
+    <p><strong>Title:</strong> {event.title}</p>
     <p><strong>Time:</strong> {moment(event.start).format("HH:mm")} - {moment(event.end).format("HH:mm")}</p>
     <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
-        {/* Nút chỉnh sửa */}
-        
-      
-        <Button type="primary" icon={<EditOutlined />} onClick={(e) => {
-          e.stopPropagation();
-          handleOpenModal(event,"Appointment");
-          
-          
-        }}>
-          Edit Appointment
-        </Button>
-
-        {/* Nút xóa */}
+      {/* Nếu sự kiện đã qua, chỉ hiển thị nút xóa */}
+      {new Date(event.start) < new Date() ? (
         <Popconfirm
           title="Are you sure you want to delete this event?"
           onConfirm={(e) => {
@@ -114,17 +103,52 @@ const CustomEvent = ({ event }) => {
             Delete
           </Button>
         </Popconfirm>
-
-        {/* Nút tạo lịch */}
-        <Button type="default" style={{ backgroundColor: "#FFA500", color: "white" }} 
-          icon={<PlusOutlined />} onClick={(e) => {
-          e.stopPropagation();
-          handleOpenModal(event,"Reminder");
-        }}>
-          Create Reminder
-        </Button>
-      </div>
-    </>
+      ) : (
+        <>
+          {/* Nút chỉnh sửa */}
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenModal(event, "Appointment");
+            }}
+          >
+            Edit Appointment
+          </Button>
+  
+          {/* Nút xóa */}
+          <Popconfirm
+            title="Are you sure you want to delete this event?"
+            onConfirm={(e) => {
+              e.stopPropagation();
+              deleteAppointment(event.id);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger icon={<DeleteOutlined />} onClick={(e) => e.stopPropagation()}>
+              Delete
+            </Button>
+          </Popconfirm>
+  
+          {/* Nút tạo lịch */}
+          <Button
+            type="default"
+            style={{ backgroundColor: "#FFA500", color: "white" }}
+            icon={<PlusOutlined />}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenModal(event, "Reminder");
+            }}
+          >
+            Create Reminder
+          </Button>
+        </>
+      )}
+    </div>
+  </>
+  
   );
   return (
     <>
@@ -146,8 +170,8 @@ const CustomEvent = ({ event }) => {
       textAlign: "center",
       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
       border: "none",
-      cursor: new Date(event.start) < new Date() ? "not-allowed" : "pointer",
-      pointerEvents: new Date(event.start) < new Date() ? "none" : "auto", // Tắt sự kiện click nếu đã qua ngày
+      
+      
     }}
   >
     {event.title}
