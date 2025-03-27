@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,17 +7,68 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
+import { API_CONFIG } from "../../../config/api";
 
-const BlogList = ({ data = [] }) => {
+const BlogList = () => {
+  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState([]);
+  const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
   const screenWidth = Dimensions.get("window").width;
   const itemWidth = (screenWidth - 60) / 1;
 
-  if (!data || data.length === 0) {
+  const fetchBlogs = async () => {
+    try {
+      console.log('📝 Fetching blog posts...');
+      const response = await fetch(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.BLOGS.POSTS}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(`✅ Fetched ${data.length} blog posts`);
+      setBlogs(data);
+      setError(null);
+    } catch (error) {
+      console.error('❌ Error fetching blogs:', error);
+      setError('Failed to load blog posts');
+      Alert.alert('Error', 'Failed to load blog posts');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchBlogs();
+  }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#615EFC" />
+      </View>
+    );
+  }
+
+  if (error || !blogs.length) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No posts available</Text>
+        <Text style={styles.emptyText}>
+          {error || 'No posts available'}
+        </Text>
       </View>
     );
   }
@@ -50,12 +101,14 @@ const BlogList = ({ data = [] }) => {
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Posts in My Groups</Text>
       <FlatList
-        data={data}
+        data={blogs}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );
@@ -65,6 +118,11 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 16,
     marginBottom: 20,
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   listContainer: {
     paddingHorizontal: 20,

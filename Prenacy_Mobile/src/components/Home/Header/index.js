@@ -1,54 +1,55 @@
-// src/components/Header.js
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
-const Header = () => {
-  const [user, setUser] = useState({
-    name: "Leslie Alexander",
-  });
+const Header = ({ onSearch, onFilter }) => {
   return (
-    <View style={styles.headerContainer}>
-      <View style={styles.headerTextContainer}>
-        <Text style={styles.headerWelcomeText}>Welcome</Text>
-        <Text style={styles.headerNameText}>{user.name}</Text>
-      </View>
-      <TouchableOpacity style={styles.notificationIcon}>
-        <Icon name="notifications-none" size={24} color="#333" />
+    <View style={styles.header}>
+      <TouchableOpacity 
+        style={styles.searchButton}
+        onPress={onSearch}
+      >
+        <FontAwesome name="search" size={20} color="#615EFC" />
+        <Text style={styles.searchText}>Search communities...</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.filterButton}
+        onPress={onFilter}
+      >
+        <FontAwesome name="filter" size={20} color="#615EFC" />
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: "row",
-    marginTop: 50,
-    alignItems: "center",
-    justifyContent: "space-between",
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
-  headerTextContainer: {
-    flexDirection: "column",
+  searchButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 8,
+    marginRight: 10,
   },
-  headerWelcomeText: {
-    fontSize: 16,
-    color: "#9A9A9A",
+  searchText: {
+    marginLeft: 10,
+    color: '#666',
+    fontSize: 14,
   },
-  headerNameText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 2,
-    color: "#333",
-  },
-  notificationIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 2,
-  },
+  filterButton: {
+    padding: 10,
+  }
 });
 
 export default Header;

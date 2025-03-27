@@ -1,6 +1,15 @@
-import React from "react";
-import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { 
+  View, 
+  Text, 
+  Image, 
+  FlatList, 
+  StyleSheet, 
+  ActivityIndicator,
+  Alert 
+} from "react-native";
 import CustomPressableCard from "../../CustomPressableCard";
+import { API_CONFIG } from "../../../config/api";
 
 const ArticleCard = ({ article }) => {
   return (
@@ -26,29 +35,76 @@ const ArticleCard = ({ article }) => {
   );
 };
 
-const ArticleList = ({ data = [] }) => {
-  console.log('ArticleList received data:', data); // Debug log
+const ArticleList = () => {
+  const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState([]);
+  const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  if (!data || data.length === 0) {
+  const fetchArticles = async () => {
+    try {
+      console.log('📚 Fetching articles...');
+      const response = await fetch(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.BLOGS.ARTICLES}`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(`✅ Fetched ${data.length} articles`);
+      setArticles(data);
+      setError(null);
+    } catch (error) {
+      console.error('❌ Error fetching articles:', error);
+      setError('Failed to load articles');
+      Alert.alert('Error', 'Failed to load articles');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchArticles();
+  }, []);
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  if (loading) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No articles available</Text>
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#615EFC" />
       </View>
     );
   }
 
-  const renderItem = ({ item }) => <ArticleCard article={item} />;
+  if (error || !articles.length) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>
+          {error || 'No articles available'}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Latest Articles</Text>
       <FlatList
-        data={data}
+        data={articles}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContainer}
+        renderItem={({ item }) => <ArticleCard article={item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );
@@ -119,6 +175,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: '#666',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   }
 });
 

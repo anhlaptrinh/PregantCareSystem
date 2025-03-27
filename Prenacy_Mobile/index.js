@@ -180,6 +180,8 @@
 // });
 
 import { registerRootComponent } from "expo";
+import { useState, useEffect } from "react";
+import { View, Text, Button, ActivityIndicator } from "react-native";
 
 import App from "./App";
 
