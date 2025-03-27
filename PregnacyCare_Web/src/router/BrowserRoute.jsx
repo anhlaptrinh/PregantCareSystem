@@ -36,6 +36,9 @@ import LoginSignin from "../modules/HomeTemplate/LoginSignin";
 import ExpertDetail from "../pages/ArticlePage/ExpertDetail";
 import ArticleForm from "../modules/HomeTemplate/Profile/ArticleForm";
 import Verification from "../modules/HomeTemplate/Verification";
+import PaymentSuccess from "../pages/PaymentPage/PaymentSuccess";
+import PaymentFailure from "../pages/PaymentPage/PaymentFailure";
+import PackageManagement from "../pages/AdminPages/PackageManagement";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
@@ -106,7 +109,9 @@ const routes = [
             path: "/community/group/create-post/:groupId",
             element: <CreatePostPages />,
           },
-          { path: "/payment", element: <PaymentPage /> },
+          { path: "/payment/:id", element: <PaymentPage /> },
+          { path: "/payment/success/:paymentId", element: <PaymentSuccess /> },
+          { path: "/payment/failure", element: <PaymentFailure /> },
           {
             path: "/appointment/fetus-growth-chart",
             element: <FetusGrowthChart />,
@@ -182,6 +187,14 @@ const routes = [
         element: (
           <MainLayout>
             <UserManagement />
+          </MainLayout>
+        ),
+      },
+      {
+        path: "/admin/package",
+        element: (
+          <MainLayout>
+            <PackageManagement />
           </MainLayout>
         ),
       },

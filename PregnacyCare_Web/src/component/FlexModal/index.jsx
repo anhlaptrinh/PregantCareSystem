@@ -53,16 +53,18 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
           <Form.Item
             key={name}
             name={name}
-            label={type === "hidden" ? undefined : label} // Ẩn label nếu là hidden
+            label={type === "hidden" ? undefined : label}
             initialValue={value}
             rules={[{ required: true, message: `${label} is required!` }]}
-            hidden={type === "hidden"} // Ẩn nhưng vẫn giữ giá trị
+            hidden={type === "hidden"}
           >
             {type === "text" ? (
               <Input
                 placeholder={`Enter ${label}`}
                 disabled={["id", "appointmentId"].includes(name)}
               />
+            ) : type === "number" ? (
+              <Input type="number" placeholder={`Enter ${label}`} />
             ) : type === "date" ? (
               <DatePicker showTime style={{ width: "100%" }} />
             ) : type === "select" ? (

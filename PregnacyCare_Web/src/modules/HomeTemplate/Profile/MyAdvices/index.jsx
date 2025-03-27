@@ -8,7 +8,6 @@ import {
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import moment from "moment";
-import { Link } from "react-router-dom";
 import MyAdviceDetailModal from "./MyAdviceDetailModal";
 import { useGetAllMyAdvices } from "../../../../apis/CallAPIAdvice";
 import SearchBar from "../../../../component/SearchBar";

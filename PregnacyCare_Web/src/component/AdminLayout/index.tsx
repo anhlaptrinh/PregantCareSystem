@@ -9,6 +9,7 @@ import {
     AlignLeftOutlined,
     HomeOutlined,
     DashboardOutlined,
+    BoxPlotOutlined,
 
 } from "@ant-design/icons";
 import avatar from "../../assets/avatar.jpg";
@@ -67,9 +68,12 @@ const MainLayout = ({ children }) => {
               <Menu.Item key="4" icon={<UserOutlined />}>
                 <Link to="/admin/user">User</Link>
               </Menu.Item>
-              <Menu.Item key="5" icon={<HomeOutlined />}>
-                        <Link to="/">Home</Link>
-                    </Menu.Item>
+              <Menu.Item key="5" icon={<BoxPlotOutlined  />}>
+                <Link to="/admin/package">Package</Link>
+              </Menu.Item>
+              <Menu.Item key="6" icon={<HomeOutlined />}>
+                  <Link to="/">Home</Link>
+              </Menu.Item>
             </>
           )}
           {role === "EXPERT" && (

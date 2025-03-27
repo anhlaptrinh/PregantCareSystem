@@ -1,106 +1,117 @@
-import { useState } from "react";
-import { Typography, Input, Select, Checkbox, Button, Space, Radio, Row, Col, Form, DatePicker } from "antd";
-import { CreditCardOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  InputNumber,
+  Select,
+  Button,
+  Form,
+  Layout,
+  message,
+} from "antd";
+import { useCreatePayment } from "../../apis/CallAPIPayment";
+import { useGetPackage } from "../../apis/CallAPIPackage";
+import { useParams } from "react-router-dom";
 
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
 const PaymentPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [packageDetail, setPackageDetail] = useState(null);
+  const { id } = useParams();
+
+  const onFinish = async (values) => {
+    setLoading(true);
+    console.log(id);
+    localStorage.setItem("PACKAGE_ID", JSON.stringify(id));
+    try {
+      const amount = parseFloat(packageDetail.price);
+      // Gọi API tạo payment
+      const response = await useCreatePayment(amount, values.currency);
+
+      if (!response) {
+        throw new Error("Invalid response from API");
+      }
+
+      // Tìm link 'approval_url' để redirect người dùng đến PayPal
+      const approvalLink = response.links?.find(
+        (link) => link.rel === "approval_url"
+      );
+
+      if (approvalLink) {
+        message.success("Redirecting to PayPal...");
+        window.location.href = approvalLink.href; // Chuyển hướng người dùng
+      } else {
+        throw new Error("Approval URL not found in PayPal response");
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      message.error(`Payment error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchPackage = async () => {
+      try {
+        const res = await useGetPackage(id);
+        setPackageDetail(res);
+      } catch (error) {
+        console.error("Error fetching packages:", error);
+      }
+    };
+    fetchPackage();
+  }, []);
 
   return (
-    <div style={{ width: "50%", margin: "50px auto" }}>
-      <Form layout="vertical">
-        <Row gutter={[8, 0]}>
-          <Col span={24} style={{ marginBottom: "12px" }}>
-            <div>
-              <CreditCardOutlined style={{ marginRight: 8, color: "#3CB4AC", fontSize: "20px" }} />
-              <span style={{ fontSize: "18px", fontWeight: 700 }}>Payment method</span>
-            </div>
-            <Text type="secondary">Ad enim veniam amet</Text>
-          </Col>
-          <Col span={24}>
-            <Form.Item>
-              <Radio.Group value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-                <Space size={16}>
-                  <Radio value="card" style={{ border: "1px solid rgb(208, 208, 208)", padding: "12px 30px", borderRadius: "12px" }}>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" width={40} style={{ marginRight: 8 }} />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width={40} style={{ marginRight: 8 }} />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" alt="Amex" width={40} />
-                  </Radio>
-                  <Radio value="paypal" style={{ border: "1px solid rgb(208, 208, 208)", padding: "12px 30px", borderRadius: "12px" }}>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" alt="paypal" style={{ marginRight: 8, width: "90px", height: "38px" }} />
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Name on card"
-            >
-              <Input placeholder="Enter name on card" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Card number"
-            >
-              <Input placeholder="Enter card number" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Expiration date"
-            >
-              <DatePicker
-                style={{ width: "100%" }}
-                placeholder="MM/YY"
-                format="MM/YY"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="CVV"
-            >
-              <Input placeholder="Enter CVV" />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Checkbox>Use same address as billing info</Checkbox>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Address"
-            >
-              <Input placeholder="Add address" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Zip/Postal code"
-            >
-              <Input placeholder="Input code" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Country/Region"
-            >
-              <Select placeholder="Select country/region" style={{ width: "100%" }}>
-                <Select.Option value="us">United States</Select.Option>
-                <Select.Option value="uk">United Kingdom</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={24} style={{ display: "flex", justifyContent: "end" }}>
-            <Button className="rts-btn btn-primary">
-              Save information
+    <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
+      <div
+        style={{
+          maxWidth: 400,
+          margin: "100px auto",
+          padding: 24,
+          background: "white",
+          borderRadius: 8,
+          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Title level={3}>Confirm package information</Title>
+        <Text type="secondary">
+          You will be redirected to PayPal to complete your payment.
+        </Text>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          style={{ marginTop: 24 }}
+        >
+          <Form.Item label="Package Name" name="name">
+            <Text type="primary">{packageDetail?.name}</Text>
+          </Form.Item>
+          <Form.Item label="Amount" name="amount">
+            <Text type="primary">{packageDetail?.price}</Text>
+          </Form.Item>
+          <Form.Item
+            label="Currency"
+            name="currency"
+            rules={[{ required: true, message: "Please select a currency" }]}
+          >
+            <Select placeholder="Select a currency">
+              <Select.Option value="USD">USD</Select.Option>
+              <Select.Option value="EUR">EUR</Select.Option>
+              <Select.Option value="JPY">JPY</Select.Option>
+              <Select.Option value="VND">VND</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              {loading ? "Processing..." : "Pay with PayPal"}
             </Button>
-          </Col>
-        </Row>
-      </Form>
-    </div>
+          </Form.Item>
+        </Form>
+      </div>
+    </Layout>
   );
 };
 

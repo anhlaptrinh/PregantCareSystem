@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import Advertisement from "../../../../component/Advertisement";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useGetCategories } from "../../../../apis/CallAPICategory";
 import BackdropLoader from "../../../../component/BackdropLoader";
 import { useCreateBlog } from "../../../../apis/CallAPIBlog";
