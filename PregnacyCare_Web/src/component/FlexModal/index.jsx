@@ -49,7 +49,7 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
       ]}
     >
       <Form form={form} layout="vertical" preserve={false}>
-        {fields.map(({ name, label, type, value, options }) => (
+        {fields.map(({ name, label, type, value, options, dateDisabled }) => (
           <Form.Item
             key={name}
             name={name}
@@ -66,7 +66,11 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
             ) : type === "number" ? (
               <Input type="number" placeholder={`Enter ${label}`} />
             ) : type === "date" ? (
-              <DatePicker showTime style={{ width: "100%" }} />
+              <DatePicker
+                disabled={dateDisabled}
+                showTime
+                style={{ width: "100%" }}
+              />
             ) : type === "select" ? (
               <Select placeholder={`Select ${label}`}>
                 {options?.map((option) => (

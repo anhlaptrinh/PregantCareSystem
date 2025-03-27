@@ -1,14 +1,28 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import avatar from "../../../../assets/PregnantAvatar.jpg";
 import { useNavigate } from "react-router-dom";
+import { useRegisterUserToGroup } from "../../../../apis/CallAPIGroup";
+import { message } from "antd";
 
-export default function ViewGroup({ group }) {
+export default function ViewGroup({ user, group, setFresh }) {
   const navigate = useNavigate();
 
   // Direct to create post pages
   const onHandlePost = () => {
     navigate(`/community/group/create-post/${group?.id}`);
+  };
+
+  const onHandleJoin = async () => {
+    try {
+      const res = await useRegisterUserToGroup(group.id);
+      if (res.code == 200) {
+        message.success("Joined group successfully");
+        setFresh((prev) => prev + 1);
+      }
+    } catch (e) {
+      console.error("Error joining group:", e.message);
+    }
   };
 
   return (
@@ -61,9 +75,15 @@ export default function ViewGroup({ group }) {
       </div>
 
       {/* Post button */}
-      <button className="rts-btn btn-primary" onClick={onHandlePost}>
-        Post
-      </button>
+      {group.users.some((u) => u.email === user.email) ? (
+        <button className="rts-btn btn-primary" onClick={onHandlePost}>
+          Post
+        </button>
+      ) : (
+        <button className="rts-btn btn-primary" onClick={onHandleJoin}>
+          Join
+        </button>
+      )}
     </Box>
   );
 }
