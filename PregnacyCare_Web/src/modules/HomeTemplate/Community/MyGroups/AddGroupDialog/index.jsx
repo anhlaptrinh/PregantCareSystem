@@ -61,6 +61,7 @@ export default function AddGroupDialog({ onGroupAdded }) {
       if (res.code === 200) {
         Message.success("Group added successfully!");
         if (onGroupAdded) {
+          console.log(res.data);
           handleUploadImage(res.data.id);
           onGroupAdded(res.data);
         }

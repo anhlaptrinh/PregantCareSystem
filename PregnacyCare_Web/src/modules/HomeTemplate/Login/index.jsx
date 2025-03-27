@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
 import { useLogin } from "../../../apis/CallAPIUser";
-import { error } from "jquery";
 import { useNavigate } from "react-router-dom";
 import BackdropLoader from "../../../component/BackdropLoader";
+import Button from "@mui/material/Button";
 
 const { Title, Text } = Typography;
 
@@ -24,12 +24,11 @@ export default function Login({ onClose }) {
       .then(() => {
         const storedData = localStorage.getItem("USER_TOKEN");
         if (storedData) {
-          const user = JSON.parse(storedData);
           Message.success("Login successful");
           onClose();
           navigate("/");
-          setLoading(false);
         }
+        setLoading(false);
       })
       .catch(() => {
         Message.error("Login failed, please check your email or password ");
@@ -39,7 +38,6 @@ export default function Login({ onClose }) {
 
   return (
     <div>
-      <BackdropLoader open={loading} />
       <div style={{ display: "flex", height: "100%" }}>
         {/* Image */}
         <div style={{ flex: 1, overflow: "hidden" }}>
@@ -55,9 +53,9 @@ export default function Login({ onClose }) {
         </div>
         {/* Login form */}
         <div style={{ flex: 1, padding: "20px" }}>
-          <div class="row justify-content-md-center">
-            <div class="col-md-auto mb-3">
-              <Title>Login</Title>
+          <div className="row justify-content-md-center">
+            <div className="col-md-auto mb-3">
+              <Title style={{ color: "#615EFC" }}>Let Login</Title>
             </div>
           </div>
           <Text style={{ display: "block", marginBottom: "20px" }}>
@@ -90,13 +88,27 @@ export default function Login({ onClose }) {
               />
             </Form.Item>
             <Form.Item>
-              <div class="row justify-content-md-center">
-                <div class="col-md-auto">
-                  <button className="rts-btn btn-primary" type="submit">
-                    Log in
-                  </button>
-                </div>
-              </div>
+              <Button
+                variant="contained"
+                type="submit"
+                disabled={loading}
+                onClick={handleSubmit}
+                sx={{
+                  width: "100%",
+                  backgroundColor: "#615EFC",
+                  borderColor: "#615EFC",
+                  fontSize: 12,
+
+                  py: 1,
+                  transition: "background-color 0.3s, border-color 0.3s",
+                  "&:hover": {
+                    backgroundColor: "#4a3ecf", // màu tối hơn khi hover
+                    borderColor: "#4a3ecf",
+                  },
+                }}
+              >
+                {loading ? "Logging in..." : "Log in"}
+              </Button>
             </Form.Item>
           </Form>
           <div style={{ textAlign: "center", marginTop: "20px" }}>
