@@ -28,26 +28,42 @@ export default function HomeScreen() {
     packages: []
   });
 
-  const fetchAllData = async () => {
+    const fetchAllData = async () => {
     try {
+      console.log('🚀 Starting API calls...');
+      
       const [postsRes, articlesRes, expertsRes, packagesRes] = await Promise.all([
         fetch(`${BASE_URL}/blogs/posts`),
         fetch(`${BASE_URL}/blogs/articles`),
         fetch(`${BASE_URL}/users/experts`),
         fetch(`${BASE_URL}/packages`)
       ]);
-
+  
+      console.log('📡 API Response Status:', {
+        posts: postsRes.status,
+        articles: articlesRes.status,
+        experts: expertsRes.status,
+        packages: packagesRes.status
+      });
+  
       const [posts, articles, experts, packages] = await Promise.all([
         postsRes.json(),
         articlesRes.json(),
         expertsRes.json(),
         packagesRes.json()
       ]);
-
+  
+      console.log('📊 Data counts:', {
+        posts: posts.length,
+        articles: articles.length,
+        experts: experts.length,
+        packages: packages.length
+      });
+  
       setData({ posts, articles, experts, packages });
-      console.log('All data fetched successfully');
+      console.log('✅ All data fetched successfully');
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('❌ Detailed error:', error);
       Alert.alert('Error', 'Failed to load content');
     } finally {
       setLoading(false);
@@ -55,8 +71,12 @@ export default function HomeScreen() {
   };
 
   const onRefresh = React.useCallback(() => {
+    console.log('🔄 Starting refresh...');
     setRefreshing(true);
-    fetchAllData().finally(() => setRefreshing(false));
+    fetchAllData().finally(() => {
+      console.log('🔄 Refresh completed');
+      setRefreshing(false);
+    });
   }, []);
 
   useEffect(() => {
