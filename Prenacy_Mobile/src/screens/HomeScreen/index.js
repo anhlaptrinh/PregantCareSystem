@@ -16,7 +16,7 @@ import ExpertList from "../../components/Home/ExpertList";
 import PackageList from "../../components/Home/PackageList";
 import ArticleList from "../../components/Home/ArticleList";
 
-const BASE_URL = 'https://39f6-42-118-214-16.ngrok-free.app/api';
+const BASE_URL = 'https://2baf-42-118-214-16.ngrok-free.app/api';
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
