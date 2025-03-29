@@ -9,11 +9,11 @@ import {
     AlignLeftOutlined,
     HomeOutlined,
     DashboardOutlined,
+    BoxPlotOutlined,
 
 } from "@ant-design/icons";
 import avatar from "../../assets/avatar.jpg";
-import { Link, useLocation } from "react-router-dom";
-import { Dashboard, Home } from "@mui/icons-material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
 
@@ -28,6 +28,7 @@ const breadcrumbNameMap = {
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const pathSnippets = location.pathname.split("/").filter((i) => i);
 
   const breadcrumbItems = pathSnippets
@@ -50,9 +51,9 @@ const MainLayout = ({ children }) => {
         width={220}
         style={{ background: "#f8f9fa", borderRight: "1px solid #ddd" }}
       >
-        <div className="text-center my-4">
-          <h4 style={{ color: "#000" }}>
-            <img src={avatar} alt="Avatar" />
+        <div className="text-center my-4 pe-auto">
+          <h4 style={{ color: "#000"  }}>
+            <img src={avatar} alt="Avatar" onClick={() => navigate("/")}/>
           </h4>
         </div>
         <Menu mode="vertical" defaultSelectedKeys={["1"]} style={{ background: "#f8f9fa" }}>
@@ -67,9 +68,12 @@ const MainLayout = ({ children }) => {
               <Menu.Item key="4" icon={<UserOutlined />}>
                 <Link to="/admin/user">User</Link>
               </Menu.Item>
-              <Menu.Item key="5" icon={<HomeOutlined />}>
-                        <Link to="/">Home</Link>
-                    </Menu.Item>
+              <Menu.Item key="5" icon={<BoxPlotOutlined  />}>
+                <Link to="/admin/package">Package</Link>
+              </Menu.Item>
+              <Menu.Item key="6" icon={<HomeOutlined />}>
+                  <Link to="/">Home</Link>
+              </Menu.Item>
             </>
           )}
           {role === "EXPERT" && (

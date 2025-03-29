@@ -1,11 +1,12 @@
 import { Box, Typography, Link, Divider } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { useGetMyPosts } from "../../../../apis/CallAPIBlog";
+import { useGetMyComments } from "../../../../apis/CallAPIComment";
 import BackdropLoader from "../../../../component/BackdropLoader";
 import moment from "moment";
-import { useGetMyComments } from "../../../../apis/CallAPIComment";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -21,58 +22,61 @@ const itemVariants = {
 };
 
 export default function Activity() {
-  const [loading, setLoading] = useState(false);
-  // Danh sách post
-  const [posts, setPosts] = useState([]);
-  // Danh sách comment
-  const [comments, setComments] = useState([]);
-
   const navigate = useNavigate();
 
-  const handleGetMyPosts = async () => {
-    setLoading(true);
-    const res = await useGetMyPosts();
-    if (res.code === 200) {
-      setPosts(res.data);
-    }
-    setLoading(false);
-  };
-
-  const handleGetMyComments = async () => {
-    setLoading(true);
-    const res = await useGetMyComments();
-    if (res.code === 200) {
-      setComments(res.data);
-    }
-    setLoading(false);
-  };
-
-  const handlePostClick = (postId) => {
-    navigate(`/community/post-detail/${postId}`);
-  };
-
-  const handleGroupClick = (groupId) => {
-    navigate(`/community/group/${groupId}`);
-  };
-
-  useEffect(() => {
-    handleGetMyPosts();
-    handleGetMyComments();
-  }, []);
-
-  const linkSx = {
-    cursor: "pointer",
-    color: "primary.main",
-    textDecoration: "none",
-    "&:hover": {
-      textDecoration: "underline",
-      color: "primary.dark",
+  // Sử dụng React Query để fetch posts
+  const {
+    data: posts = [],
+    isLoading: postsLoading,
+    isError: postsError,
+    error: postsErrorMessage,
+  } = useQuery({
+    queryKey: ["myPosts"],
+    queryFn: async () => {
+      const res = await useGetMyPosts();
+      if (res.code === 200) return res.data;
+      throw new Error("Error fetching posts");
     },
-  };
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Sử dụng React Query để fetch comments
+  const {
+    data: comments = [],
+    isLoading: commentsLoading,
+    isError: commentsError,
+    error: commentsErrorMessage,
+  } = useQuery({
+    queryKey: ["myComments"],
+    queryFn: async () => {
+      const res = await useGetMyComments();
+      if (res.code === 200) return res.data;
+      throw new Error("Error fetching comments");
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Hiển thị loader nếu một trong hai query đang loading
+  if (postsLoading || commentsLoading) {
+    return <BackdropLoader open={true} />;
+  }
+
+  // Nếu có lỗi, hiển thị thông báo lỗi
+  if (postsError) {
+    return <div>Error fetching posts: {postsErrorMessage.message}</div>;
+  }
+  if (commentsError) {
+    return <div>Error fetching comments: {commentsErrorMessage.message}</div>;
+  }
+
+  // Tìm kiếm hoặc lọc dữ liệu nếu cần (ví dụ: dùng useMemo cho các dữ liệu này)
+  // Ở đây, ví dụ chúng ta không có xử lý tìm kiếm riêng, chỉ hiển thị toàn bộ dữ liệu
+
+  // Nếu posts hoặc comments trống thì có thể hiển thị thông báo "No posts" hay "No comments"
+  // Trong ví dụ này, chúng ta sẽ render theo như cấu trúc ban đầu.
 
   return (
     <motion.div initial="hidden" animate="visible" variants={containerVariants}>
-      <BackdropLoader open={loading} />
       {/* Tiêu đề */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         Browse your activity
@@ -124,31 +128,38 @@ export default function Activity() {
         <Typography id="my-posts" variant="h4" fontWeight="bold" gutterBottom>
           My posts
         </Typography>
-        {posts.map((post) => (
-          <motion.div key={post.id} variants={itemVariants}>
-            <Typography variant="h5">
-              created post{" "}
-              <Link sx={linkSx} onClick={() => handlePostClick(post.id)}>
-                "{post.title}"
-              </Link>{" "}
-              in group{" "}
-              {post.group ? (
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <motion.div key={post.id} variants={itemVariants}>
+              <Typography variant="h5">
+                created post{" "}
                 <Link
-                  sx={linkSx}
-                  onClick={() => handleGroupClick(post.group.id)}
+                  onClick={() => navigate(`/community/post-detail/${post.id}`)}
                 >
-                  "{post.group.name}"
-                </Link>
-              ) : (
-                "Unknown Group"
-              )}
-            </Typography>
-            <Typography variant="h6" color="text.secondary">
-              {moment(post.datePublish).format("MMMM D, YYYY")}
-            </Typography>
-            <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
-          </motion.div>
-        ))}
+                  "{post.title}"
+                </Link>{" "}
+                in group{" "}
+                {post.group ? (
+                  <Link
+                    onClick={() =>
+                      navigate(`/community/group/${post.group.id}`)
+                    }
+                  >
+                    "{post.group.name}"
+                  </Link>
+                ) : (
+                  "Unknown Group"
+                )}
+              </Typography>
+              <Typography variant="h6" color="text.secondary">
+                {moment(post.datePublish).format("MMMM D, YYYY")}
+              </Typography>
+              <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
+            </motion.div>
+          ))
+        ) : (
+          <Typography>No posts found.</Typography>
+        )}
       </Box>
 
       {/* Danh sách My comments */}
@@ -161,34 +172,40 @@ export default function Activity() {
         >
           My comments
         </Typography>
-        {comments.map((comment) => (
-          <motion.div key={comment.id} variants={itemVariants}>
-            <Typography variant="h5">
-              commented on post{" "}
-              <Link
-                sx={linkSx}
-                onClick={() => handlePostClick(comment.blog.id)}
-              >
-                "{comment.blog.title}"
-              </Link>{" "}
-              in group{" "}
-              {comment.blog.group ? (
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <motion.div key={comment.id} variants={itemVariants}>
+              <Typography variant="h5">
+                commented on post{" "}
                 <Link
-                  sx={linkSx}
-                  onClick={() => handleGroupClick(comment.blog.group.id)}
+                  onClick={() =>
+                    navigate(`/community/post-detail/${comment.blog.id}`)
+                  }
                 >
-                  "{comment.blog.group.name}"
-                </Link>
-              ) : (
-                "Unknown Group"
-              )}
-            </Typography>
-            <Typography variant="h6" color="text.secondary">
-              {moment(comment.datePublish).format("MMMM D, YYYY")}
-            </Typography>
-            <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
-          </motion.div>
-        ))}
+                  "{comment.blog.title}"
+                </Link>{" "}
+                in group{" "}
+                {comment.blog.group ? (
+                  <Link
+                    onClick={() =>
+                      navigate(`/community/group/${comment.blog.group.id}`)
+                    }
+                  >
+                    "{comment.blog.group.name}"
+                  </Link>
+                ) : (
+                  "Unknown Group"
+                )}
+              </Typography>
+              <Typography variant="h6" color="text.secondary">
+                {moment(comment.datePublish).format("MMMM D, YYYY")}
+              </Typography>
+              <Divider sx={{ my: 2, borderBottomWidth: 1, bgcolor: "black" }} />
+            </motion.div>
+          ))
+        ) : (
+          <Typography>No comments found.</Typography>
+        )}
       </Box>
     </motion.div>
   );

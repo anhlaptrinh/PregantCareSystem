@@ -1,12 +1,14 @@
-import serviceImg01 from '../../../assets/images/service/09.svg'
-import serviceImg02 from '../../../assets/images/service/10.svg'
-import serviceImg03 from '../../../assets/images/service/11.svg'
-import serviceImg04 from '../../../assets/images/service/12.svg'
-import serviceImg05 from '../../../assets/images/service/13.svg'
-import serviceImg06 from '../../../assets/images/service/14.svg'
-import serviceImg07 from '../../../assets/images/service/13.png'
-import { FontAwesomeIcon}  from '@fortawesome/react-fontawesome';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import serviceImg01 from "../../../assets/images/service/09.svg";
+import serviceImg02 from "../../../assets/images/service/10.svg";
+import serviceImg03 from "../../../assets/images/service/11.svg";
+import serviceImg04 from "../../../assets/images/service/12.svg";
+import serviceImg05 from "../../../assets/images/service/13.svg";
+import serviceImg06 from "../../../assets/images/service/14.svg";
+import serviceImg07 from "../../../assets/images/service/13.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+
 export default function Srvice() {
   return (
     <div className="service-area position-relative rts-section-gapBottom">
@@ -48,14 +50,15 @@ export default function Srvice() {
               <div className="icon">
                 <img src={serviceImg01} alt="service" />
               </div>
-              <h4 className="title">Cardiology</h4>
+              <h4 className="title">Due Date Calculator</h4>
               <p className="disc">
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
-                Learn More <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
-              </a>
+              <Link to="/due-date" className="btn-transparent">
+                Learn More{" "}
+                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
+              </Link>
             </div>
           </div>
           <div
@@ -67,14 +70,15 @@ export default function Srvice() {
               <div className="icon">
                 <img src={serviceImg02} alt="service" />
               </div>
-              <h4 className="title">Neurology</h4>
+              <h4 className="title">Ovulation</h4>
               <p className="disc">
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
-                Learn More <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
-              </a>
+              <Link to="/ovulation" className="btn-transparent">
+                Learn More{" "}
+                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
+              </Link>
             </div>
           </div>
           <div
@@ -91,8 +95,9 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
-                Learn More <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
+              <a href="https://www.babycenter.com/" className="btn-transparent">
+                Learn More{" "}
+                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
             </div>
           </div>
@@ -110,8 +115,9 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
-                Learn More <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
+              <a href="https://www.babycenter.com/" className="btn-transparent">
+                Learn More{" "}
+                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
             </div>
           </div>
@@ -129,8 +135,9 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
-                Learn More <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
+              <a href="https://www.babycenter.com/" className="btn-transparent">
+                Learn More{" "}
+                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
             </div>
           </div>
@@ -148,8 +155,9 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
-                Learn More <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
+              <a href="https://www.babycenter.com/" className="btn-transparent">
+                Learn More{" "}
+                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
             </div>
           </div>

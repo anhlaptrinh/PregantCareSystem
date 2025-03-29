@@ -1,10 +1,21 @@
+import React, { useState, useEffect } from "react";
 import { TextField } from "@mui/material";
-import React, { useState } from "react";
 
-export default function KnowDueDate() {
+export default function KnowDueDate({ onChange }) {
   const [knowDueDate, setKnowDueDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  // Gửi dữ liệu khi giá trị thay đổi
+  useEffect(() => {
+    if (onChange) {
+      onChange({ dueDate: knowDueDate });
+    }
+  }, [knowDueDate, onChange]);
+
+  const handleChange = (e) => {
+    setKnowDueDate(e.target.value);
+  };
 
   return (
     <>
@@ -15,9 +26,10 @@ export default function KnowDueDate() {
         <TextField
           type="date"
           value={knowDueDate}
-          onChange={(e) => setKnowDueDate(e.target.value)}
+          onChange={handleChange}
           fullWidth
           className="bg-white"
+          InputLabelProps={{ shrink: true }}
         />
       </div>
     </>

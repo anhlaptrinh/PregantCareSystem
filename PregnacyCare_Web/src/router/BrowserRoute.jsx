@@ -6,7 +6,6 @@ import HomePages from "../pages/HomePages";
 import HomeTemplate from "../modules/HomeTemplate";
 import OurExpert from "../pages/OurExpert";
 import ArticlePage from "../pages/ArticlePage";
-import QAForum from "../pages/QAForum";
 import ForumPostDetail from "../pages/QAForum/ForumPostDetail";
 
 // Các trang chỉ dành cho MEMBER
@@ -31,55 +30,68 @@ import ForumAdmin from "../pages/AdminPages/ForumAdmin";
 import UserManagement from "../pages/AdminPages/User";
 import ErrorPage from "../pages/ErrorPages";
 import AccountInfo from "../modules/HomeTemplate/Profile/AccountInfo";
-import FamilyInfo from "../modules/HomeTemplate/Profile/FamilyInfo";
 import ProfilePages from "../pages/HomePages/ProfilePages";
 import Home from "../modules/HomeTemplate/Community/Home";
+import LoginSignin from "../modules/HomeTemplate/LoginSignin";
+import ExpertDetail from "../pages/ArticlePage/ExpertDetail";
+import ArticleForm from "../modules/HomeTemplate/Profile/ArticleForm";
+import Verification from "../modules/HomeTemplate/Verification";
+import PaymentSuccess from "../pages/PaymentPage/PaymentSuccess";
+import PaymentFailure from "../pages/PaymentPage/PaymentFailure";
+import PackageManagement from "../pages/AdminPages/PackageManagement";
+import FetalGrowthPages from "../pages/FetalGrowthPages";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
+  { path: "/login", element: <LoginSignin /> },
   {
     element: <HomePages />,
     children: [
       { path: "/", element: <HomeTemplate /> },
       { path: "/ovulation", element: <Ovulation /> },
+      { path: "/fetal-growth", element: <FetalGrowthPages /> },
       { path: "/due-date", element: <DueDateCalculatorTemplate /> },
       {
         path: "/due-date/result",
         element: <DueDateCalculatorResultTemplate />,
       },
-      { path: "/community", element: <CommunityPages /> },
       { path: "/community/home", element: <Home /> },
       {
         path: "/community/post-detail/:postId",
         element: <ViewPostPages />,
       },
       { path: "/our-expert", element: <OurExpert /> },
+      { path: "/our-expert/expert-detail/:id", element: <ExpertDetail /> },
       {
-        path: "/our-expert/article/:articleSlug",
+        path: "/our-expert/article/:slug",
         element: <ArticlePage />,
       },
     ],
   },
+  { path: "/login", element: <LoginSignin /> },
+  { path: "/verification", element: <Verification /> },
 
-  // Các route chung cho MEMBER và EXPERT (ví dụ: trang chủ và các trang thông tin chung)
+  // Các route dành cho EXPERT
   {
     element: <ProtectedRoute allowedRoles={["EXPERT"]} />,
     children: [
       {
-        path: "/expert/forum/:id",
-        element: (
-          <MainLayout>
-            <ForumPostDetail />
-          </MainLayout>
-        ),
-      },
-      {
-        path: "/expert/forum",
-        element: (
-          <MainLayout>
-            <ForumAdmin />
-          </MainLayout>
-        ),
+        path: "/",
+        element: <HomePages />,
+        children: [
+          {
+            path: "/expert/forum",
+            element: <ForumAdmin />,
+          },
+          {
+            path: "/expert/forum/:id",
+            element: <ForumPostDetail />,
+          },
+          {
+            path: "/profile/article-form",
+            element: <ArticleForm />,
+          },
+        ],
       },
     ],
   },
@@ -93,12 +105,19 @@ const routes = [
         element: <HomePages />,
         children: [
           { path: "/profile", element: <ProfilePages /> },
+          { path: "/community", element: <CommunityPages /> },
           { path: "/community/group/:groupId", element: <ViewGroupPages /> },
           {
             path: "/community/group/create-post/:groupId",
             element: <CreatePostPages />,
           },
-          { path: "/payment", element: <PaymentPage /> },
+          { path: "/payment/:id", element: <PaymentPage /> },
+          { path: "/payment/success/:paymentId", element: <PaymentSuccess /> },
+          { path: "/payment/failure", element: <PaymentFailure /> },
+          {
+            path: "/appointment/fetus-growth-chart",
+            element: <FetusGrowthChart />,
+          },
         ],
       },
       {
@@ -114,14 +133,6 @@ const routes = [
         element: (
           <AppointmentManagement>
             <AppointmentCalendar />
-          </AppointmentManagement>
-        ),
-      },
-      {
-        path: "/appointment/fetus-growth-chart",
-        element: (
-          <AppointmentManagement>
-            <FetusGrowthChart />
           </AppointmentManagement>
         ),
       },
@@ -178,6 +189,14 @@ const routes = [
         element: (
           <MainLayout>
             <UserManagement />
+          </MainLayout>
+        ),
+      },
+      {
+        path: "/admin/package",
+        element: (
+          <MainLayout>
+            <PackageManagement />
           </MainLayout>
         ),
       },

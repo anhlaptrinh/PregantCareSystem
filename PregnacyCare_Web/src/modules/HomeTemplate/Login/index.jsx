@@ -3,12 +3,11 @@ import { Form, Input, Typography, message as Message } from "antd";
 import LoginBackground from "../../../assets/Login.png";
 import { useLogin } from "../../../apis/CallAPIUser";
 import { useNavigate } from "react-router-dom";
-import BackdropLoader from "../../../component/BackdropLoader";
 import Button from "@mui/material/Button";
 
 const { Title, Text } = Typography;
 
-export default function Login({ onClose }) {
+export default function Login() {
   // State
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -21,17 +20,17 @@ export default function Login({ onClose }) {
   const handleSubmit = () => {
     setLoading(true);
     useLogin(user.email, user.password)
-      .then(() => {
+      .then((res) => {
         const storedData = localStorage.getItem("USER_TOKEN");
-        if (storedData) {
-          Message.success("Login successful");
-          onClose();
+        if (storedData && res.code == 200) {
           navigate("/");
+          Message.success("Login successful");
         }
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
         Message.error("Login failed, please check your email or password ");
+        console.log("login", err.message);
         setLoading(false);
       });
   };
@@ -61,7 +60,7 @@ export default function Login({ onClose }) {
           <Text style={{ display: "block", marginBottom: "20px" }}>
             Enter your email to log in to your PregnancyCare account
           </Text>
-          <Form layout="vertical" onFinish={handleSubmit}>
+          <Form layout="vertical">
             <Form.Item
               name="email"
               rules={[

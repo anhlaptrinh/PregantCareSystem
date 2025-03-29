@@ -103,7 +103,6 @@ export default function EditFetusModal({
       }
     } catch (err) {
       console.error("Error deleting fetus or image:", err);
-      message.error("Error deleting fetus or image: " + err.message);
     }
   };
 

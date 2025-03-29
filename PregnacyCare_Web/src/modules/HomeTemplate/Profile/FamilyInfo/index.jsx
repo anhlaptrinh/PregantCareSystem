@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Typography,
   List,
@@ -9,28 +9,23 @@ import {
   IconButton,
   Button,
   Divider,
-  Container,
   Box,
 } from "@mui/material";
 import { Add, Edit, CalendarToday } from "@mui/icons-material";
-import PregnantAvatar from "../../../../assets/PregnantAvatar.jpg";
 import moment from "moment";
+import BackdropLoader from "../../../../component/BackdropLoader";
 import AddFetusModal from "./AddFetusModal";
 import EditFetusModal from "./EditFetusModal";
-import { useGetFetusList } from "../../../../apis/CallAPIFetus";
-import { ref, getDownloadURL } from "firebase/storage";
-import { storage } from "../../../../firebase/firebaseConfig";
-import BackdropLoader from "../../../../component/BackdropLoader";
+import { useFetchFetusList } from "../../../../hooks/FetusHooks/useFetchFetusList";
 
 export default function FamilyInfo() {
-  // Lưu danh sách fetus trong state để có thể cập nhật khi cần
-  const [fetusList, setFetusList] = useState([]);
+  // Sử dụng hook đã tạo
+  const { data: fetusList = [], isLoading, refetch } = useFetchFetusList();
 
   // State để quản lý modal Add và Edit
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedFetus, setSelectedFetus] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   // Khi bấm nút edit, lưu fetus được chọn vào state và mở modal edit
   const handleEditClick = (fetus) => {
@@ -40,46 +35,9 @@ export default function FamilyInfo() {
     }
   };
 
-  const fetchFetusList = async () => {
-    setLoading(true);
-    try {
-      const res = await useGetFetusList();
-      if (res.code === 200 && res.data) {
-        const fetusWithImages = await Promise.all(
-          res.data.map(async (fetus) => {
-            try {
-              const imageRef = ref(
-                storage,
-                `pregnancyCareImages/fetus/${fetus.idFetus}`
-              );
-              const url = await getDownloadURL(imageRef);
-              return { ...fetus, imageUrl: url };
-            } catch (error) {
-              console.error(
-                "Error retrieving image for fetus id",
-                fetus.idFetus,
-                error
-              );
-              // Nếu không lấy được ảnh, trả về ảnh mặc định
-              return { ...fetus, imageUrl: PregnantAvatar };
-            }
-          })
-        );
-        setFetusList(fetusWithImages);
-      }
-    } catch (err) {
-      console.error("Error fetching fetus list:", err);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchFetusList();
-  }, []);
-
   return (
     <Box>
-      <BackdropLoader open={loading} />
+      <BackdropLoader open={isLoading} />
       {/* Title */}
       <Typography variant="h3" fontWeight="bold" gutterBottom>
         My Family
@@ -97,7 +55,7 @@ export default function FamilyInfo() {
 
       <List>
         {fetusList.map((fetus) => (
-          <ListItem key={fetus.id} sx={{ width: "100%" }}>
+          <ListItem key={fetus.idFetus} sx={{ width: "100%" }}>
             {/* Avatar */}
             <ListItemAvatar>
               <Avatar sx={{ width: 60, height: 60, mr: 2 }}>
@@ -133,7 +91,7 @@ export default function FamilyInfo() {
         ))}
       </List>
 
-      {/* Modal Edit: render duy nhất 1 modal chỉnh sửa nếu có fetus được chọn */}
+      {/* Modal Edit */}
       {selectedFetus && (
         <EditFetusModal
           visible={visibleEdit}
@@ -142,7 +100,7 @@ export default function FamilyInfo() {
             setSelectedFetus(null);
           }}
           fetus={selectedFetus}
-          refreshFetusList={fetchFetusList}
+          refreshFetusList={refetch}
         />
       )}
 
@@ -157,10 +115,10 @@ export default function FamilyInfo() {
       <AddFetusModal
         visible={visibleAdd}
         onClose={() => setVisibleAdd(false)}
-        refreshFetusList={fetchFetusList}
+        refreshFetusList={refetch}
       />
 
-      {/* Thêm thông tin bổ sung để làm trang dài ra */}
+      {/* Thông tin bổ sung */}
       <Box sx={{ mt: 8, mb: 8 }}>
         <Typography variant="h4" gutterBottom>
           Additional Information

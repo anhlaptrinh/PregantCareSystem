@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Form, Input, Typography, message as Message } from "antd";
 import SigninBackground from "../../../assets/Signin.jpg";
-import { useRegister } from "../../../apis/CallAPIUser";
 import { Button } from "@mui/material";
+import axios from "axios";
+import { useVerification } from "../../../apis/CallAPIUser";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 export default function Signin({ setActiveTab }) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     email: "",
@@ -14,19 +17,44 @@ export default function Signin({ setActiveTab }) {
     fullname: "",
   });
 
+  // // Kiểm tra email có thật hay không
+  const handleEmail = async () => {
+    const API_KEY = "qa4efb9adawc50oj9vwc";
+    const BASE_URL = `https://api.mailscan.cc/v1/verify?email=${user.email}&api_key=${API_KEY}`;
+
+    try {
+      const res = await axios.get(BASE_URL);
+      if (res.data.isValid === "No") {
+        Message.error("Invalid email address or domain");
+        return false;
+      } else return true;
+    } catch (error) {
+      console.error("Error validating email:", error);
+      setLoading(false);
+    }
+  };
+
   // Xử lý đăng ký
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    useRegister(user.email, user.password, user.fullname)
-      .then((res) => {
-        Message.success("Sign in successfully");
-        setActiveTab(0);
-        setLoading(false);
-      })
-      .catch((error) => {
-        Message.error("Failed sign in" + error.message);
-        setLoading(false);
-      });
+
+    // // Chờ kết quả kiểm tra email
+    const isEmailValid = await handleEmail();
+    if (!isEmailValid) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await useVerification(user.email);
+      if (res.code == 200) {
+        navigate("/verification", { state: { newUser: user } });
+        Message.success("Please check your email!");
+      }
+    } catch (error) {
+      console.log("Failed sign in: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +68,7 @@ export default function Signin({ setActiveTab }) {
         <Text style={{ display: "block", marginBottom: "20px" }}>
           Enter your email to become a new PregnancyCare member
         </Text>
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form layout="vertical">
           <Form.Item
             name="fullname"
             rules={[{ required: true, message: "Please enter full name!" }]}
@@ -80,15 +108,14 @@ export default function Signin({ setActiveTab }) {
           <Form.Item>
             <Button
               variant="contained"
-              type="submit"
               disabled={loading}
-              onClick={handleSubmit}
+              type="submit"
+              onClick={() => handleSubmit()}
               sx={{
                 width: "100%",
                 backgroundColor: "#615EFC",
                 borderColor: "#615EFC",
                 fontSize: 12,
-
                 py: 1,
                 transition: "background-color 0.3s, border-color 0.3s",
                 "&:hover": {
@@ -97,7 +124,7 @@ export default function Signin({ setActiveTab }) {
                 },
               }}
             >
-              {loading ? "Logging in..." : "Sign in"}
+              {loading ? "Signing in..." : "Sign in"}
             </Button>
           </Form.Item>
         </Form>

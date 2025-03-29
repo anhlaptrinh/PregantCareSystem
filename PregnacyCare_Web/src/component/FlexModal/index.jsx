@@ -26,7 +26,7 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
       };
 
       onSubmit(formattedValues);
-      console.log("date type: ", values.dateIssue);
+      console.log("date type: ", values.dateRemind);
       form.resetFields();
       onClose();
     } catch (error) {
@@ -49,22 +49,28 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
       ]}
     >
       <Form form={form} layout="vertical" preserve={false}>
-        {fields.map(({ name, label, type, value, options }) => (
+        {fields.map(({ name, label, type, value, options, dateDisabled }) => (
           <Form.Item
             key={name}
             name={name}
-            label={type === "hidden" ? undefined : label} // Ẩn label nếu là hidden
+            label={type === "hidden" ? undefined : label}
             initialValue={value}
             rules={[{ required: true, message: `${label} is required!` }]}
-            hidden={type === "hidden"} // Ẩn nhưng vẫn giữ giá trị
+            hidden={type === "hidden"}
           >
             {type === "text" ? (
               <Input
                 placeholder={`Enter ${label}`}
                 disabled={["id", "appointmentId"].includes(name)}
               />
+            ) : type === "number" ? (
+              <Input type="number" placeholder={`Enter ${label}`} />
             ) : type === "date" ? (
-              <DatePicker showTime style={{ width: "100%" }} />
+              <DatePicker
+                disabled={dateDisabled}
+                showTime
+                style={{ width: "100%" }}
+              />
             ) : type === "select" ? (
               <Select placeholder={`Select ${label}`}>
                 {options?.map((option) => (

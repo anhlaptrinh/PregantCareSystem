@@ -26,6 +26,7 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
     image: null,
   });
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   // Disable dates before today or more than 280 days from today.
   const disabledDate = (current) => {
@@ -36,6 +37,7 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
 
   // Handle file selection and upload to Firebase Storage
   const handleUpload = async (id) => {
+    console.log(id);
     const file = fetus.image;
     const storageRef = ref(storage, `pregnancyCareImages/fetus/${id}`);
     try {
@@ -47,11 +49,13 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
 
   // Handle form submission sau khi các trường đã được validate thành công
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const res = await useCreateFetus(fetus);
+      console.log(res.data);
       if (res.code === 201) {
         if (fetus.image) {
-          await handleUpload(res.data.idFetus);
+          await handleUpload(res.data.id);
         }
         setFetus((prev) => ({
           ...prev,
@@ -63,9 +67,11 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
         message.success("Fetus created successfully");
         await refreshFetusList();
         onClose();
+        setLoading(false);
       }
     } catch (error) {
       message.error("Error creating fetus: " + error.message);
+      setLoading(false);
     }
   };
 
@@ -191,6 +197,8 @@ export default function AddFetusModal({ visible, onClose, refreshFetusList }) {
             <div className="row justify-content-md-center">
               <div className="col-md-auto">
                 <Button
+                  loading={loading}
+                  disabled={loading}
                   type="primary"
                   htmlType="submit"
                   className="rts-btn btn-primary"

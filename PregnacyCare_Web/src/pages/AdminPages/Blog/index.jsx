@@ -81,7 +81,7 @@ export default function BlogManagement() {
   } = useQuery({
     queryKey: ["blogs"],
     queryFn: fetchAllBlogs,
-    staleTime: 1000 * 60 * 5, // dữ liệu fresh trong 5 phút
+    staleTime: 1000 * 5, // dữ liệu fresh trong 5 phút
   });
 
   // Mutation cho xóa nhiều blog

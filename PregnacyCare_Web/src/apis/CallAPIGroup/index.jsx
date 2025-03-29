@@ -67,10 +67,9 @@ export const useDeleteGroup = (id) => {
  * @param {string} email - Email của người dùng cần đăng ký.
  * @returns {Promise} - Promise trả về kết quả từ API.
  */
-export const useRegisterUserToGroup = (groupId, email) => {
+export const useRegisterUserToGroup = (groupId) => {
   return APIClient.post({
     url: `/api/groups/register/${groupId}`,
-    params: { email },
   });
 };
 

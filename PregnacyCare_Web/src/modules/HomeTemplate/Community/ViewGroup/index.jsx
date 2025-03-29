@@ -1,14 +1,28 @@
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import avatar from "../../../../assets/PregnantAvatar.jpg";
 import { useNavigate } from "react-router-dom";
+import { useRegisterUserToGroup } from "../../../../apis/CallAPIGroup";
+import { message } from "antd";
 
-export default function ViewGroup({ group }) {
+export default function ViewGroup({ user, group, setFresh }) {
   const navigate = useNavigate();
 
   // Direct to create post pages
   const onHandlePost = () => {
     navigate(`/community/group/create-post/${group?.id}`);
+  };
+
+  const onHandleJoin = async () => {
+    try {
+      const res = await useRegisterUserToGroup(group.id);
+      if (res.code == 200) {
+        message.success("Joined group successfully");
+        setFresh((prev) => prev + 1);
+      }
+    } catch (e) {
+      console.error("Error joining group:", e.message);
+    }
   };
 
   return (
@@ -20,9 +34,9 @@ export default function ViewGroup({ group }) {
       marginTop={5}
       width="100%"
     >
-      {/* Avatar of grou[] */}
+      {/* Avatar of group: sử dụng imageUrl nếu có, ngược lại sử dụng avatar mặc định */}
       <img
-        src={avatar}
+        src={group?.imageUrl || avatar}
         alt="Avatar of group"
         style={{ width: 100, borderRadius: 10, marginBottom: 20 }}
       />
@@ -32,11 +46,11 @@ export default function ViewGroup({ group }) {
         {group?.name}
       </Typography>
 
-      {/* Members and posts and info */}
+      {/* Members, posts and owner info */}
       <div className="row justify-content-md-center mb-5">
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group?.users.length}
+            {group?.users?.length || 0}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             members
@@ -44,7 +58,7 @@ export default function ViewGroup({ group }) {
         </div>
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group?.blogs.length}
+            {group?.blogs?.length || 0}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             posts
@@ -52,7 +66,7 @@ export default function ViewGroup({ group }) {
         </div>
         <div className="col-md-auto">
           <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {group?.owner.fullName}
+            {group?.owner?.fullName || "Unknown"}
           </Typography>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             owner
@@ -61,9 +75,15 @@ export default function ViewGroup({ group }) {
       </div>
 
       {/* Post button */}
-      <button className="rts-btn btn-primary" onClick={() => onHandlePost()}>
-        Post
-      </button>
+      {group.users.some((u) => u.email === user.email) ? (
+        <button className="rts-btn btn-primary" onClick={onHandlePost}>
+          Post
+        </button>
+      ) : (
+        <button className="rts-btn btn-primary" onClick={onHandleJoin}>
+          Join
+        </button>
+      )}
     </Box>
   );
 }

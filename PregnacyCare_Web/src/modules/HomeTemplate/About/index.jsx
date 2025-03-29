@@ -1,5 +1,5 @@
-import pic1 from '../../../assets/images/about/01.jpg'
-import arrowup from '../../../assets/images/banner/icons/arrow--up-right.svg'
+import pic1 from "../../../assets/images/about/01.jpg";
+import arrowup from "../../../assets/images/banner/icons/arrow--up-right.svg";
 export default function Aboutus() {
   return (
     <div>
@@ -47,12 +47,11 @@ export default function Aboutus() {
                   data-wow-delay=".8s"
                   data-wow-duration=".8s"
                 >
-                  <a href="about.html" className="rts-btn btn-primary">
-                    About Us{" "}
-                    <img
-                      src={arrowup}
-                      alt
-                    />
+                  <a
+                    href="https://www.babycenter.com/about-babycenter/company-information/about"
+                    className="rts-btn btn-primary"
+                  >
+                    About Us <img src={arrowup} alt />
                   </a>
                 </div>
               </div>

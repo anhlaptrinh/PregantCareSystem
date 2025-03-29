@@ -3,22 +3,23 @@ import GrowthChart from "../../../modules/FetusTrackerTemplate/GrowthChart";
 import NotificationFetus from "../../../modules/FetusTrackerTemplate/Notification";
 
 import React, { useEffect, useState } from "react";
-import { Select } from "antd";
-import {  useGetMyFetusList } from "../../../apis/CallAPIFetus";
+import { message, Select } from "antd";
+import { useGetMyFetusList } from "../../../apis/CallAPIFetus";
 import { useFetusStore } from "../../../zustand/fetusStore";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
 export default function FetusGrowthChart() {
-  const { selectedFetus } = useFetusStore(); 
+  const { selectedFetus } = useFetusStore();
   return (
     <div>
-      <div className="container mt-5">
+      <div className="container mt-5 mb-5">
         <div className="row">
           <div className="col" style={{ height: "100vh" }}>
-            <DropdownComponent  />
-            <GrowthChart  />
-            <AdviceForm  />
+            <DropdownComponent />
+            <GrowthChart />
+            <AdviceForm selectedFetus={selectedFetus} />
           </div>
           <div
             className="col"
@@ -37,20 +38,29 @@ export default function FetusGrowthChart() {
 }
 
 const DropdownComponent = () => {
-  const { selectedFetus,setSelectedFetus, fetusList, setFetusList } = useFetusStore();
+  const { selectedFetus, setSelectedFetus, fetusList, setFetusList } =
+    useFetusStore();
   const [defaultFetus, setDefaultFetus] = useState(null);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await useGetMyFetusList(); // Gọi API
-        console.log("API Response:", response);
+
+        if (response.data.length <= 0) {
+          navigate("/profile");
+          message.error("Please create fetus in my family info!");
+          return null;
+        }
+
         const today = new Date(); // Lấy ngày hiện tại
 
         const formattedFetusList = response.data?.map((fetus) => {
           const dueDate = new Date(fetus.dueDate);
-          const weeksLeft = Math.floor((dueDate - today) / (7 * 24 * 60 * 60 * 1000));
+          const weeksLeft = Math.floor(
+            (dueDate - today) / (7 * 24 * 60 * 60 * 1000)
+          );
           const pregnancyWeek = 40 - weeksLeft; // Tính tuần thai nhi
 
           return {
@@ -62,27 +72,28 @@ const DropdownComponent = () => {
 
         setFetusList(formattedFetusList);
         if (formattedFetusList.length > 0) {
-          setSelectedFetus(formattedFetusList[0]); 
+          setSelectedFetus(formattedFetusList[0]);
           setDefaultFetus(formattedFetusList[0].id);
         }
       } catch (error) {
         console.error("Error fetching fetus list:", error);
       }
-      
     };
 
     fetchData();
   }, [setFetusList, setSelectedFetus]);
 
   return (
-    <div style={{ display: "flex", gap: "20px", padding: "10px", width: "100%" }}>
+    <div
+      style={{ display: "flex", gap: "20px", padding: "10px", width: "100%" }}
+    >
       <Select
-       value={defaultFetus}
-       onChange={(value) => {
-        const selected = fetusList.find((f) => f.id === value);
-        setSelectedFetus(selected);
-        setDefaultFetus(value);
-      }}
+        value={defaultFetus}
+        onChange={(value) => {
+          const selected = fetusList.find((f) => f.id === value);
+          setSelectedFetus(selected);
+          setDefaultFetus(value);
+        }}
         style={{ width: "100%" }}
         placeholder="Select Fetus"
       >

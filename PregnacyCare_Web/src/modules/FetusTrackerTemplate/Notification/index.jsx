@@ -20,15 +20,16 @@ import FlexModal from "../../../component/FlexModal";
 
 const { Title, Text } = Typography;
 const FetusInput = ({ selectedFetus }) => {
-  
   const [form] = Form.useForm();
   const { mutate: createFetusRecord } = useCreateFetusRecord();
 
-   const handleCalculate = () => {
+  const handleCalculate = () => {
     form.validateFields().then((values) => {
       const { weight, height, dateRecord } = values;
       const localDate = new Date(dateRecord);
-      localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+      localDate.setMinutes(
+        localDate.getMinutes() - localDate.getTimezoneOffset()
+      );
       // Chuyển đổi giá trị sang định dạng phù hợp với BE
       const payload = {
         id: 0,
@@ -36,14 +37,12 @@ const FetusInput = ({ selectedFetus }) => {
         height,
         dateRecord: localDate.toISOString(), // Chuyển đổi sang LocalDateTime
       };
-
       if (selectedFetus?.id) {
         //    console.log(selectedFetus.id);
         createFetusRecord({ id: selectedFetus.id, data: payload });
       }
     });
   };
-  
 
   useEffect(() => {
     // Thiết lập giá trị mặc định cho dateRecord là ngày hiện tại
@@ -94,9 +93,8 @@ const FetusInput = ({ selectedFetus }) => {
                 />
               </Col>
               <Col span={8}>
-                <Select defaultValue="lb" style={{ width: "100%", height: 40 }}>
-                  <Select.Option value="lb">lb</Select.Option>
-                  <Select.Option value="kg">kg</Select.Option>
+                <Select defaultValue="g" style={{ width: "100%", height: 40 }}>
+                  <Select.Option value="g">g</Select.Option>
                 </Select>
               </Col>
             </Row>
@@ -124,11 +122,7 @@ const FetusInput = ({ selectedFetus }) => {
                 />
               </Col>
               <Col span={8}>
-                <Select
-                  defaultValue="inch"
-                  style={{ width: "100%", height: 40 }}
-                >
-                  <Select.Option value="inch">inch</Select.Option>
+                <Select defaultValue="cm" style={{ width: "100%", height: 40 }}>
                   <Select.Option value="cm">cm</Select.Option>
                 </Select>
               </Col>
@@ -158,8 +152,7 @@ const FetusInput = ({ selectedFetus }) => {
           </Button>
         </Form>
       </div>
-     
-    
+
       {/* Ảnh ở góc dưới */}
       <Image
         src="path/to/bottom-image.png"

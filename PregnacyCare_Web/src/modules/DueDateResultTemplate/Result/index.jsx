@@ -1,8 +1,5 @@
 import React from "react";
-import avatarImage from "../../../assets/avatar.jpg";
-import DueDateCalculatorImage from "../../../assets/DueDateCalculator.jpg";
-import LightImage from "../../../assets/light.jpg";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -12,25 +9,47 @@ import {
   Avatar,
 } from "@mui/material";
 import PregnancyTimeline from "../PregnancyTimeline";
+import avatarImage from "../../../assets/avatar.jpg";
+import DueDateCalculatorImage from "../../../assets/DueDateCalculator.jpg";
+import LightImage from "../../../assets/light.jpg";
+import moment from "moment";
+import TimeLine from "../TimeLine";
 
 export default function Result() {
+  const location = useLocation();
+  const { result } = location.state || {};
+
+  if (!result) {
+    return (
+      <Box mt={5} textAlign="center">
+        <Typography variant="h5">
+          No result found. Please recalculate your due date.
+        </Typography>
+        <Button component={Link} to="/due-date" color="primary" sx={{ mt: 2 }}>
+          Recalculate your due date
+        </Button>
+      </Box>
+    );
+  }
+
+  const { dueDate, timeline } = result;
+  const formattedDueDate = dueDate.suggestDate;
+
   return (
-    <Box mt={5}>
+    <Box mt={5} textAlign="center">
       <Typography variant="h2" fontWeight="bold" gutterBottom>
         Your baby's due date is
       </Typography>
 
-      <Box display="flex" alignItems="center" mb={3}>
-        <div className="row">
-          <div className="col-2">
-            <img className="w-15" src={avatarImage} alt="Written by" />
-          </div>
-          <div className="col">
-            <Typography variant="subtile-1">
-              Written by Pregnancy Care Staff | Dec 12, 2024
-            </Typography>
-          </div>
-        </div>
+      <Box display="flex" alignItems="center" justifyContent="center" mb={3}>
+        <Avatar
+          src={avatarImage}
+          alt="Written by"
+          sx={{ width: 60, height: 60, mr: 2 }}
+        />
+        <Typography variant="subtitle1">
+          Written by Pregnancy Care Staff | Dec 12, 2024
+        </Typography>
       </Box>
 
       <Card sx={{ bgcolor: "#E3F2FD", p: 3, borderRadius: 2 }}>
@@ -43,47 +62,41 @@ export default function Result() {
             />
           </Box>
 
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            textAlign="center"
-            gutterBottom
-          >
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
             Congrats! Your due date is
           </Typography>
 
           <Typography
             variant="h3"
             fontWeight="bold"
-            textAlign="center"
             color="primary"
             gutterBottom
           >
-            November 24, 2025
+            {moment(formattedDueDate).format("MMMM D, YYYY")}
           </Typography>
 
           <Box display="flex" justifyContent="center" mb={2}>
             <img src={LightImage} alt="Light" width={30} />
           </Box>
 
-          <Typography variant="h5" textAlign="center">
+          <Typography variant="h5">
             Download our free app to track your pregnancy and baby's growth!
           </Typography>
         </CardContent>
       </Card>
 
-      <Box textAlign="center" my={2}>
+      <Box my={2}>
         <Button
           component={Link}
-          to="/dueDate"
+          to="/due-date"
           color="primary"
-          className="fs-5 text-decoration-underline"
+          sx={{ fontSize: "1rem", textDecoration: "underline" }}
         >
           Recalculate your due date
         </Button>
       </Box>
 
-      <PregnancyTimeline />
+      <TimeLine data={timeline} />
     </Box>
   );
 }

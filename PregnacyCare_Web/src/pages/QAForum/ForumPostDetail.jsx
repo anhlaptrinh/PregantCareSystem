@@ -68,6 +68,22 @@ export default function ForumPostDetail() {
         setLocalAnswer(newAnswer);
         setNewAnswer("");
         message.success("Your answer has been posted!");
+
+        // Cập nhật status của advice trong cache React Query
+        queryClient.setQueryData(["advices"], (oldAdvices) => {
+          if (!oldAdvices) return [];
+          return oldAdvices.map((advice) => {
+            if (advice.id.toString() === id) {
+              return {
+                ...advice,
+                status: true, // Cập nhật status thành true
+                answer: newAnswer, // Cập nhật câu trả lời
+                answerDate: new Date().toISOString(), // Cập nhật thời gian trả lời
+              };
+            }
+            return advice;
+          });
+        });
       }
     } catch (e) {
       console.error(e.message);
@@ -83,13 +99,8 @@ export default function ForumPostDetail() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="container py-4"
+      className="container-fluid py-4 pe-5"
     >
-      {/* Navbar: không hiển thị thương hiệu hay search */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <div className="container">{/* Empty navbar */}</div>
-      </nav>
-
       <div className="d-flex">
         {/* Sidebar: hiển thị danh sách advices từ cache */}
         <motion.div
@@ -99,7 +110,7 @@ export default function ForumPostDetail() {
           className="col-12 col-md-3"
           style={{ marginRight: "4px" }}
         >
-          <Card className="border-0">
+          <Card className="border-0 col-10">
             <List
               itemLayout="horizontal"
               dataSource={cachedAdvices}
@@ -184,12 +195,14 @@ export default function ForumPostDetail() {
               placeholder="Write your answer here..."
               value={newAnswer}
               onChange={(e) => setNewAnswer(e.target.value)}
+              disabled={adviceDetail.status}
             />
             <Button
               type="primary"
               className="mt-2"
               style={{ backgroundColor: "#615efc" }}
               onClick={handlePostAnswer}
+              disabled={adviceDetail.status}
             >
               Post Answer
             </Button>

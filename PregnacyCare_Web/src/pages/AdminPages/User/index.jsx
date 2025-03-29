@@ -33,34 +33,31 @@ export default function UserManagement() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleSubmit = async (values) => {
-    
-
-    if (modalMode  === "update") {
+    if (modalMode === "update") {
       const formattedValues = {
         ...values,
-        
       };
       useEditeUser(formattedValues)
-            .then(() => {
-              message.success("Updated user successfully");
-              refreshData();
-            })
-            .catch((error) => {
-              console.error("Update error:", error);
-            });
-    } else if (modalMode  === "create") {
+        .then(() => {
+          message.success("Updated user successfully");
+          refreshData();
+        })
+        .catch((error) => {
+          console.error("Update error:", error);
+        });
+    } else if (modalMode === "create") {
       const formattedValues = {
         ...values,
       };
       useAddUser(formattedValues)
-            .then((res) => {
-              message.success("Sign in successfully");
-              refreshData();
-            })
-            .catch((error) => {
-              message.error("Failed sign in" + error.message);
-              setLoading(false);
-            });
+        .then((res) => {
+          message.success("Sign in successfully");
+          refreshData();
+        })
+        .catch((error) => {
+          message.error("Failed sign in" + error.message);
+          setLoading(false);
+        });
     }
   };
   const refreshData = () => {
@@ -68,40 +65,52 @@ export default function UserManagement() {
   };
   const handleOpenModal = (event, mode) => {
     setModalMode(mode);
-    setModalTitle(
-      mode === "update" ? "Edit User" : "Create User"
-    );
+    setModalTitle(mode === "update" ? "Edit User" : "Create User");
     setModalFields(
       mode === "update"
         ? [
             { name: "id", label: "id", type: "hidden", value: event.id },
-            { name: "status", label: "status", type: "select",value: event.status, options: [
+            {
+              name: "status",
+              label: "status",
+              type: "select",
+              value: event.status,
+              options: [
                 { label: "Active", value: true },
-                { label: "Inactive", value: false },] },
-            { name: "role", label: "Role", type: "select", value: event.roles, options: [
+                { label: "Inactive", value: false },
+              ],
+            },
+            {
+              name: "role",
+              label: "Role",
+              type: "select",
+              value: event.roles,
+              options: [
                 { label: "Admin", value: "ADMIN" },
                 { label: "Expert", value: "EXPERT" },
-                { label: "Member", value: "MEMBER" }
-              ]
-            }
-            
+                { label: "Member", value: "MEMBER" },
+              ],
+            },
           ]
         : [
             {
               name: "fullName",
               label: "Username",
               type: "text",
-             
             },
             { name: "email", label: "Email", type: "text" },
             { name: "password", label: "Password", type: "text" },
-            { name: "role", label: "Role", type: "select", value: "member", options: [
+            {
+              name: "role",
+              label: "Role",
+              type: "select",
+              value: "member",
+              options: [
                 { label: "Admin", value: "ADMIN" },
                 { label: "Expert", value: "EXPERT" },
-                { label: "Member", value: "MEMBER" }
-              ]
+                { label: "Member", value: "MEMBER" },
+              ],
             },
-
           ]
     );
 
@@ -124,8 +133,6 @@ export default function UserManagement() {
 
     fetchUsers();
   }, [refreshTrigger]);
-  
-  
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: 50 },
@@ -184,9 +191,9 @@ export default function UserManagement() {
             type="primary"
             size="large"
             onClick={(e) => {
-                e.stopPropagation();
-                handleOpenModal({},"create");
-              }}
+              e.stopPropagation();
+              handleOpenModal({}, "create");
+            }}
           >
             Add User
           </Button>
@@ -209,13 +216,12 @@ export default function UserManagement() {
           bordered
         />
         <FlexModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSubmit={handleSubmit}
-        fields={modalFields}
-        title={modalTitle}
-        
-      />
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSubmit={handleSubmit}
+          fields={modalFields}
+          title={modalTitle}
+        />
       </Card>
     </div>
   );

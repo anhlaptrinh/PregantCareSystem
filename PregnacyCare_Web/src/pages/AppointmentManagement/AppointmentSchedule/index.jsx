@@ -16,7 +16,12 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import { useFetchAppointment } from "../../../hooks/AppointmentHooks/useFetchAppointment";
 import { useEffect, useState } from "react";
 import scheduleApi from "../../../apis/CallAPIAppointment/ScheduleAPI";
-import { DeleteOutline, EditOutlined, LocalDining, Mail } from "@mui/icons-material";
+import {
+  DeleteOutline,
+  EditOutlined,
+  LocalDining,
+  Mail,
+} from "@mui/icons-material";
 import { useUpdateSchedule } from "../../../hooks/ScheduleHooks/useUpdateSchedule";
 import FlexModal from "../../../component/FlexModal";
 import dayjs from "dayjs";
@@ -30,7 +35,7 @@ const AppointmentSchedule = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalFields, setModalFields] = useState([]);
-  const {mutate: deleteSchedule} = useDeleteSchedule();
+  const { mutate: deleteSchedule } = useDeleteSchedule();
   const { mutate: updateSchedule } = useUpdateSchedule();
   const monthNames = [
     "January",
@@ -49,48 +54,54 @@ const AppointmentSchedule = () => {
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-useEffect(() => {
-  const fetchAllSchedules = async () => {
-    if (!appointments) return;
+  useEffect(() => {
+    const fetchAllSchedules = async () => {
+      if (!appointments) return;
 
-    const tempGroupedSchedules = {};
+      const tempGroupedSchedules = {};
 
-    await Promise.all(
-      appointments.map(async (appointment) => {
-        try {
-          const response = await scheduleApi.getScheduleById(appointment.id);
-          if (response?.data) {
-            response.data.forEach((schedule) => {
-              const scheduleDate = new Date(schedule.dateRemind);
-              const key = `${scheduleDate.getFullYear()}-${scheduleDate.getMonth()}`;
+      await Promise.all(
+        appointments.map(async (appointment) => {
+          try {
+            const response = await scheduleApi.getScheduleById(appointment.id);
+            if (response?.data) {
+              response.data.forEach((schedule) => {
+                const scheduleDate = new Date(schedule.dateRemind);
+                const key = `${scheduleDate.getFullYear()}-${scheduleDate.getMonth()}`;
 
-              if (!tempGroupedSchedules[key]) {
-                tempGroupedSchedules[key] = [];
-              }
-              tempGroupedSchedules[key].push(schedule);
-            });
+                if (!tempGroupedSchedules[key]) {
+                  tempGroupedSchedules[key] = [];
+                }
+                tempGroupedSchedules[key].push(schedule);
+              });
+            }
+          } catch (err) {
+            console.error("Error fetching schedule for:", appointment.id);
           }
-        } catch (err) {
-          console.error("Error fetching schedule for:", appointment.id);
-        }
-      })
-    );
+        })
+      );
 
-    setGroupedSchedules(tempGroupedSchedules);
+      setGroupedSchedules(tempGroupedSchedules);
+    };
+
+    fetchAllSchedules();
+  }, [appointments, refreshTrigger]); // Thêm refreshTrigger để theo dõi cập nhật
+
+  // Hàm gọi lại API sau khi cập nhật dữ liệu
+  const refreshData = () => {
+    setRefreshTrigger((prev) => prev + 1);
   };
 
-  fetchAllSchedules();
-}, [appointments, refreshTrigger]); // Thêm refreshTrigger để theo dõi cập nhật
-
-// Hàm gọi lại API sau khi cập nhật dữ liệu
-const refreshData = () => {
-  setRefreshTrigger((prev) => prev + 1);
-};
-
-  if (isLoading) return <div><LocalDining/></div>;
+  if (isLoading)
+    return (
+      <div>
+        <LocalDining />
+      </div>
+    );
   if (error) return <div>Error loading...</div>;
+
   const handleSubmit = async (values) => {
-    const localDate = new Date(values.dateIssue);
+    const localDate = new Date(values.dateRemind);
     localDate.setMinutes(
       localDate.getMinutes() - localDate.getTimezoneOffset()
     ); // Giữ nguyên ngày theo local time
@@ -99,25 +110,42 @@ const refreshData = () => {
       ...values,
       dateRemind: localDate.toISOString(), // Giữ nguyên ngày đúng với local time
     };
+
+    console.log("dateRemind", formattedValues.dateRemind);
+
     await updateSchedule(formattedValues, {
       onSuccess: () => {
         refreshData();
-      }});
+      },
+    });
   };
-const handleDelete = async (id) => {
-  await deleteSchedule(id, {
-    onSuccess: () => {
-      refreshData();
-    }});
-}
+
+  const handleDelete = async (id) => {
+    await deleteSchedule(id, {
+      onSuccess: () => {
+        refreshData();
+      },
+    });
+  };
+
   const handleOpenModal = (schedule) => {
     setModalTitle("Update Schedule");
     setModalFields([
-      { name: "id", label: "id", type: "hidden",value: schedule.id },
-      { name: "appointmentId", label: "apponintmentId", type:"hidden", value: schedule.appointmentId },
-      { name: "notify", label: "notify", type: "text",value: schedule.notify },
-      { name: "type", label: "type", type: "text",value: schedule.type },
-      { name: "dateRemind", label: "Date Remind", type: "date",value: dayjs(schedule.dateRemind) },
+      { name: "id", label: "id", type: "hidden", value: schedule.id },
+      {
+        name: "appointmentId",
+        label: "apponintmentId",
+        type: "hidden",
+        value: schedule.appointmentId,
+      },
+      { name: "notify", label: "notify", type: "text", value: schedule.notify },
+      { name: "type", label: "type", type: "text", value: schedule.type },
+      {
+        name: "dateRemind",
+        label: "Date Remind",
+        type: "date",
+        value: dayjs(schedule.dateRemind),
+      },
     ]);
     setModalVisible(true);
   };
@@ -175,7 +203,7 @@ const handleDelete = async (id) => {
             const [year, month] = key.split("-");
             const monthIndex = parseInt(month, 10);
             const schedules = groupedSchedules[key];
-           
+
             return (
               <div key={key}>
                 <Space
@@ -192,8 +220,7 @@ const handleDelete = async (id) => {
                 </Space>
 
                 <Row gutter={[16, 16]}>
-                  {schedules
-                  .map((schedule) => (
+                  {schedules.map((schedule) => (
                     <Col span={8} key={schedule.id}>
                       <Card
                         bordered={false}
@@ -241,7 +268,6 @@ const handleDelete = async (id) => {
                                 Delete
                               </Button>
                             </Popconfirm>
-                           
                           </Space>
                         </Space>
                       </Card>

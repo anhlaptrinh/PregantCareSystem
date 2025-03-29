@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, message } from "antd";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,6 +14,7 @@ import "./index.css";
 import DrawerMenu from "../../component/DrawerMenu";
 import FlexModal from "../../component/FlexModal";
 import { useCreateAppointment } from "../../hooks/AppointmentHooks/useCreateAppointment";
+import dayjs from "dayjs";
 
 const menuAppointment = () => [
   {
@@ -36,11 +36,6 @@ const menuAppointment = () => [
     icon: <EditCalendarOutlinedIcon />,
     label: "Schedule",
     key: "/appointment/schedule",
-  },
-  {
-    icon: <TrendingUpIcon />,
-    label: "Growth Chart",
-    key: "/appointment/fetus-growth-chart",
   },
 ];
 
@@ -70,24 +65,30 @@ const AppointmentManagement = ({ children }) => {
   const [modalFields, setModalFields] = useState([]);
   const { mutate: createAppointment } = useCreateAppointment();
   const handleSubmit = async (values) => {
+    const selectedDate = dayjs(values.dateIssue);
+    if (selectedDate.isBefore(dayjs())) {
+      message.error("Date can not in a past!");
+      return;
+    }
     const localDate = new Date(values.dateIssue);
-  localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset()); // Giữ nguyên ngày theo local time
+    localDate.setMinutes(
+      localDate.getMinutes() - localDate.getTimezoneOffset()
+    ); // Giữ nguyên ngày theo local time
 
-  const formattedValues = {
-    ...values,
-    dateIssue: localDate.toISOString(), // Giữ nguyên ngày đúng với local time
-  };
-    
+    const formattedValues = {
+      ...values,
+      dateIssue: localDate.toISOString(), // Giữ nguyên ngày đúng với local time
+    };
+
     createAppointment(formattedValues);
-
   };
   const handleOpenModal = () => {
     setModalTitle("Create Appointment");
-      setModalFields([
-        { name: "event", label: "Event", type: "text" },
-        { name: "dateIssue", label: "Date Issue", type: "date" },
-      ]);
-      setModalVisible(true);
+    setModalFields([
+      { name: "event", label: "Event", type: "text" },
+      { name: "dateIssue", label: "Date Issue", type: "date" },
+    ]);
+    setModalVisible(true);
   };
 
   return (
@@ -152,7 +153,13 @@ const AppointmentManagement = ({ children }) => {
               }}
             >
               {location?.pathname !== "/appointment/schedule" && (
-                <Button onClick={() =>{handleOpenModal()}} icon={<AddIcon />} className="rts-btn btn-primary">
+                <Button
+                  onClick={() => {
+                    handleOpenModal();
+                  }}
+                  icon={<AddIcon />}
+                  className="rts-btn btn-primary"
+                >
                   Create
                 </Button>
               )}

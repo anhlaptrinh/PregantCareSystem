@@ -33,7 +33,7 @@ const DrawerMenu = ({
   handleLogout,
 }) => {
   // Xác định role dưới dạng chữ thường nếu user tồn tại
-  const role = user && user.role ? user.role.toLowerCase() : null;
+  const role = user && user.roleName ? user.roleName.toLowerCase() : null;
 
   return (
     <Drawer
@@ -100,6 +100,15 @@ const DrawerMenu = ({
                 onCloseDrawer={handleCloseDrawer}
               >
                 Forum
+              </StyledButton>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <StyledButton
+                to="/profile/article-form"
+                className="mb-4 p-5 fs-3"
+                onCloseDrawer={handleCloseDrawer}
+              >
+                Article
               </StyledButton>
             </motion.div>
           </>

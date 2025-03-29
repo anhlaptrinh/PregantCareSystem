@@ -204,7 +204,7 @@ export default function Home() {
       ) : (
         <Typography variant="h5">No post available</Typography>
       )}
-
+      <Advertisement />
       {totalPages > 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
           <Pagination

@@ -20,6 +20,7 @@ import {
 } from "../../../../apis/CallAPIComment";
 import BackdropLoader from "../../../../component/BackdropLoader";
 import { message as Message } from "antd";
+import LoginPromptModal from "./LoginPromptModal";
 
 export default function CommentList({ data, currentUser }) {
   const [comments, setComments] = useState([]);
@@ -33,6 +34,11 @@ export default function CommentList({ data, currentUser }) {
   // State phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // Nếu chưa đăng nhập, hiển thị modal yêu cầu đăng nhập
+  if (!currentUser) {
+    return <LoginPromptModal open={true} />;
+  }
 
   // Mở menu
   const handleMenuOpen = (event, comment) => {
@@ -160,7 +166,7 @@ export default function CommentList({ data, currentUser }) {
                   </Box>
                 </Box>
                 {/* Hiển thị nút MoreHoriz nếu comment thuộc về user hiện tại */}
-                {comment?.user?.email === currentUser.email && (
+                {currentUser && comment?.user?.email === currentUser?.email && (
                   <IconButton onClick={(e) => handleMenuOpen(e, comment)}>
                     <MoreHorizIcon />
                   </IconButton>
