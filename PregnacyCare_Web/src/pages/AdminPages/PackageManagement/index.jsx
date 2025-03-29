@@ -36,16 +36,16 @@ export default function PackageManagement() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleCreatePackage = async (values) => {
+    console.log(values);
     const newPackage = {
       name: values.name,
       price: parseFloat(values.price),
+      description: values.description,
     };
     try {
       const res = await useCreatePackage(newPackage);
-      if (res.code === 200) {
-        message.success(res.message);
-        refreshData();
-      }
+      message.success("Added package successfully");
+      refreshData();
     } catch (err) {
       console.error("Create error:", err.message);
     }
@@ -55,13 +55,13 @@ export default function PackageManagement() {
     const updatePackage = {
       name: values.name,
       price: parseFloat(values.price),
+      description: values.description,
     };
     try {
       const res = await useUpdatePackage(values.id, updatePackage);
-      if (res.code === 200) {
-        message.success(res.message);
-        refreshData();
-      }
+      message.success("Updated package successfully");
+
+      refreshData();
     } catch (err) {
       console.error("Update error:", err.message);
     }
@@ -70,10 +70,8 @@ export default function PackageManagement() {
   const handleDeletePackage = async (value) => {
     try {
       const res = await useDeletePackage(value.id);
-      if (res.code === 200) {
-        message.success(res.message);
-        refreshData();
-      }
+      message.success("Deleted package successfully");
+      refreshData();
     } catch (err) {
       console.error("Delete error:", err.message);
       message.error("Failed to delete package.");
@@ -95,7 +93,8 @@ export default function PackageManagement() {
       setLoading(true);
       try {
         const response = await useGetAllPackages();
-        setPackages(response.data);
+        console.log(response);
+        setPackages(response);
       } catch (error) {
         console.error("Error fetching packages:", error);
         message.error("Cannot load package list.");
@@ -125,10 +124,17 @@ export default function PackageManagement() {
               type: "number",
               value: event.price,
             },
+            {
+              name: "description",
+              label: "Description",
+              type: "text",
+              value: event.description,
+            },
           ]
         : [
             { name: "name", label: "Package Name", type: "text" },
             { name: "price", label: "Price", type: "number" },
+            { name: "description", label: "Description", type: "text" },
           ]
     );
     setModalVisible(true);
@@ -217,6 +223,12 @@ export default function PackageManagement() {
               key: "price",
               width: 100,
               render: (text) => `$${text}`,
+            },
+            {
+              title: "Description",
+              dataIndex: "description",
+              key: "description",
+              width: 100,
             },
             {
               title: "Action",

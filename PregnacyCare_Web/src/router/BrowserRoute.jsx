@@ -39,6 +39,7 @@ import Verification from "../modules/HomeTemplate/Verification";
 import PaymentSuccess from "../pages/PaymentPage/PaymentSuccess";
 import PaymentFailure from "../pages/PaymentPage/PaymentFailure";
 import PackageManagement from "../pages/AdminPages/PackageManagement";
+import FetalGrowthPages from "../pages/FetalGrowthPages";
 
 const routes = [
   // Các route không yêu cầu quyền truy cập
@@ -48,6 +49,7 @@ const routes = [
     children: [
       { path: "/", element: <HomeTemplate /> },
       { path: "/ovulation", element: <Ovulation /> },
+      { path: "/fetal-growth", element: <FetalGrowthPages /> },
       { path: "/due-date", element: <DueDateCalculatorTemplate /> },
       {
         path: "/due-date/result",

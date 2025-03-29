@@ -19,11 +19,11 @@ import {
 } from "@mui/material";
 
 import {
-  calculateDueDateFromLastPeriod,
   calculateDueDateFromConception,
   calculateDueDateForIVF,
   getDueDateFromUltrasound,
   getPregnancyTimelineFromDueDate,
+  calculateDueDateFromLastPeriod,
 } from "../../../apis/CallAPIDueDate";
 
 export default function Calculator() {
@@ -37,6 +37,7 @@ export default function Calculator() {
 
   // Sử dụng useCallback để memo hóa các callback onChange
   const handleLastPeriodChange = useCallback((data) => {
+    console.log(data);
     setLastPeriodData(data);
   }, []);
 
@@ -57,8 +58,8 @@ export default function Calculator() {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     let response;
+    e.preventDefault();
     try {
       switch (calculationMethod) {
         case "lastPeriod":

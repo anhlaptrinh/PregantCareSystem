@@ -93,9 +93,8 @@ const FetusInput = ({ selectedFetus }) => {
                 />
               </Col>
               <Col span={8}>
-                <Select defaultValue="lb" style={{ width: "100%", height: 40 }}>
-                  <Select.Option value="lb">lb</Select.Option>
-                  <Select.Option value="kg">kg</Select.Option>
+                <Select defaultValue="g" style={{ width: "100%", height: 40 }}>
+                  <Select.Option value="g">g</Select.Option>
                 </Select>
               </Col>
             </Row>
@@ -123,11 +122,7 @@ const FetusInput = ({ selectedFetus }) => {
                 />
               </Col>
               <Col span={8}>
-                <Select
-                  defaultValue="inch"
-                  style={{ width: "100%", height: 40 }}
-                >
-                  <Select.Option value="inch">inch</Select.Option>
+                <Select defaultValue="cm" style={{ width: "100%", height: 40 }}>
                   <Select.Option value="cm">cm</Select.Option>
                 </Select>
               </Col>

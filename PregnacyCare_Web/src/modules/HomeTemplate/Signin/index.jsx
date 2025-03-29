@@ -18,34 +18,32 @@ export default function Signin({ setActiveTab }) {
   });
 
   // // Kiểm tra email có thật hay không
-  // const handleEmail = async () => {
-  //   const API_KEY = "qa4efb9adawc50oj9vwc";
-  //   const BASE_URL = `https://api.mailscan.cc/v1/verify?email=${user.email}&api_key=${API_KEY}`;
+  const handleEmail = async () => {
+    const API_KEY = "qa4efb9adawc50oj9vwc";
+    const BASE_URL = `https://api.mailscan.cc/v1/verify?email=${user.email}&api_key=${API_KEY}`;
 
-  //   try {
-  //     const res = await axios.get(BASE_URL);
-  //     if (res.data.isValid === "No") {
-  //       Message.error("Invalid email address or domain");
-  //       setLoading(false);
-  //       return false;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error validating email:", error);
-  //     setLoading(false);
-  //     return false;
-  //   }
-  // };
+    try {
+      const res = await axios.get(BASE_URL);
+      if (res.data.isValid === "No") {
+        Message.error("Invalid email address or domain");
+        return false;
+      } else return true;
+    } catch (error) {
+      console.error("Error validating email:", error);
+      setLoading(false);
+    }
+  };
 
   // Xử lý đăng ký
   const handleSubmit = async () => {
     setLoading(true);
 
-    // // // Chờ kết quả kiểm tra email
-    // const isEmailValid = await handleEmail();
-    // if (!isEmailValid) {
-    //   setLoading(false);
-    //   return; // Nếu email không hợp lệ, dừng việc xử lý
-    // }
+    // // Chờ kết quả kiểm tra email
+    const isEmailValid = await handleEmail();
+    if (!isEmailValid) {
+      setLoading(false);
+      return;
+    }
     try {
       const res = await useVerification(user.email);
       if (res.code == 200) {

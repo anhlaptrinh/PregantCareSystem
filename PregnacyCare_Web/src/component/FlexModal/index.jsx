@@ -26,7 +26,7 @@ const FlexModal = ({ visible, onClose, onSubmit, fields, title }) => {
       };
 
       onSubmit(formattedValues);
-      console.log("date type: ", values.dateIssue);
+      console.log("date type: ", values.dateRemind);
       form.resetFields();
       onClose();
     } catch (error) {

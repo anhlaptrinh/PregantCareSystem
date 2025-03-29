@@ -9,7 +9,12 @@ export const useGetAllPackages = () => {
 export const useCreatePackage = (newPackage) => {
   return APIClient.post({
     url: "/api/packages",
-    data: { name: newPackage.name, price: newPackage.price },
+    data: {
+      id: 0,
+      name: newPackage.name,
+      price: newPackage.price,
+      description: newPackage.description,
+    },
   });
 };
 
@@ -27,7 +32,12 @@ export const useDeletePackage = (id) => {
 
 export const useUpdatePackage = (id, values) => {
   return APIClient.put({
-    url: `/api/packages/${id}`,
-    data: { name: values.name, price: values.price },
+    url: `/api/packages`,
+    data: {
+      id: id,
+      name: values.name,
+      price: values.price,
+      description: values.description,
+    },
   });
 };

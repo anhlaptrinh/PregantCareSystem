@@ -3,9 +3,10 @@ import GrowthChart from "../../../modules/FetusTrackerTemplate/GrowthChart";
 import NotificationFetus from "../../../modules/FetusTrackerTemplate/Notification";
 
 import React, { useEffect, useState } from "react";
-import { Select } from "antd";
+import { message, Select } from "antd";
 import { useGetMyFetusList } from "../../../apis/CallAPIFetus";
 import { useFetusStore } from "../../../zustand/fetusStore";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -40,11 +41,19 @@ const DropdownComponent = () => {
   const { selectedFetus, setSelectedFetus, fetusList, setFetusList } =
     useFetusStore();
   const [defaultFetus, setDefaultFetus] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await useGetMyFetusList(); // Gọi API
+
+        if (response.data.length <= 0) {
+          navigate("/profile");
+          message.error("Please create fetus in my family info!");
+          return null;
+        }
+
         const today = new Date(); // Lấy ngày hiện tại
 
         const formattedFetusList = response.data?.map((fetus) => {

@@ -5,6 +5,7 @@ import Login from "../Login";
 import Signin from "../Signin";
 import ForgotPassword from "../ForgotPassword";
 import { useNavigate } from "react-router-dom";
+import backgroundImg from "../../../assets/background-login.webp";
 
 const primaryColor60 = "#615EFC";
 const tabLabels = ["Home", "Log in", "Sign in", "Forgot Password"];
@@ -32,7 +33,7 @@ export default function LoginSignin() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#615EFC",
+        backgroundImage: `url(${backgroundImg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backdropFilter: "blur(6px)", // Hiệu ứng làm mờ background

@@ -95,7 +95,7 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
+              <a href="https://www.babycenter.com/" className="btn-transparent">
                 Learn More{" "}
                 <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
@@ -115,7 +115,7 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
+              <a href="https://www.babycenter.com/" className="btn-transparent">
                 Learn More{" "}
                 <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
@@ -135,7 +135,7 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
+              <a href="https://www.babycenter.com/" className="btn-transparent">
                 Learn More{" "}
                 <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
@@ -155,7 +155,7 @@ export default function Srvice() {
                 Diagnosis and treatment of heart &amp; cardiovascular
                 conditions.
               </p>
-              <a href="service-details.html" className="btn-transparent">
+              <a href="https://www.babycenter.com/" className="btn-transparent">
                 Learn More{" "}
                 <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
               </a>
